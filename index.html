@@ -4,473 +4,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FridgeAI — 食材智慧管理系統</title>
+  
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
-  <style>
-    /* ============================
-       DESIGN TOKENS
-    ============================ */
-    :root {
-      --black:   #080808;
-      --surface: #111111;
-      --card:    rgba(255,255,255,0.04);
-      --border:  rgba(255,255,255,0.07);
-      --gold:    #c29c6d;
-      --gold-lt: rgba(194,156,109,0.18);
-      --blue:    #2563eb;
-      --blue-lt: rgba(37,99,235,0.15);
-      --white:   #ffffff;
-      --muted:   #888888;
-      --font:    'Outfit', sans-serif;
-      --ease:    cubic-bezier(0.16, 1, 0.3, 1);
-    }
 
-    /* ============================
-       RESET & BASE
-    ============================ */
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--black);
-      color: var(--white);
-      font-family: var(--font);
-      font-size: 16px;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
+  <!-- Animation Libraries (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
 
-    /* Noise texture overlay */
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      opacity: 0.04;
-      pointer-events: none;
-      z-index: 9999;
-    }
-
-    /* Ambient blue edge glow */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      box-shadow: inset 0 0 200px rgba(37,99,235,0.07);
-      pointer-events: none;
-      z-index: 9998;
-    }
-
-    /* ============================
-       SCROLL REVEAL
-    ============================ */
-    .reveal {
-      opacity: 0;
-      transform: translateY(36px);
-      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
-    }
-    .reveal.active { opacity: 1; transform: translateY(0); }
-    .reveal-left  { opacity: 0; transform: translateX(-50px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
-    .reveal-right { opacity: 0; transform: translateX(50px);  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
-    .reveal-left.active, .reveal-right.active { opacity: 1; transform: translateX(0); }
-
-    /* ============================
-       NAVBAR
-    ============================ */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      padding: 1.5rem 6%;
-      display: flex; align-items: center; justify-content: space-between;
-      z-index: 1000;
-      transition: background 0.4s, backdrop-filter 0.4s;
-    }
-    nav.scrolled {
-      background: rgba(8,8,8,0.92);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-logo {
-      font-size: 1.1rem; font-weight: 900; letter-spacing: 0.15em;
-      color: var(--gold); text-transform: uppercase; text-decoration: none;
-    }
-    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-    .nav-links a {
-      color: var(--muted); text-decoration: none; font-size: 0.82rem;
-      font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--white); }
-    .nav-cta {
-      padding: 0.65rem 1.6rem;
-      border: 1px solid var(--gold);
-      border-radius: 100px;
-      color: var(--gold) !important;
-      font-size: 0.82rem !important;
-      transition: background 0.3s, box-shadow 0.3s !important;
-    }
-    .nav-cta:hover { background: var(--gold-lt) !important; box-shadow: 0 0 24px var(--gold-lt) !important; }
-
-    /* ============================
-       HERO
-    ============================ */
-    .hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      text-align: center;
-      padding: 10rem 6% 6rem;
-      position: relative;
-    }
-    .hero-eyebrow {
-      color: var(--gold); font-size: 0.78rem; font-weight: 700;
-      letter-spacing: 0.25em; text-transform: uppercase;
-      margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;
-    }
-    .hero-eyebrow::before, .hero-eyebrow::after {
-      content: ''; flex: 1 1 40px; height: 1px; background: var(--gold); opacity: 0.4;
-    }
-    .hero h1 {
-      font-size: clamp(3rem, 7vw, 6rem);
-      font-weight: 900; line-height: 1.05; letter-spacing: -0.03em;
-      margin-bottom: 1.5rem;
-      background: linear-gradient(160deg, #fff 40%, #888 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .hero h1 span { -webkit-text-fill-color: var(--gold); }
-    .hero-sub {
-      font-size: 1.15rem; color: var(--muted); max-width: 600px;
-      margin: 0 auto 3rem; line-height: 1.7;
-    }
-    .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-    .btn-primary {
-      padding: 0.9rem 2.4rem; background: var(--gold); color: #000;
-      font-family: var(--font); font-weight: 700; font-size: 0.9rem;
-      border: none; border-radius: 100px; cursor: pointer;
-      text-decoration: none; display: inline-block;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .btn-primary:hover { transform: scale(1.04); box-shadow: 0 8px 32px var(--gold-lt); }
-    .btn-outline {
-      padding: 0.9rem 2.4rem; background: transparent;
-      border: 1px solid rgba(255,255,255,0.2); color: var(--white);
-      font-family: var(--font); font-weight: 600; font-size: 0.9rem;
-      border-radius: 100px; cursor: pointer; text-decoration: none;
-      display: inline-block; transition: border-color 0.3s, background 0.3s;
-    }
-    .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,0.05); }
-
-    /* Background Glow blobs */
-    .blob {
-      position: absolute; border-radius: 50%;
-      filter: blur(120px); pointer-events: none;
-    }
-    .blob-1 { width: 600px; height: 600px; background: rgba(37,99,235,0.12); top: -100px; left: 50%; transform: translateX(-50%); }
-    .blob-2 { width: 400px; height: 400px; background: rgba(194,156,109,0.08); top: 40%; right: -100px; }
-
-    /* Hero stats */
-    .hero-stats {
-      display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;
-      margin-top: 4rem; padding-top: 3rem;
-      border-top: 1px solid var(--border);
-    }
-    .stat { text-align: center; }
-    .stat-num { font-size: 2.4rem; font-weight: 900; color: var(--gold); }
-    .stat-label { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
-
-    /* ============================
-       SECTION BASE
-    ============================ */
-    section { padding: 8rem 6%; }
-    .section-label {
-      color: var(--gold); font-size: 0.75rem; font-weight: 700;
-      letter-spacing: 0.2em; text-transform: uppercase;
-      margin-bottom: 0.75rem; display: block;
-    }
-    .section-title {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 900; line-height: 1.1; letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-    }
-    .section-desc { color: var(--muted); max-width: 520px; line-height: 1.7; }
-
-    /* Divider */
-    .divider { height: 1px; background: var(--border); margin: 0 6%; }
-
-    /* ============================
-       PROBLEM SECTION
-    ============================ */
-    .problem-grid {
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem;
-      margin-top: 4rem;
-    }
-    .problem-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 1.25rem; padding: 2.5rem 2rem;
-      position: relative; overflow: hidden;
-      transition: border-color 0.4s, transform 0.4s;
-    }
-    .problem-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      opacity: 0; transition: opacity 0.4s;
-    }
-    .problem-card:hover { transform: translateY(-8px); border-color: rgba(194,156,109,0.3); }
-    .problem-card:hover::before { opacity: 1; }
-    .problem-icon { font-size: 2rem; margin-bottom: 1.25rem; display: block; }
-    .problem-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.6rem; }
-    .problem-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
-    .problem-num {
-      position: absolute; top: 1.5rem; right: 1.75rem;
-      font-size: 4rem; font-weight: 900; color: rgba(255,255,255,0.03);
-      line-height: 1; user-select: none;
-    }
-
-    /* ============================
-       FEATURED / ALTERNATING
-    ============================ */
-    .featured { padding: 0 6%; }
-    .featured-inner { padding: 7rem 0; border-top: 1px solid var(--border); }
-    .feat-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;
-    }
-    .feat-row.reverse { direction: rtl; }
-    .feat-row.reverse > * { direction: ltr; }
-    .feat-tag {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      color: var(--gold); font-size: 0.75rem; font-weight: 700;
-      letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem;
-    }
-    .feat-tag::before { content: ''; width: 16px; height: 1px; background: var(--gold); }
-    .feat-title {
-      font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900;
-      letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 1rem;
-    }
-    .feat-desc { color: var(--muted); line-height: 1.75; margin-bottom: 2rem; }
-    .feat-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
-    .tag {
-      padding: 0.3rem 0.85rem; border: 1px solid var(--border);
-      border-radius: 100px; font-size: 0.75rem; color: var(--muted);
-      transition: border-color 0.3s, color 0.3s;
-    }
-    .tag:hover { border-color: var(--gold); color: var(--gold); }
-    .feat-visual {
-      aspect-ratio: 4/3; border-radius: 1.25rem;
-      overflow: hidden; position: relative;
-      border: 1px solid var(--border);
-      background: var(--surface);
-    }
-    .feat-visual-inner {
-      width: 100%; height: 100%;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center; padding: 2rem; gap: 1rem;
-    }
-    .feat-visual-icon { font-size: 4rem; }
-    .feat-visual-label { font-size: 0.8rem; color: var(--muted); }
-    .feat-stat-row { display: flex; gap: 2rem; margin-top: 0.5rem; }
-    .feat-stat span { display: block; }
-    .feat-stat .num { font-size: 1.7rem; font-weight: 900; color: var(--gold); }
-    .feat-stat .lbl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
-
-    /* Mock UI screens */
-    .mock-screen {
-      width: 100%; height: 100%;
-      background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
-      display: flex; flex-direction: column;
-      padding: 1.5rem;
-    }
-    .mock-bar { display: flex; gap: 0.4rem; margin-bottom: 1rem; }
-    .mock-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .mock-dot:nth-child(1) { background: #ef4444; }
-    .mock-dot:nth-child(2) { background: #f59e0b; }
-    .mock-dot:nth-child(3) { background: #22c55e; }
-    .mock-label { font-size: 0.65rem; color: var(--muted); margin-bottom: 0.75rem; letter-spacing: 0.1em; }
-    .mock-items { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
-    .mock-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.04);
-      border-radius: 0.5rem; border: 1px solid var(--border);
-      font-size: 0.75rem;
-    }
-    .mock-item-left { display: flex; align-items: center; gap: 0.5rem; }
-    .mock-badge {
-      padding: 0.15rem 0.5rem; border-radius: 100px; font-size: 0.6rem; font-weight: 700;
-    }
-    .badge-fresh { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
-    .badge-warn  { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
-    .badge-old   { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
-    .mock-progress { height: 3px; background: var(--border); border-radius: 100px; overflow: hidden; margin-top: 0.75rem; }
-    .mock-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--blue), var(--gold)); }
-
-    /* YOLO detection visual */
-    .yolo-visual {
-      position: relative; width: 100%; height: 100%;
-      background: linear-gradient(135deg, #0a0a12, #101018);
-      display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
-      gap: 0.5rem; padding: 1.5rem;
-    }
-    .yolo-box {
-      border: 1.5px solid; border-radius: 0.3rem;
-      padding: 0.4rem 0.6rem;
-      display: flex; flex-direction: column; align-items: center;
-      position: relative; font-size: 0.65rem; gap: 0.25rem;
-    }
-    .yolo-box.green  { border-color: rgba(34,197,94,0.7);  background: rgba(34,197,94,0.07); }
-    .yolo-box.yellow { border-color: rgba(245,158,11,0.7); background: rgba(245,158,11,0.07); }
-    .yolo-box.red    { border-color: rgba(239,68,68,0.7);  background: rgba(239,68,68,0.07); }
-    .yolo-emoji { font-size: 1.8rem; }
-    .yolo-conf { font-weight: 700; }
-    .yolo-box.green  .yolo-conf { color: #22c55e; }
-    .yolo-box.yellow .yolo-conf { color: #f59e0b; }
-    .yolo-box.red    .yolo-conf { color: #ef4444; }
-    .yolo-name { color: var(--muted); }
-    .yolo-corner { position: absolute; font-size: 0.55rem; top: -0.6rem; left: 0.3rem; background: var(--black); padding: 0 0.2rem; }
-
-    /* Recipe visual */
-    .recipe-visual {
-      width: 100%; height: 100%;
-      background: linear-gradient(145deg, #0d0d10, #131318);
-      padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;
-    }
-    .recipe-header { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
-    .recipe-title { font-size: 1rem; font-weight: 700; color: var(--gold); }
-    .recipe-steps { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
-    .recipe-step {
-      display: flex; gap: 0.6rem; align-items: flex-start;
-      font-size: 0.7rem; color: rgba(255,255,255,0.7);
-      padding: 0.4rem; border-radius: 0.4rem;
-      background: rgba(255,255,255,0.03);
-    }
-    .step-num { color: var(--gold); font-weight: 700; flex-shrink: 0; }
-    .recipe-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-    .recipe-tag {
-      padding: 0.2rem 0.5rem; border-radius: 100px; font-size: 0.6rem;
-      background: var(--blue-lt); color: var(--blue); border: 1px solid rgba(37,99,235,0.3);
-    }
-
-    /* ============================
-       TECH STACK
-    ============================ */
-    .tech-section { background: var(--surface); }
-    .tech-grid {
-      display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; margin-top: 3.5rem;
-    }
-    .tech-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 1rem; padding: 2rem 1.5rem;
-      transition: all 0.4s var(--ease);
-      cursor: pointer; position: relative;
-    }
-    .tech-card:hover { 
-      border-color: var(--gold); 
-      transform: translateY(-8px);
-      background: rgba(194,156,109,0.05);
-      box-shadow: 0 12px 40px rgba(194,156,109,0.1);
-    }
-    .tech-card::after {
-      content: 'VIEW DATA →';
-      position: absolute; bottom: 1.2rem; right: 1.5rem;
-      font-size: 0.6rem; font-weight: 800; color: var(--gold);
-      opacity: 0; transform: translateX(-10px); transition: all 0.3s;
-    }
-    .tech-card:hover::after { opacity: 1; transform: translateX(0); }
-    .tech-emoji { font-size: 1.75rem; margin-bottom: 0.75rem; display: block; }
-    .tech-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem; }
-    .tech-role { font-size: 0.75rem; color: var(--muted); }
-
-    /* ============================
-       PERSONA
-    ============================ */
-    .persona-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3.5rem; }
-    .persona-card {
-      border: 1px solid var(--border); border-radius: 1.25rem; padding: 2.5rem 2rem;
-      position: relative; overflow: hidden;
-      transition: border-color 0.3s, transform 0.3s;
-    }
-    .persona-card:hover { border-color: rgba(37,99,235,0.3); transform: translateY(-6px); }
-    .persona-ava { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
-    .persona-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; }
-    .persona-role { font-size: 0.75rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
-    .persona-pain { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.25rem; }
-    .persona-solve {
-      padding: 0.85rem 1rem; background: var(--blue-lt);
-      border: 1px solid rgba(37,99,235,0.2); border-radius: 0.75rem;
-      font-size: 0.8rem; color: rgba(255,255,255,0.8); line-height: 1.5;
-    }
-
-    /* ============================
-       MARKET
-    ============================ */
-    .market-section { background: var(--surface); }
-    .market-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; margin-top: 3.5rem; }
-    .market-stats { display: flex; flex-direction: column; gap: 2rem; }
-    .market-stat-item {
-      display: flex; flex-direction: column; gap: 0.3rem;
-      padding-left: 1.25rem; border-left: 2px solid var(--gold);
-    }
-    .market-stat-num { font-size: 2.2rem; font-weight: 900; color: var(--white); }
-    .market-stat-lbl { font-size: 0.82rem; color: var(--muted); }
-    .market-roadmap { display: flex; flex-direction: column; gap: 1rem; }
-    .roadmap-item {
-      display: flex; gap: 1rem; align-items: flex-start;
-      padding: 1.25rem; background: var(--card);
-      border: 1px solid var(--border); border-radius: 0.875rem;
-      transition: border-color 0.3s;
-    }
-    .roadmap-item:hover { border-color: rgba(194,156,109,0.3); }
-    .roadmap-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 0.1rem; }
-    .roadmap-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.25rem; }
-    .roadmap-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
-
-    /* ============================
-       FOOTER / CONTACT
-    ============================ */
-    footer {
-      padding: 8rem 6% 4rem;
-      text-align: center;
-      border-top: 1px solid var(--border);
-      position: relative; overflow: hidden;
-    }
-    .footer-glow {
-      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-      width: 600px; height: 300px;
-      background: radial-gradient(ellipse at center, rgba(37,99,235,0.12), transparent 70%);
-      pointer-events: none;
-    }
-    footer h2 {
-      font-size: clamp(2rem, 5vw, 4rem); font-weight: 900;
-      letter-spacing: -0.03em; margin-bottom: 1rem;
-    }
-    .footer-sub { color: var(--muted); margin-bottom: 3rem; font-size: 1rem; }
-    .footer-credits {
-      margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border);
-      font-size: 0.78rem; color: var(--muted);
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: gap;
-    }
-    .footer-stack { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end; }
-    .stack-badge {
-      padding: 0.2rem 0.5rem; border: 1px solid var(--border);
-      border-radius: 100px; font-size: 0.7rem; color: var(--muted);
-    }
-
-    /* ============================
-       RESPONSIVE
-    ============================ */
-    @media (max-width: 1024px) {
-      .feat-row { grid-template-columns: 1fr; gap: 3rem; }
-      .feat-row.reverse { direction: ltr; }
-      .tech-grid { grid-template-columns: repeat(2,1fr); }
-      .market-inner { grid-template-columns: 1fr; gap: 3rem; }
-    }
-    @media (max-width: 768px) {
-      section { padding: 5rem 5%; }
-      .problem-grid { grid-template-columns: 1fr; }
-      .persona-grid { grid-template-columns: 1fr; }
-      .hero-stats { gap: 1.5rem; }
-      .nav-links { display: none; }
-    }
-  </style>
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
+<body class="is-loading">
+
+  <!-- CUSTOM CURSOR -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-outline"></div>
+
+  <!-- ═══════════════════════════════════════════════
+       SPLASH PORTAL (引導式入口)
+  ═══════════════════════════════════════════════ -->
+  <div id="splash">
+    <div class="splash-bg">
+      <div class="splash-aura a1"></div>
+      <div class="splash-aura a2"></div>
+    </div>
+    <div class="splash-inner">
+      <div class="splash-eyebrow">GROUP 3 · 2026</div>
+      <h1 class="splash-title">FRIDGE<span>AI</span></h1>
+      <p class="splash-desc">以 YOLOv11 影像辨識與 Gemini 生成式 AI 為核心<br>重新定義現代廚房管理體驗</p>
+      <button id="splash-enter" class="splash-btn">
+        <span>進入系統</span>
+        <span class="splash-btn-arrow">→</span>
+      </button>
+      <div class="splash-hint">ENTER EXPERIENCE</div>
+    </div>
+  </div>
 
   <!-- DYNAMIC BACKGROUND LAYER -->
   <div class="site-bg">
@@ -479,122 +51,14 @@
     <div class="aura-blob aura-2" id="aura2"></div>
     <div class="mouse-glow" id="mouseGlow"></div>
     
-    <!-- MICRO-ANIMATION PARTICLES (ENHANCED) -->
+    <!-- MICRO-ANIMATION PARTICLES (reduced to 10 for performance) -->
     <div class="particles">
        <div class="p p1"></div><div class="p p2"></div><div class="p p3"></div>
        <div class="p p4"></div><div class="p p5"></div><div class="p p6"></div>
        <div class="p p7"></div><div class="p p8"></div><div class="p p9"></div>
-       <div class="p p10"></div><div class="p p11"></div><div class="p p12"></div>
-       <div class="p p13"></div><div class="p p14"></div><div class="p p15"></div>
-       <div class="p p16"></div><div class="p p17"></div><div class="p p18"></div>
-       <div class="p p19"></div><div class="p p20"></div><div class="p p21"></div>
-       <div class="p p22"></div><div class="p p23"></div><div class="p p24"></div>
-       <div class="p p25"></div>
+       <div class="p p10"></div>
     </div>
   </div>
-
-  <style>
-    /* GLOBAL BACKGROUND STYLES */
-    .site-bg {
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      background: #050505;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    .grid-layer {
-      position: absolute;
-      inset: 0;
-      background-image: 
-        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 60px 60px;
-      opacity: 0.6;
-    }
-    /* STARS (Enhanced with Twinkling) */
-    .p {
-      position: absolute;
-      display: flex;
-      align-items: center; justify-content: center;
-      color: #fff;
-      opacity: 0.4;
-      animation: twinkle 4s ease-in-out infinite, drift linear infinite;
-    }
-    .p::after {
-      content: '✦';
-      font-size: 12px;
-    }
-    .p1 { top: 10%; left: 20%; animation-duration: 25s; font-size: 18px; color: var(--gold); }
-    .p2 { top: 40%; left: 85%; animation-duration: 35s; font-size: 10px; opacity: 0.3; }
-    .p3 { top: 75%; left: 15%; animation-duration: 28s; color: var(--blue); font-size: 15px; }
-    .p4 { top: 25%; left: 55%; animation-duration: 40s; font-size: 9px; }
-    .p5 { top: 85%; left: 70%; animation-duration: 32s; font-size: 8px; }
-    .p6 { top: 15%; left: 95%; animation-duration: 22s; color: var(--gold); font-size: 12px; }
-    .p7 { top: 55%; left: 8%; animation-duration: 50s; font-size: 11px; }
-    .p8 { top: 92%; left: 35%; animation-duration: 45s; color: var(--blue); font-size: 14px; }
-    .p9 { top: 12%; left: 75%; animation-duration: 26s; font-size: 22px; }
-    .p10 { top: 52%; left: 42%; animation-duration: 38s; font-size: 10px; }
-    .p11 { bottom: 15%; left: 55%; animation-duration: 29s; color: var(--gold); font-size: 14px; }
-    .p12 { bottom: 35%; right: 15%; animation-duration: 31s; font-size: 13px; }
-    .p13 { top: 35%; left: 12%; animation-duration: 24s; color: var(--blue); font-size: 16px; }
-    .p14 { bottom: 25%; left: 85%; animation-duration: 55s; font-size: 9px; }
-    .p15 { top: 65%; right: 25%; animation-duration: 33s; font-size: 17px; }
-    .p16 { top: 5%; right: 40%; animation-duration: 42s; font-size: 11px; }
-    .p17 { bottom: 45%; left: 30%; animation-duration: 27s; color: var(--gold); font-size: 15px; }
-    .p18 { top: 80%; left: 5%; animation-duration: 60s; font-size: 8px; }
-    .p19 { bottom: 5%; right: 60%; animation-duration: 30s; color: var(--blue); font-size: 14px; }
-    .p20 { top: 45%; left: 65%; animation-duration: 36s; font-size: 20px; }
-    .p21 { bottom: 12%; right: 35%; animation-duration: 23s; color: var(--gold); font-size: 16px; }
-    .p22 { top: 60%; left: 90%; animation-duration: 48s; font-size: 11px; }
-    .p23 { bottom: 20%; left: 20%; animation-duration: 34s; color: var(--blue); font-size: 16px; }
-    .p24 { top: 20%; left: 10%; animation-duration: 52s; font-size: 12px; }
-    .p25 { bottom: 30%; right: 90%; animation-duration: 33s; color: var(--gold); font-size: 19px; }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.2; transform: scale(0.7); }
-      50% { opacity: 0.8; transform: scale(1.4); }
-    }
-
-    @keyframes drift {
-      0% { transform: translateY(0) translateX(0); }
-      100% { transform: translateY(-200px) translateX(20px); }
-    }
-
-    .aura-blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(120px);
-      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-      opacity: 0.15;
-    }
-    .aura-1 {
-      width: 60vw; height: 60vw;
-      background: var(--gold);
-      top: -10%; left: -20%;
-      animation: float 20s infinite alternate;
-    }
-    .aura-2 {
-      width: 50vw; height: 50vw;
-      background: var(--blue);
-      bottom: -10%; right: -10%;
-      animation: float 25s infinite alternate-reverse;
-    }
-    .mouse-glow {
-      position: absolute;
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(194,156,109,0.08) 0%, transparent 70%);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      z-index: -1;
-      pointer-events: none;
-      transition: background 0.3s ease;
-    }
-    @keyframes float {
-      0% { transform: translate(0,0) scale(1); }
-      100% { transform: translate(10%, 10%) scale(1.1); }
-    }
-  </style>
 
   <!-- NAV -->
   <nav id="navbar">
@@ -635,7 +99,7 @@
     </div>
   </header>
 
-  <!-- DEMO VIDEO SECTION (Start of Fridge AI Deep-dive) -->
+  <!-- DEMO VIDEO SECTION -->
   <section id="demo" style="padding: 6rem 6% 4rem; text-align: center;">
     <div class="reveal">
       <span class="section-label">03&nbsp;&nbsp;核心技術演示</span>
@@ -663,7 +127,7 @@
         transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       " onclick="event.stopPropagation()">
         
-        <video id="modalVideo" src="FridgeAI_Demo_Final.mp4" playsinline style="width: 100%; display: block;"></video>
+        <video id="modalVideo" src="assets/videos/FridgeAI_Demo_Final.mp4" playsinline style="width: 100%; display: block;"></video>
         
         <!-- Close Button -->
         <button onclick="closeModal()" style="
@@ -685,36 +149,6 @@
       </div>
     </div>
   </section>
-
-  <script>
-    const modal = document.getElementById('videoModal');
-    const vNode = document.getElementById('modalVideo');
-
-    function openModal() {
-      modal.style.display = 'flex';
-      setTimeout(() => {
-        modal.style.opacity = '1';
-        modal.children[0].style.transform = 'scale(1)';
-      }, 10);
-      vNode.play();
-      vNode.muted = false;
-    }
-
-    function closeModal() {
-      modal.style.opacity = '0';
-      modal.children[0].style.transform = 'scale(0.9)';
-      setTimeout(() => {
-        modal.style.display = 'none';
-        vNode.pause();
-        vNode.currentTime = 0;
-      }, 300);
-    }
-
-    // Close on ESC
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
-  </script>
 
   <!-- PROBLEM -->
   <section id="problem">
@@ -993,8 +427,6 @@
     </div>
   </section>
 
-
-
   <!-- MARKET + ROADMAP -->
   <div class="divider"></div>
   <section id="market" class="market-section">
@@ -1047,7 +479,7 @@
     </div>
   </section>
 
-  <!-- SECTION: PROJECT GALLERY (Moved to Bottom) -->
+  <!-- SECTION: PROJECT GALLERY -->
   <div class="divider"></div>
   <section id="portfolio" style="padding: 6rem 6% 8rem;">
     <div class="reveal" style="text-align: center; margin-bottom: 4rem;">
@@ -1058,20 +490,16 @@
 
     <!-- Gallery Grid -->
     <div class="problem-grid" style="grid-template-columns: 1fr; max-width: 440px; margin: 0 auto;">
-      <!-- Virtual Singer R&D Prototype Card -->
       <div class="problem-card reveal" onclick="openVividModal()" 
         style="
           cursor: pointer; position: relative; overflow: hidden; height: 320px;
           border-color: rgba(168,85,247,0.4); 
-          background: url('vivid_bg.jpg') center/cover no-repeat;
+          background: url('assets/images/vivid_bg.jpg') center/cover no-repeat;
           display: flex; flex-direction: column; justify-content: flex-end;
           padding: 2rem;
         ">
-        <!-- Overlay for readability -->
         <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.1) 100%); z-index: 1;"></div>
-        
         <div style="position: absolute; top:0; right:0; padding: 0.5rem 1rem; background: #a855f7; color: white; font-size: 0.6rem; font-weight: 800; z-index: 2; letter-spacing: 1px;">AI R&D PROTOTYPE (技術實證)</div>
-        
         <div style="position: relative; z-index: 2;">
           <span class="problem-num" style="color: #a855f7; opacity: 1; font-size: 2.5rem; margin-bottom: 0;">01</span>
           <h3 style="margin: 0.5rem 0; color: #fff;">虛擬歌手：AI 研發原型</h3>
@@ -1082,7 +510,7 @@
     </div>
   </section>
 
-  <!-- VIVID BEATS MODAL (Updated) -->
+  <!-- VIVID BEATS MODAL -->
   <div id="vividModal" class="modal-root" style="
     display: none; position: fixed; inset: 0; z-index: 10001;
     background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
@@ -1197,347 +625,10 @@
     </div>
   </div>
 
-  <script>
-    // Tech Modal Logic
-    const techData = {
-      yolo: {
-        label: 'MODEL ITERATION & PERFORMANCE',
-        title: 'YOLOv11 系列訓練深度對比 (V3 vs V4)',
-        html: `
-          <div style="background:rgba(255,255,255,0.03); padding: 1.5rem; border-radius:1rem; margin-bottom: 1.5rem;">
-            <h4 style="color:var(--gold); margin-bottom: 1rem; font-size: 1rem;">🚀 模型進化路徑：Nano → Small → Medium</h4>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-              <div style="background:rgba(0,0,0,0.3); padding: 1rem; border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.05);">
-                <div style="color:var(--gold); font-weight:700; font-size:0.8rem;">起點 — V1 (yolo11n)</div>
-                <ul style="font-size:0.75rem; color:var(--muted); margin-top:0.5rem; line-height:1.6;">
-                  <li>• 解析度: 640px | 訓練: 50 Epochs</li>
-                  <li>• mAP@50 ≈ 0.75–0.80</li>
-                  <li>• cabbage 辨識率僅 0.33，問題明顯</li>
-                </ul>
-              </div>
-              <div style="background:rgba(34,197,94,0.05); padding: 1rem; border-radius: 0.5rem; border: 1px solid #22c55e55;">
-                <div style="color:#22c55e; font-weight:700; font-size:0.8rem;">終點 — V6 (yolo11m) ✓</div>
-                <ul style="font-size:0.75rem; color:var(--muted); margin-top:0.5rem; line-height:1.6;">
-                  <li>• 解析度: 640px | 訓練: <b>300 Epochs</b></li>
-                  <li>• mAP@50 穩定收斂 <b>0.86–0.87</b></li>
-                  <li>• rotten_meat 辨識率達 <b>1.00</b> 🏆</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin-bottom: 1.5rem;">
-            <div style="background:rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 0.75rem; text-align:center;">
-              <div style="font-size:1.4rem; font-weight:800; color:var(--gold);">6</div>
-              <div style="font-size:0.7rem; color:var(--muted);">訓練迭代版本</div>
-            </div>
-            <div style="background:rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 0.75rem; text-align:center;">
-              <div style="font-size:1.4rem; font-weight:800; color:#22c55e;">0.868</div>
-              <div style="font-size:0.7rem; color:var(--muted);">最終 mAP@50</div>
-            </div>
-            <div style="background:rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 0.75rem; text-align:center;">
-              <div style="font-size:1.4rem; font-weight:800; color:#3b82f6;">12</div>
-              <div style="font-size:0.7rem; color:var(--muted);">食材辨識類別</div>
-            </div>
-          </div>
-
-          <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.5rem; text-align:center;">
-            <button id="openChartModal" onclick="openChartDetail()"
-              style="background: linear-gradient(135deg, rgba(194,156,109,0.15), rgba(194,156,109,0.05));
-                     border: 1px solid var(--gold); color: var(--gold); padding: 0.75rem 2rem;
-                     border-radius: 2rem; font-size: 0.85rem; font-weight: 600; cursor: pointer;
-                     transition: all 0.3s; letter-spacing: 0.05em;">
-              📊 查看詳細訓練數據 & 圖表
-            </button>
-            <p style="font-size:0.7rem; color:var(--muted); margin-top:0.75rem;">包含混淆矩陣、Loss 曲線、V1–V6 完整對照表</p>
-          </div>
-        `,
-      },
-      gemini: {
-        label: 'AI GENERATIVE LOGIC',
-        title: 'Gemini 2.5 Flash 核心邏輯',
-        html: `
-          <div style="background:rgba(255,255,255,0.03); padding: 2rem; border-radius:1.5rem; margin-bottom: 1.5rem;">
-            <p style="color:rgba(255,255,255,0.8); line-height:1.8;">將 YOLO 識別出的食材標籤與保鮮期數據，彙整為 Context Payload 並提交給 Gemini 進行「條件約束型生成」。</p>
-          </div>
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-            <div style="border-left: 2px solid var(--blue); padding-left: 1rem;">
-              <div style="font-weight:700; color:var(--blue); margin-bottom:0.5rem;">RAG 向量搜尋</div>
-              <div style="font-size:0.8rem; color:var(--muted);">基於現有食材精確匹配推薦食譜，減少模型的幻覺 (Hallucination) 並精準過濾掉過期品。</div>
-            </div>
-            <div style="border-left: 2px solid #ef4444; padding-left: 1rem;">
-              <div style="font-weight:700; color:#ef4444; margin-bottom:0.5rem;">AI 異常防護</div>
-              <div style="font-size:0.8rem; color:var(--muted);">內建 Fallback 機制：若 API 請求失敗，系統自動降級切換至 IndexedDB 內的本地緩存與靜態食譜。</div>
-            </div>
-          </div>
-        `
-      },
-      arch: {
-        label: 'SYSTEM ARCHITECTURE',
-        title: 'Fridge AI 完整系統架構',
-        html: `
-          <div style="padding: 1rem; background:#000; border-radius:1rem; margin-bottom:1.5rem; text-align:center;">
-            <div style="color:var(--gold); border: 1px solid var(--gold); padding:1rem; border-radius:0.5rem; display:inline-block; margin-bottom:1rem;">拍攝捕捉</div>
-            <div style="color:rgba(255,255,255,0.2);">▼</div>
-            <div style="color:#22c55e; border: 1px solid #22c55e; padding:1rem; border-radius:0.5rem; display:inline-block; margin-bottom:1rem;">YOLOv11 視覺推論 (新鮮度判別)</div>
-            <div style="color:rgba(255,255,255,0.2);">▼</div>
-            <div style="display:flex; justify-content:center; gap:2rem;">
-              <div style="border:1px solid #3b82f6; color:#3b82f6; padding:1rem; border-radius:0.5rem;">數據持久化 (IndexedDB)</div>
-              <div style="border:1px solid #a855f7; color:#a855f7; padding:1rem; border-radius:0.5rem;">動態提示詞 Prompt</div>
-            </div>
-            <div style="color:rgba(255,255,255,0.2); margin-top:1rem;">▼</div>
-            <div style="background:var(--gold); color:#000; padding:1rem; border-radius:0.5rem; font-weight:800;">用戶終端 (食譜推薦/到期警示)</div>
-          </div>
-          <p style="font-size:0.85rem; color:var(--muted); text-align:center;">* 本架構實現了 100% 端到端的數據流轉，解決了家庭食材管理碎片化的痛點。</p>
-        `
-      },
-      db: {
-        label: 'DATA PERSISTENCE',
-        title: '數據持久化與加密管理',
-        html: `
-          <ul style="list-size:none; color:rgba(255,255,255,0.8); line-height:2;">
-            <li>• <b>IndexedDB 存儲</b>：取代傳統 Session，支援大規模食材數據與歷史浪費統計的離線存取。</li>
-            <li>• <b>時間戳賦予</b>：每一項入庫食材皆綁定唯一 Unix Timestamp 進行精確保鮮追蹤。</li>
-            <li>• <b>分區邏輯</b>：自動將食材劃分至「冷藏/冷凍」虛擬分舵，提供更真實的存放模擬。</li>
-            <li>• <b>數據安全性</b>：採用的本地端存儲模式，確保用戶的隱私消費數據不出冰箱終端。</li>
-          </ul>
-        `
-      },
-      pytorch: {
-        label: 'TRAINING FRAMEWORK',
-        title: 'PyTorch 訓練與超參數設定',
-        html: `
-          <div style="background:rgba(255,255,255,0.02); padding:1.5rem; border-radius:1rem; font-family:monospace; font-size:0.85rem; color:var(--gold);">
-            <p># 損失函數權重 (Loss Gain)</p>
-            <p>box: 7.5 | cls: 3.0 | dfl: 1.5</p>
-            <p style="margin-top:1rem; color:var(--muted);"># 硬體環境設定</p>
-            <p>imgsz: 960 | batch: -1 | workers: 16</p>
-          </div>
-          <p style="margin-top:1.5rem; font-size:0.85rem; color:var(--muted);">基於 PyTorch 深度神經網絡，通過反向傳播持續優化邊界框回歸 (Bounding Box Regression) 的精準度。</p>
-        `
-      },
-      tailwind: {
-        label: 'UI ARCHITECTURE',
-        title: 'Tailwind CSS 視覺規範',
-        html: `
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
-            <div style="background:rgba(255,255,255,0.03); padding:1rem; border-radius:0.75rem;">
-              <strong style="color:var(--blue);">Glassmorphism</strong>
-              <div style="font-size:0.75rem; color:var(--muted); margin-top:0.5rem;">高飽和度模糊背景 (25px blur)，營造層次感。</div>
-            </div>
-            <div style="background:rgba(255,255,255,0.03); padding:1rem; border-radius:0.75rem;">
-              <strong style="color:var(--gold);">Fluid Grid</strong>
-              <div style="font-size:0.75rem; color:var(--muted); margin-top:0.5rem;">響應式 12 欄位系統，完美適配桌機與手持設備。</div>
-            </div>
-          </div>
-        `
-      },
-      react: {
-        label: 'FRONTEND STACK',
-        title: 'React 18 + Vite 高效驅動',
-        html: `
-          <p style="color:rgba(255,255,255,0.8); line-height:1.8;">採用 <b>React 18 Concurrent Mode (併發模式)</b> 確保在大量辨識數據流下，介面依然維持 60 FPS 的流暢度。</p>
-          <div style="margin-top:1rem; border:1px solid var(--border); padding:1rem; border-radius:0.75rem; font-size:0.8rem;">
-            ⚡ <b>Vite HMR:</b> 0.3s 極速局部熱更新，縮短 50% 開發週期。
-          </div>
-        `
-      },
-      dataset: {
-        label: 'DATA PREPROCESSING',
-        title: 'Roboflow 資料增強詳解',
-        html: `
-          <p style="margin-bottom:1rem; font-size:0.85rem; color:var(--gold);">為了解決採光不足與遮擋問題，我們設定了極高強度的 Data Augmentation：</p>
-          <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:0.5rem; font-family:monospace; font-size:0.75rem; color:rgba(255,255,255,0.6);">
-            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• hsv_h: 0.015</div>
-            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• degrees: 15.0</div>
-            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• translate: 0.2</div>
-            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• mosaic: 1.0</div>
-            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• flipud: 0.2</div>
-            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• mixup: 0.1</div>
-          </div>
-          <p style="margin-top:1rem; font-size:0.8rem; color:var(--muted);">共獲取 5,560 組多樣化樣本，涵蓋強光、弱光與不同角度的食材切面。</p>
-        `
-      }
-    };
-
-    // ── Chart Detail Sub-Modal ─────────────────────────────────
-    const chartModalHTML = `
-      <div id="chartDetailModal" onclick="if(event.target===this)this.style.display='none'"
-           style="display:none; position:fixed; inset:0; z-index:11000;
-                  background:rgba(0,0,0,0.85); backdrop-filter:blur(8px);
-                  align-items:center; justify-content:center; padding:1rem;">
-        <div style="background:#0f0f15; border:1px solid rgba(255,255,255,0.1); border-radius:1.25rem;
-                    max-width:900px; width:100%; max-height:90vh; overflow-y:auto; padding:2rem; position:relative;">
-          <button onclick="document.getElementById('chartDetailModal').style.display='none'"
-                  style="position:sticky; top:0; float:right; background:rgba(255,255,255,0.08);
-                         border:none; color:#fff; width:2rem; height:2rem; border-radius:50%;
-                         cursor:pointer; font-size:1rem; line-height:1; margin-bottom:1rem;">✕</button>
-          <h3 style="color:var(--gold); margin-bottom:0.25rem; font-size:1.1rem;">📊 訓練數據詳細報告</h3>
-          <p style="color:var(--muted); font-size:0.75rem; margin-bottom:1.5rem;">YOLOv11 V1–V6 完整訓練紀錄</p>
-          <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap;">
-            <button class="chart-tab" id="btn-tab-conf" onclick="switchTab('tab-conf')"
-                    style="padding:0.4rem 1rem; border-radius:2rem; border:1px solid var(--gold);
-                           background:rgba(194,156,109,0.15); color:var(--gold); font-size:0.75rem; cursor:pointer;">混淆矩陣</button>
-            <button class="chart-tab" id="btn-tab-curves" onclick="switchTab('tab-curves')"
-                    style="padding:0.4rem 1rem; border-radius:2rem; border:1px solid rgba(255,255,255,0.15);
-                           background:transparent; color:var(--muted); font-size:0.75rem; cursor:pointer;">訓練曲線</button>
-            <button class="chart-tab" id="btn-tab-table" onclick="switchTab('tab-table')"
-                    style="padding:0.4rem 1rem; border-radius:2rem; border:1px solid rgba(255,255,255,0.15);
-                           background:transparent; color:var(--muted); font-size:0.75rem; cursor:pointer;">V1–V6 對照表</button>
-          </div>
-          <div id="tab-conf">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-              <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V3 混淆矩陣</p><img src="v16.png" style="width:100%;border-radius:0.5rem;"></div>
-              <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V4 混淆矩陣</p><img src="v15.png" style="width:100%;border-radius:0.5rem;"></div>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-              <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">V6 混淆矩陣 (rotten_meat:1.00 ✓)</p><img src="v14.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
-              <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">V6 計數混淆矩陣</p><img src="v8.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
-            </div>
-          </div>
-          <div id="tab-curves" style="display:none;">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-              <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V3 訓練曲線 (50 Epochs)</p><img src="v6.png" style="width:100%;border-radius:0.5rem;"></div>
-              <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V4 訓練曲線 (70 Epochs)</p><img src="v4.png" style="width:100%;border-radius:0.5rem;"></div>
-            </div>
-            <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">🏆 V6 訓練曲線 (300 Epochs)</p><img src="v2.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
-          </div>
-          <div id="tab-table" style="display:none;">
-            <div style="overflow-x:auto;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);">
-              <table style="width:100%;border-collapse:collapse;font-size:0.75rem;text-align:left;">
-                <thead style="background:rgba(194,156,109,0.15);color:var(--gold);">
-                  <tr><th style="padding:0.7rem;">版本</th><th style="padding:0.7rem;">訓練參數</th><th style="padding:0.7rem;">mAP@50</th><th style="padding:0.7rem;">重點</th></tr>
-                </thead>
-                <tbody style="color:rgba(255,255,255,0.78);">
-                  <tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:0.7rem;color:#ef4444;font-weight:700;">V1</td><td style="padding:0.7rem;">50ep, 640px, YOLOv11n</td><td style="padding:0.7rem;">~0.75–0.80</td><td style="padding:0.7rem;">cabbage 0.33</td></tr>
-                  <tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:0.7rem;color:#f59e0b;font-weight:700;">V2</td><td style="padding:0.7rem;">50ep, 640px, YOLOv11n</td><td style="padding:0.7rem;">>0.85</td><td style="padding:0.7rem;">rotten_apple 0.98</td></tr>
-                  <tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:0.7rem;color:#f59e0b;font-weight:700;">V3</td><td style="padding:0.7rem;">50ep, 640px, YOLOv11n</td><td style="padding:0.7rem;">~0.85</td><td style="padding:0.7rem;">meat 1.00 / spinach 0.97</td></tr>
-                  <tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:0.7rem;color:#a78bfa;font-weight:700;">V4</td><td style="padding:0.7rem;">70ep, 960px, AdamW, YOLOv11s</td><td style="padding:0.7rem;">~0.88</td><td style="padding:0.7rem;">rotten_orange 0.93</td></tr>
-                  <tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:0.7rem;color:#60a5fa;font-weight:700;">V5</td><td style="padding:0.7rem;">300ep, 640px, YOLOv11n</td><td style="padding:0.7rem;">~0.86</td><td style="padding:0.7rem;">rotten_meat 1.00 初次</td></tr>
-                  <tr style="background:rgba(34,197,94,0.06);font-weight:700;"><td style="padding:0.7rem;color:#22c55e;">V6 ✓</td><td style="padding:0.7rem;">300ep, 640px, YOLOv11m</td><td style="padding:0.7rem;color:#22c55e;">0.86–0.87</td><td style="padding:0.7rem;">rotten_meat 1.00 🏆</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', chartModalHTML);
-
-    function openChartDetail() {
-      const modal = document.getElementById('chartDetailModal');
-      if (modal) modal.style.display = 'flex';
-    }
-
-    function switchTab(tabId) {
-      document.querySelectorAll('#chartDetailModal > div > div[id^="tab-"]').forEach(t => t.style.display = 'none');
-      const el = document.getElementById(tabId);
-      if (el) el.style.display = 'block';
-      document.querySelectorAll('.chart-tab').forEach(b => {
-        b.style.background = 'transparent';
-        b.style.color = 'var(--muted)';
-        b.style.borderColor = 'rgba(255,255,255,0.15)';
-      });
-      const activeBtn = document.getElementById('btn-' + tabId);
-      if (activeBtn) {
-        activeBtn.style.background = 'rgba(194,156,109,0.15)';
-        activeBtn.style.color = 'var(--gold)';
-        activeBtn.style.borderColor = 'var(--gold)';
-      }
-    }
-
-    function openTechModal(type) {
-      const data = techData[type];
-      if (!data) return;
-      const modal = document.getElementById('techModal');
-      const content = document.getElementById('techModalContent');
-      content.innerHTML = `
-        <div style="text-align: center; margin-bottom: 2rem;">
-          <span style="color: var(--gold); font-weight: 700; letter-spacing: 2px; font-size: 0.75rem;">${data.label}</span>
-          <h2 style="font-size: 1.8rem; margin-top: 0.5rem; color: #fff;">${data.title}</h2>
-        </div>
-        ${data.html}
-      `;
-      modal.style.display = 'flex';
-      setTimeout(() => {
-        modal.style.opacity = '1';
-        modal.children[0].style.transform = 'translateY(0)';
-      }, 10);
-    }
-    function closeTechModal() {
-      const modal = document.getElementById('techModal');
-      modal.style.opacity = '0';
-      modal.children[0].style.transform = 'translateY(20px)';
-      setTimeout(() => { modal.style.display = 'none'; }, 300);
-    }
-
-    // Demo Video: Mute toggle
-    function toggleMute() {
-      const video = document.getElementById('demoVideo');
-      const icon  = document.getElementById('muteIcon');
-      const label = document.getElementById('muteLabel');
-      video.muted = !video.muted;
-      icon.textContent  = video.muted ? '🔇' : '🔊';
-      label.textContent = video.muted ? '點擊開聲音' : '點擊關聲音';
-    }
-
-    // Navbar scroll effect
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 60);
-    });
-
-    // Scroll Reveal (IntersectionObserver)
-    const revealClasses = ['.reveal', '.reveal-left', '.reveal-right'];
-    const allReveal = document.querySelectorAll(revealClasses.join(','));
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Stagger children inside grids
-          const siblings = entry.target.parentElement.querySelectorAll(':scope > .reveal, :scope > .reveal-left, :scope > .reveal-right');
-          let delay = 0;
-          siblings.forEach((el, i) => {
-            if (el === entry.target) delay = i * 100;
-          });
-          setTimeout(() => entry.target.classList.add('active'), delay);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
-
-    allReveal.forEach(el => observer.observe(el));
-
-    // Vivid Beats Modal
-    function openVividModal() {
-      const vModal = document.getElementById('vividModal');
-      vModal.style.display = 'flex';
-      setTimeout(() => {
-        vModal.style.opacity = '1';
-        vModal.children[0].style.transform = 'translateY(0)';
-      }, 10);
-    }
-    function closeVividModal() {
-      const vModal = document.getElementById('vividModal');
-      vModal.style.opacity = '0';
-      vModal.children[0].style.transform = 'translateY(20px)';
-      setTimeout(() => { vModal.style.display = 'none'; }, 300);
-    }
-
-    // Global Close on ESC
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        if (typeof closeModal === 'function') closeModal();
-        closeVividModal();
-      }
-    });
-
-    // Mouse Glow Tracking
-    const mouseGlow = document.getElementById('mouseGlow');
-    window.addEventListener('mousemove', (e) => {
-      mouseGlow.style.left = e.clientX + 'px';
-      mouseGlow.style.top = e.clientY + 'px';
-    });
-  </script>
+  <!-- Scripts -->
+  <script src="js/tech-data.js"></script>
+  <script src="js/script.js"></script>
+  <!-- GSAP ScrollTrigger Registration -->
+  <script>if(typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);</script>
 </body>
 </html>
