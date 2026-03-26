@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FridgeAI — 食材智慧管理系統</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================
+       DESIGN TOKENS
+    ============================ */
+    :root {
+      --black:   #080808;
+      --surface: #111111;
+      --card:    rgba(255,255,255,0.04);
+      --border:  rgba(255,255,255,0.07);
+      --gold:    #c29c6d;
+      --gold-lt: rgba(194,156,109,0.18);
+      --blue:    #2563eb;
+      --blue-lt: rgba(37,99,235,0.15);
+      --white:   #ffffff;
+      --muted:   #888888;
+      --font:    'Outfit', sans-serif;
+      --ease:    cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ============================
+       RESET & BASE
+    ============================ */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Noise texture overlay */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Ambient blue edge glow */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      box-shadow: inset 0 0 200px rgba(37,99,235,0.07);
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* ============================
+       SCROLL REVEAL
+    ============================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .reveal-left  { opacity: 0; transform: translateX(-50px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+    .reveal-right { opacity: 0; transform: translateX(50px);  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+    .reveal-left.active, .reveal-right.active { opacity: 1; transform: translateX(0); }
+
+    /* ============================
+       NAVBAR
+    ============================ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      padding: 1.5rem 6%;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 1000;
+      transition: background 0.4s, backdrop-filter 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 1.1rem; font-weight: 900; letter-spacing: 0.15em;
+      color: var(--gold); text-transform: uppercase; text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 0.82rem;
+      font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      padding: 0.65rem 1.6rem;
+      border: 1px solid var(--gold);
+      border-radius: 100px;
+      color: var(--gold) !important;
+      font-size: 0.82rem !important;
+      transition: background 0.3s, box-shadow 0.3s !important;
+    }
+    .nav-cta:hover { background: var(--gold-lt) !important; box-shadow: 0 0 24px var(--gold-lt) !important; }
+
+    /* ============================
+       HERO
+    ============================ */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+      padding: 10rem 6% 6rem;
+      position: relative;
+    }
+    .hero-eyebrow {
+      color: var(--gold); font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: ''; flex: 1 1 40px; height: 1px; background: var(--gold); opacity: 0.4;
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 900; line-height: 1.05; letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(160deg, #fff 40%, #888 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero h1 span { -webkit-text-fill-color: var(--gold); }
+    .hero-sub {
+      font-size: 1.15rem; color: var(--muted); max-width: 600px;
+      margin: 0 auto 3rem; line-height: 1.7;
+    }
+    .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      padding: 0.9rem 2.4rem; background: var(--gold); color: #000;
+      font-family: var(--font); font-weight: 700; font-size: 0.9rem;
+      border: none; border-radius: 100px; cursor: pointer;
+      text-decoration: none; display: inline-block;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .btn-primary:hover { transform: scale(1.04); box-shadow: 0 8px 32px var(--gold-lt); }
+    .btn-outline {
+      padding: 0.9rem 2.4rem; background: transparent;
+      border: 1px solid rgba(255,255,255,0.2); color: var(--white);
+      font-family: var(--font); font-weight: 600; font-size: 0.9rem;
+      border-radius: 100px; cursor: pointer; text-decoration: none;
+      display: inline-block; transition: border-color 0.3s, background 0.3s;
+    }
+    .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,0.05); }
+
+    /* Background Glow blobs */
+    .blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(120px); pointer-events: none;
+    }
+    .blob-1 { width: 600px; height: 600px; background: rgba(37,99,235,0.12); top: -100px; left: 50%; transform: translateX(-50%); }
+    .blob-2 { width: 400px; height: 400px; background: rgba(194,156,109,0.08); top: 40%; right: -100px; }
+
+    /* Hero stats */
+    .hero-stats {
+      display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;
+      margin-top: 4rem; padding-top: 3rem;
+      border-top: 1px solid var(--border);
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 2.4rem; font-weight: 900; color: var(--gold); }
+    .stat-label { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* ============================
+       SECTION BASE
+    ============================ */
+    section { padding: 8rem 6%; }
+    .section-label {
+      color: var(--gold); font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 0.75rem; display: block;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900; line-height: 1.1; letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .section-desc { color: var(--muted); max-width: 520px; line-height: 1.7; }
+
+    /* Divider */
+    .divider { height: 1px; background: var(--border); margin: 0 6%; }
+
+    /* ============================
+       PROBLEM SECTION
+    ============================ */
+    .problem-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem;
+      margin-top: 4rem;
+    }
+    .problem-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1.25rem; padding: 2.5rem 2rem;
+      position: relative; overflow: hidden;
+      transition: border-color 0.4s, transform 0.4s;
+    }
+    .problem-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .problem-card:hover { transform: translateY(-8px); border-color: rgba(194,156,109,0.3); }
+    .problem-card:hover::before { opacity: 1; }
+    .problem-icon { font-size: 2rem; margin-bottom: 1.25rem; display: block; }
+    .problem-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.6rem; }
+    .problem-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+    .problem-num {
+      position: absolute; top: 1.5rem; right: 1.75rem;
+      font-size: 4rem; font-weight: 900; color: rgba(255,255,255,0.03);
+      line-height: 1; user-select: none;
+    }
+
+    /* ============================
+       FEATURED / ALTERNATING
+    ============================ */
+    .featured { padding: 0 6%; }
+    .featured-inner { padding: 7rem 0; border-top: 1px solid var(--border); }
+    .feat-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;
+    }
+    .feat-row.reverse { direction: rtl; }
+    .feat-row.reverse > * { direction: ltr; }
+    .feat-tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--gold); font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .feat-tag::before { content: ''; width: 16px; height: 1px; background: var(--gold); }
+    .feat-title {
+      font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900;
+      letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 1rem;
+    }
+    .feat-desc { color: var(--muted); line-height: 1.75; margin-bottom: 2rem; }
+    .feat-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+    .tag {
+      padding: 0.3rem 0.85rem; border: 1px solid var(--border);
+      border-radius: 100px; font-size: 0.75rem; color: var(--muted);
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .tag:hover { border-color: var(--gold); color: var(--gold); }
+    .feat-visual {
+      aspect-ratio: 4/3; border-radius: 1.25rem;
+      overflow: hidden; position: relative;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .feat-visual-inner {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 2rem; gap: 1rem;
+    }
+    .feat-visual-icon { font-size: 4rem; }
+    .feat-visual-label { font-size: 0.8rem; color: var(--muted); }
+    .feat-stat-row { display: flex; gap: 2rem; margin-top: 0.5rem; }
+    .feat-stat span { display: block; }
+    .feat-stat .num { font-size: 1.7rem; font-weight: 900; color: var(--gold); }
+    .feat-stat .lbl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* Mock UI screens */
+    .mock-screen {
+      width: 100%; height: 100%;
+      background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
+      display: flex; flex-direction: column;
+      padding: 1.5rem;
+    }
+    .mock-bar { display: flex; gap: 0.4rem; margin-bottom: 1rem; }
+    .mock-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .mock-dot:nth-child(1) { background: #ef4444; }
+    .mock-dot:nth-child(2) { background: #f59e0b; }
+    .mock-dot:nth-child(3) { background: #22c55e; }
+    .mock-label { font-size: 0.65rem; color: var(--muted); margin-bottom: 0.75rem; letter-spacing: 0.1em; }
+    .mock-items { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+    .mock-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.04);
+      border-radius: 0.5rem; border: 1px solid var(--border);
+      font-size: 0.75rem;
+    }
+    .mock-item-left { display: flex; align-items: center; gap: 0.5rem; }
+    .mock-badge {
+      padding: 0.15rem 0.5rem; border-radius: 100px; font-size: 0.6rem; font-weight: 700;
+    }
+    .badge-fresh { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+    .badge-warn  { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+    .badge-old   { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+    .mock-progress { height: 3px; background: var(--border); border-radius: 100px; overflow: hidden; margin-top: 0.75rem; }
+    .mock-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--blue), var(--gold)); }
+
+    /* YOLO detection visual */
+    .yolo-visual {
+      position: relative; width: 100%; height: 100%;
+      background: linear-gradient(135deg, #0a0a12, #101018);
+      display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+      gap: 0.5rem; padding: 1.5rem;
+    }
+    .yolo-box {
+      border: 1.5px solid; border-radius: 0.3rem;
+      padding: 0.4rem 0.6rem;
+      display: flex; flex-direction: column; align-items: center;
+      position: relative; font-size: 0.65rem; gap: 0.25rem;
+    }
+    .yolo-box.green  { border-color: rgba(34,197,94,0.7);  background: rgba(34,197,94,0.07); }
+    .yolo-box.yellow { border-color: rgba(245,158,11,0.7); background: rgba(245,158,11,0.07); }
+    .yolo-box.red    { border-color: rgba(239,68,68,0.7);  background: rgba(239,68,68,0.07); }
+    .yolo-emoji { font-size: 1.8rem; }
+    .yolo-conf { font-weight: 700; }
+    .yolo-box.green  .yolo-conf { color: #22c55e; }
+    .yolo-box.yellow .yolo-conf { color: #f59e0b; }
+    .yolo-box.red    .yolo-conf { color: #ef4444; }
+    .yolo-name { color: var(--muted); }
+    .yolo-corner { position: absolute; font-size: 0.55rem; top: -0.6rem; left: 0.3rem; background: var(--black); padding: 0 0.2rem; }
+
+    /* Recipe visual */
+    .recipe-visual {
+      width: 100%; height: 100%;
+      background: linear-gradient(145deg, #0d0d10, #131318);
+      padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .recipe-header { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
+    .recipe-title { font-size: 1rem; font-weight: 700; color: var(--gold); }
+    .recipe-steps { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+    .recipe-step {
+      display: flex; gap: 0.6rem; align-items: flex-start;
+      font-size: 0.7rem; color: rgba(255,255,255,0.7);
+      padding: 0.4rem; border-radius: 0.4rem;
+      background: rgba(255,255,255,0.03);
+    }
+    .step-num { color: var(--gold); font-weight: 700; flex-shrink: 0; }
+    .recipe-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .recipe-tag {
+      padding: 0.2rem 0.5rem; border-radius: 100px; font-size: 0.6rem;
+      background: var(--blue-lt); color: var(--blue); border: 1px solid rgba(37,99,235,0.3);
+    }
+
+    /* ============================
+       TECH STACK
+    ============================ */
+    .tech-section { background: var(--surface); }
+    .tech-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; margin-top: 3.5rem;
+    }
+    .tech-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 1rem; padding: 2rem 1.5rem;
+      transition: all 0.4s var(--ease);
+      cursor: pointer; position: relative;
+    }
+    .tech-card:hover { 
+      border-color: var(--gold); 
+      transform: translateY(-8px);
+      background: rgba(194,156,109,0.05);
+      box-shadow: 0 12px 40px rgba(194,156,109,0.1);
+    }
+    .tech-card::after {
+      content: 'VIEW DATA →';
+      position: absolute; bottom: 1.2rem; right: 1.5rem;
+      font-size: 0.6rem; font-weight: 800; color: var(--gold);
+      opacity: 0; transform: translateX(-10px); transition: all 0.3s;
+    }
+    .tech-card:hover::after { opacity: 1; transform: translateX(0); }
+    .tech-emoji { font-size: 1.75rem; margin-bottom: 0.75rem; display: block; }
+    .tech-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .tech-role { font-size: 0.75rem; color: var(--muted); }
+
+    /* ============================
+       PERSONA
+    ============================ */
+    .persona-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3.5rem; }
+    .persona-card {
+      border: 1px solid var(--border); border-radius: 1.25rem; padding: 2.5rem 2rem;
+      position: relative; overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .persona-card:hover { border-color: rgba(37,99,235,0.3); transform: translateY(-6px); }
+    .persona-ava { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .persona-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .persona-role { font-size: 0.75rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+    .persona-pain { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.25rem; }
+    .persona-solve {
+      padding: 0.85rem 1rem; background: var(--blue-lt);
+      border: 1px solid rgba(37,99,235,0.2); border-radius: 0.75rem;
+      font-size: 0.8rem; color: rgba(255,255,255,0.8); line-height: 1.5;
+    }
+
+    /* ============================
+       MARKET
+    ============================ */
+    .market-section { background: var(--surface); }
+    .market-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; margin-top: 3.5rem; }
+    .market-stats { display: flex; flex-direction: column; gap: 2rem; }
+    .market-stat-item {
+      display: flex; flex-direction: column; gap: 0.3rem;
+      padding-left: 1.25rem; border-left: 2px solid var(--gold);
+    }
+    .market-stat-num { font-size: 2.2rem; font-weight: 900; color: var(--white); }
+    .market-stat-lbl { font-size: 0.82rem; color: var(--muted); }
+    .market-roadmap { display: flex; flex-direction: column; gap: 1rem; }
+    .roadmap-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding: 1.25rem; background: var(--card);
+      border: 1px solid var(--border); border-radius: 0.875rem;
+      transition: border-color 0.3s;
+    }
+    .roadmap-item:hover { border-color: rgba(194,156,109,0.3); }
+    .roadmap-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .roadmap-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .roadmap-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+    /* ============================
+       FOOTER / CONTACT
+    ============================ */
+    footer {
+      padding: 8rem 6% 4rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .footer-glow {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse at center, rgba(37,99,235,0.12), transparent 70%);
+      pointer-events: none;
+    }
+    footer h2 {
+      font-size: clamp(2rem, 5vw, 4rem); font-weight: 900;
+      letter-spacing: -0.03em; margin-bottom: 1rem;
+    }
+    .footer-sub { color: var(--muted); margin-bottom: 3rem; font-size: 1rem; }
+    .footer-credits {
+      margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border);
+      font-size: 0.78rem; color: var(--muted);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: gap;
+    }
+    .footer-stack { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end; }
+    .stack-badge {
+      padding: 0.2rem 0.5rem; border: 1px solid var(--border);
+      border-radius: 100px; font-size: 0.7rem; color: var(--muted);
+    }
+
+    /* ============================
+       RESPONSIVE
+    ============================ */
+    @media (max-width: 1024px) {
+      .feat-row { grid-template-columns: 1fr; gap: 3rem; }
+      .feat-row.reverse { direction: ltr; }
+      .tech-grid { grid-template-columns: repeat(2,1fr); }
+      .market-inner { grid-template-columns: 1fr; gap: 3rem; }
+    }
+    @media (max-width: 768px) {
+      section { padding: 5rem 5%; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .persona-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 1.5rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- DYNAMIC BACKGROUND LAYER -->
+  <div class="site-bg">
+    <div class="grid-layer"></div>
+    <div class="aura-blob aura-1" id="aura1"></div>
+    <div class="aura-blob aura-2" id="aura2"></div>
+    <div class="mouse-glow" id="mouseGlow"></div>
+    
+    <!-- MICRO-ANIMATION PARTICLES (ENHANCED) -->
+    <div class="particles">
+       <div class="p p1"></div><div class="p p2"></div><div class="p p3"></div>
+       <div class="p p4"></div><div class="p p5"></div><div class="p p6"></div>
+       <div class="p p7"></div><div class="p p8"></div><div class="p p9"></div>
+       <div class="p p10"></div><div class="p p11"></div><div class="p p12"></div>
+       <div class="p p13"></div><div class="p p14"></div><div class="p p15"></div>
+       <div class="p p16"></div><div class="p p17"></div><div class="p p18"></div>
+       <div class="p p19"></div><div class="p p20"></div><div class="p p21"></div>
+       <div class="p p22"></div><div class="p p23"></div><div class="p p24"></div>
+       <div class="p p25"></div>
+    </div>
+  </div>
+
+  <style>
+    /* GLOBAL BACKGROUND STYLES */
+    .site-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: #050505;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .grid-layer {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.6;
+    }
+    /* STARS (Enhanced with Twinkling) */
+    .p {
+      position: absolute;
+      display: flex;
+      align-items: center; justify-content: center;
+      color: #fff;
+      opacity: 0.4;
+      animation: twinkle 4s ease-in-out infinite, drift linear infinite;
+    }
+    .p::after {
+      content: '✦';
+      font-size: 12px;
+    }
+    .p1 { top: 10%; left: 20%; animation-duration: 25s; font-size: 18px; color: var(--gold); }
+    .p2 { top: 40%; left: 85%; animation-duration: 35s; font-size: 10px; opacity: 0.3; }
+    .p3 { top: 75%; left: 15%; animation-duration: 28s; color: var(--blue); font-size: 15px; }
+    .p4 { top: 25%; left: 55%; animation-duration: 40s; font-size: 9px; }
+    .p5 { top: 85%; left: 70%; animation-duration: 32s; font-size: 8px; }
+    .p6 { top: 15%; left: 95%; animation-duration: 22s; color: var(--gold); font-size: 12px; }
+    .p7 { top: 55%; left: 8%; animation-duration: 50s; font-size: 11px; }
+    .p8 { top: 92%; left: 35%; animation-duration: 45s; color: var(--blue); font-size: 14px; }
+    .p9 { top: 12%; left: 75%; animation-duration: 26s; font-size: 22px; }
+    .p10 { top: 52%; left: 42%; animation-duration: 38s; font-size: 10px; }
+    .p11 { bottom: 15%; left: 55%; animation-duration: 29s; color: var(--gold); font-size: 14px; }
+    .p12 { bottom: 35%; right: 15%; animation-duration: 31s; font-size: 13px; }
+    .p13 { top: 35%; left: 12%; animation-duration: 24s; color: var(--blue); font-size: 16px; }
+    .p14 { bottom: 25%; left: 85%; animation-duration: 55s; font-size: 9px; }
+    .p15 { top: 65%; right: 25%; animation-duration: 33s; font-size: 17px; }
+    .p16 { top: 5%; right: 40%; animation-duration: 42s; font-size: 11px; }
+    .p17 { bottom: 45%; left: 30%; animation-duration: 27s; color: var(--gold); font-size: 15px; }
+    .p18 { top: 80%; left: 5%; animation-duration: 60s; font-size: 8px; }
+    .p19 { bottom: 5%; right: 60%; animation-duration: 30s; color: var(--blue); font-size: 14px; }
+    .p20 { top: 45%; left: 65%; animation-duration: 36s; font-size: 20px; }
+    .p21 { bottom: 12%; right: 35%; animation-duration: 23s; color: var(--gold); font-size: 16px; }
+    .p22 { top: 60%; left: 90%; animation-duration: 48s; font-size: 11px; }
+    .p23 { bottom: 20%; left: 20%; animation-duration: 34s; color: var(--blue); font-size: 16px; }
+    .p24 { top: 20%; left: 10%; animation-duration: 52s; font-size: 12px; }
+    .p25 { bottom: 30%; right: 90%; animation-duration: 33s; color: var(--gold); font-size: 19px; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.7); }
+      50% { opacity: 0.8; transform: scale(1.4); }
+    }
+
+    @keyframes drift {
+      0% { transform: translateY(0) translateX(0); }
+      100% { transform: translateY(-200px) translateX(20px); }
+    }
+
+    .aura-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 0.15;
+    }
+    .aura-1 {
+      width: 60vw; height: 60vw;
+      background: var(--gold);
+      top: -10%; left: -20%;
+      animation: float 20s infinite alternate;
+    }
+    .aura-2 {
+      width: 50vw; height: 50vw;
+      background: var(--blue);
+      bottom: -10%; right: -10%;
+      animation: float 25s infinite alternate-reverse;
+    }
+    .mouse-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(194,156,109,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      pointer-events: none;
+      transition: background 0.3s ease;
+    }
+    @keyframes float {
+      0% { transform: translate(0,0) scale(1); }
+      100% { transform: translate(10%, 10%) scale(1.1); }
+    }
+  </style>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="#" class="nav-logo">FRIDGE AI</a>
+      <div class="nav-links">
+        <a href="#problem">問題</a>
+        <a href="#features">功能</a>
+        <a href="#portfolio">作品集</a>
+        <a href="#market">前景</a>
+        <a href="#contact" class="nav-btn">聯絡我</a>
+      </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero" id="home">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="hero-eyebrow">01&nbsp;&nbsp;智慧食材管理</div>
+    <h1 class="reveal">冰箱<span>革命</span><br>FRIDGE AI</h1>
+    <p class="hero-sub reveal">以 YOLOv11 影像辨識與 Gemini 生成式 AI 為核心，解決家庭食材浪費問題，重新定義現代廚房管理體驗。</p>
+    <div class="hero-buttons reveal">
+      <a href="#features" class="btn-primary">探索功能</a>
+      <a href="#stack" class="btn-outline">技術細項</a>
+    </div>
+    <div class="hero-stats reveal">
+      <div class="stat">
+        <div class="stat-num">0.868</div>
+        <div class="stat-label">Final mAP@50 辨識率</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">10.5B</div>
+        <div class="stat-label">全球年產食物浪費(噸)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">12.37%</div>
+        <div class="stat-label">智慧冰箱市場 CAGR</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- DEMO VIDEO SECTION (Start of Fridge AI Deep-dive) -->
+  <section id="demo" style="padding: 6rem 6% 4rem; text-align: center;">
+    <div class="reveal">
+      <span class="section-label">03&nbsp;&nbsp;核心技術演示</span>
+      <h2 class="section-title">Fridge AI<br>系統實機錄製</h2>
+      <p class="hero-sub" style="margin-bottom: 2rem;">點擊下方按鈕觀看系統辨識與食譜生成的完整流程。</p>
+      
+      <!-- Launch Button -->
+      <button onclick="openModal()" class="btn-primary" style="display: inline-flex; align-items: center; gap: 0.75rem; padding: 1rem 2.5rem;">
+        <span>播放展示影片</span> <span style="font-size: 1.2rem;">▶️</span>
+      </button>
+    </div>
+
+    <!-- The Modal -->
+    <div id="videoModal" style="
+      display: none; position: fixed; inset: 0; z-index: 10000;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+      align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
+    " onclick="closeModal()">
+      
+      <div style="
+        position: relative; max-width: 320px; width: 90%;
+        border-radius: 2rem; overflow: hidden;
+        border: 1px solid rgba(194,156,109,0.4);
+        box-shadow: 0 0 50px rgba(194,156,109,0.2);
+        transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      " onclick="event.stopPropagation()">
+        
+        <video id="modalVideo" src="FridgeAI_Demo_Final.mp4" playsinline style="width: 100%; display: block;"></video>
+        
+        <!-- Close Button -->
+        <button onclick="closeModal()" style="
+          position: absolute; top: 1rem; right: 1rem;
+          background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+          width: 36px; height: 36px; border-radius: 50%; color: white;
+          cursor: pointer; display: flex; align-items: center; justify-content: center;
+          font-weight: bold;
+        ">✕</button>
+
+        <!-- Video Info -->
+        <div style="
+          position: absolute; bottom: 0; left: 0; right: 0;
+          padding: 1rem; background: linear-gradient(transparent, rgba(0,0,0,0.8));
+          color: white; font-size: 0.8rem; pointer-events: none;
+        ">
+          Fridge AI Demo • 實機錄製版
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const modal = document.getElementById('videoModal');
+    const vNode = document.getElementById('modalVideo');
+
+    function openModal() {
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.style.opacity = '1';
+        modal.children[0].style.transform = 'scale(1)';
+      }, 10);
+      vNode.play();
+      vNode.muted = false;
+    }
+
+    function closeModal() {
+      modal.style.opacity = '0';
+      modal.children[0].style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        modal.style.display = 'none';
+        vNode.pause();
+        vNode.currentTime = 0;
+      }, 300);
+    }
+
+    // Close on ESC
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+
+  <!-- PROBLEM -->
+  <section id="problem">
+    <div class="reveal">
+      <span class="section-label">02&nbsp;&nbsp;問題背景</span>
+      <h2 class="section-title">家庭廚房面臨的<br>三個核心痛點</h2>
+      <p class="section-desc">全台灣每年食物浪費高達 363 萬公噸，其中大部分來自家庭端不當的食材管理習慣。</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card reveal">
+        <span class="problem-num">01</span>
+        <span class="problem-icon">🙈</span>
+        <h3>看不見的庫存</h3>
+        <p>冰箱缺乏系統記錄。根據 UNEP (2024) 統計，全球每年產生 10.5 億噸食物浪費，每人年均浪費 74 公斤。</p>
+      </div>
+      <div class="problem-card reveal">
+        <span class="problem-num">02</span>
+        <span class="problem-icon">⏰</span>
+        <h3>即期食材腐敗</h3>
+        <p>缺乏提醒機制導致食材悄悄腐壞。全球每年因此損失高達 9,400 億美元，60% 浪費來自家庭端。</p>
+      </div>
+      <div class="problem-card reveal">
+        <span class="problem-num">03</span>
+        <span class="problem-icon">🤔</span>
+        <h3>剩食難以利用</h3>
+        <p>缺乏即時靈感。Fridge AI 透過 RAG 向量搜尋，將決策時間從 15 分鐘縮短至 30 秒，減少不必要購買。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FEATURED FUNCTIONS -->
+  <div class="featured" id="features">
+
+    <!-- Feature 1: YOLO Detection -->
+    <div class="featured-inner">
+      <div class="feat-row">
+        <div class="reveal-left">
+          <div class="feat-tag">核心功能 01</div>
+          <h3 class="feat-title">高精準食材<br>影像辨識</h3>
+          <p class="feat-desc">從 V1 (mAP 0.757) 持續迭代至 Final 版。搭載 YOLOv11m 模型，透過 5,560 組多樣化食材影像訓練，模型精確度達到業界級的 0.868，能精準區分新鮮與腐敗狀態。</p>
+          <div class="feat-tags">
+            <span class="tag">YOLOv11m</span>
+            <span class="tag">5,560+ Dataset</span>
+            <span class="tag">mAP@50: 0.868</span>
+            <span class="tag">新鮮度判別</span>
+          </div>
+          <div class="feat-stat-row">
+            <div class="feat-stat"><span class="num">0.854</span><span class="lbl">mAP@50</span></div>
+            <div class="feat-stat"><span class="num">30+</span><span class="lbl">食材類別</span></div>
+            <div class="feat-stat"><span class="num">即時</span><span class="lbl">偵測速度</span></div>
+          </div>
+        </div>
+        <div class="feat-visual reveal-right">
+          <div class="yolo-visual">
+            <div class="yolo-box green">
+              <span class="yolo-corner">YOLOv11</span>
+              <span class="yolo-emoji">🥦</span>
+              <span class="yolo-conf">98.2%</span>
+              <span class="yolo-name">花椰菜·新鮮</span>
+            </div>
+            <div class="yolo-box green">
+              <span class="yolo-emoji">🍎</span>
+              <span class="yolo-conf">96.5%</span>
+              <span class="yolo-name">蘋果·新鮮</span>
+            </div>
+            <div class="yolo-box yellow">
+              <span class="yolo-emoji">🥬</span>
+              <span class="yolo-conf">72.1%</span>
+              <span class="yolo-name">高麗菜·普通</span>
+            </div>
+            <div class="yolo-box green">
+              <span class="yolo-emoji">🥕</span>
+              <span class="yolo-conf">94.8%</span>
+              <span class="yolo-name">胡蘿蔔·新鮮</span>
+            </div>
+            <div class="yolo-box red">
+              <span class="yolo-emoji">🌿</span>
+              <span class="yolo-conf">88.3%</span>
+              <span class="yolo-name">菠菜·腐敗</span>
+            </div>
+            <div class="yolo-box green">
+              <span class="yolo-emoji">🥚</span>
+              <span class="yolo-conf">99.1%</span>
+              <span class="yolo-name">雞蛋·新鮮</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 2: Inventory -->
+    <div class="featured-inner">
+      <div class="feat-row reverse">
+        <div class="reveal-right">
+          <div class="feat-tag">核心功能 02</div>
+          <h3 class="feat-title">智慧庫存<br>管理系統</h3>
+          <p class="feat-desc">辨識後自動建立食材清單，追蹤入庫日期與預估保鮮期。3天內即將過期的食材會優先顯示並推播提醒，將廚房管理化繁為簡。</p>
+          <div class="feat-tags">
+            <span class="tag">React 18</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">即期提醒</span>
+            <span class="tag">視覺化儀表板</span>
+          </div>
+          <div class="feat-stat-row">
+            <div class="feat-stat"><span class="num">3天</span><span class="lbl">預警時間</span></div>
+            <div class="feat-stat"><span class="num">自動</span><span class="lbl">記錄時間戳</span></div>
+            <div class="feat-stat"><span class="num">2區</span><span class="lbl">冷藏/冷凍</span></div>
+          </div>
+        </div>
+        <div class="feat-visual reveal-left">
+          <div class="mock-screen">
+            <div class="mock-bar">
+              <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+            </div>
+            <div class="mock-label">📦 冰箱庫存 · 已存 6 項食材</div>
+            <div class="mock-items">
+              <div class="mock-item">
+                <div class="mock-item-left">🥦 花椰菜</div>
+                <span class="mock-badge badge-fresh">新鮮 7天</span>
+              </div>
+              <div class="mock-item">
+                <div class="mock-item-left">🍎 蘋果</div>
+                <span class="mock-badge badge-fresh">新鮮 5天</span>
+              </div>
+              <div class="mock-item">
+                <div class="mock-item-left">🥬 高麗菜</div>
+                <span class="mock-badge badge-warn">注意 2天</span>
+              </div>
+              <div class="mock-item">
+                <div class="mock-item-left">🥩 豬肉</div>
+                <span class="mock-badge badge-warn">即期 1天</span>
+              </div>
+              <div class="mock-item">
+                <div class="mock-item-left">🌿 菠菜</div>
+                <span class="mock-badge badge-old">已過期</span>
+              </div>
+              <div class="mock-item">
+                <div class="mock-item-left">🥚 雞蛋</div>
+                <span class="mock-badge badge-fresh">新鮮 14天</span>
+              </div>
+            </div>
+            <div class="mock-progress" style="margin-top:auto;">
+              <div class="mock-fill" style="width: 60%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 3: Recipe AI -->
+    <div class="featured-inner">
+      <div class="feat-row">
+        <div class="reveal-left">
+          <div class="feat-tag">核心功能 03</div>
+          <h3 class="feat-title">AI 驅動<br>食譜生成</h3>
+          <p class="feat-desc">串接 Google Gemini 2.5 Flash 大型語言模型，根據冰箱現有食材一鍵生成個人化食譜。優先消耗即期食材，提供完整烹飪步驟與替代食材建議。</p>
+          <div class="feat-tags">
+            <span class="tag">Gemini 2.5 Flash</span>
+            <span class="tag">LLM Prompting</span>
+            <span class="tag">個人化推薦</span>
+            <span class="tag">一鍵生成</span>
+          </div>
+          <div class="feat-stat-row">
+            <div class="feat-stat"><span class="num">1鍵</span><span class="lbl">生成食譜</span></div>
+            <div class="feat-stat"><span class="num">Gemini</span><span class="lbl">2.5 Flash</span></div>
+            <div class="feat-stat"><span class="num">客製</span><span class="lbl">烹飪建議</span></div>
+          </div>
+        </div>
+        <div class="feat-visual reveal-right">
+          <div class="recipe-visual">
+            <div class="recipe-header">✨ GEMINI AI · 為您生成專屬食譜</div>
+            <div class="recipe-title">高麗菜豬肉炒飯</div>
+            <div class="recipe-tags">
+              <span class="recipe-tag">消耗即期食材</span>
+              <span class="recipe-tag">20分鐘</span>
+              <span class="recipe-tag">簡單</span>
+            </div>
+            <div class="recipe-steps">
+              <div class="recipe-step"><span class="step-num">01</span>豬肉切薄片，用醬油醃製10分鐘。</div>
+              <div class="recipe-step"><span class="step-num">02</span>高麗菜切絲，雞蛋打散備用。</div>
+              <div class="recipe-step"><span class="step-num">03</span>熱鍋下油，先炒豬肉至熟透後盛起。</div>
+              <div class="recipe-step"><span class="step-num">04</span>同鍋炒蛋成形後，加入隔夜飯大火翻炒。</div>
+              <div class="recipe-step"><span class="step-num">05</span>加入高麗菜與豬肉，以鹽巴調味即可。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TECH STACK -->
+  <section id="stack" class="tech-section">
+    <div class="reveal">
+      <span class="section-label">04&nbsp;&nbsp;技術棧</span>
+      <h2 class="section-title">驅動系統的<br>核心技術</h2>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card reveal" onclick="openTechModal('yolo')">
+        <span class="tech-emoji">🧠</span>
+        <div class="tech-name">YOLOv11m</div>
+        <div class="tech-role">物件偵測模型 · 精準度實測</div>
+      </div>
+      <div class="tech-card reveal" onclick="openTechModal('gemini')">
+        <span class="tech-emoji">✨</span>
+        <div class="tech-name">Gemini 2.5 Flash</div>
+        <div class="tech-role">LLM 大腦 · RAG 生成引擎</div>
+      </div>
+      <div class="tech-card reveal" onclick="openTechModal('arch')">
+        <span class="tech-emoji">🏗️</span>
+        <div class="tech-name">系統全架構</div>
+        <div class="tech-role">端到端邏輯 · 數據流轉圖</div>
+      </div>
+      <div class="tech-card reveal" onclick="openTechModal('db')">
+        <span class="tech-emoji">🗃️</span>
+        <div class="tech-name">IndexedDB</div>
+        <div class="tech-role">本地資料管理 · 加密存儲</div>
+      </div>
+      <div class="tech-card reveal" onclick="openTechModal('pytorch')">
+        <span class="tech-emoji">🔥</span>
+        <div class="tech-name">PyTorch</div>
+        <div class="tech-role">模型訓練框架</div>
+      </div>
+      <div class="tech-card reveal" onclick="openTechModal('tailwind')">
+        <span class="tech-emoji">🎨</span>
+        <div class="tech-name">Tailwind CSS</div>
+        <div class="tech-role">UI 樣式系統</div>
+      </div>
+      <div class="tech-card reveal" onclick="openTechModal('react')">
+        <span class="tech-emoji">⚛️</span>
+        <div class="tech-name">React 18 + Vite</div>
+        <div class="tech-role">高效能 SPA 框架</div>
+      </div>
+      <div class="tech-card reveal" onclick="openTechModal('dataset')">
+        <span class="tech-emoji">📊</span>
+        <div class="tech-name">資料集標注</div>
+        <div class="tech-role">Roboflow · 5560+ 資料集</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PERSONA -->
+  <section id="persona">
+    <div class="reveal">
+      <span class="section-label">05&nbsp;&nbsp;目標用戶</span>
+      <h2 class="section-title">為真實生活情境<br>設計的解決方案</h2>
+      <p class="section-desc">依照三種典型家庭用戶的核心痛點，設計出一套通用且易用的操作流程。</p>
+    </div>
+    <div class="persona-grid">
+      <div class="persona-card reveal">
+        <span class="persona-ava">👨‍👩‍👧</span>
+        <div class="persona-name">陳先生一家</div>
+        <div class="persona-role">雙薪忙碌家庭</div>
+        <p class="persona-pain">工作繁忙時常忘記冰箱有什麼食材，導致重複採購與食物浪費。每天下班還要花15分鐘決定晚餐煮什麼。</p>
+        <div class="persona-solve">✅ Fridge AI 掃一下，30秒內得到今晚晚餐食譜，優先消耗3天內即期食材。</div>
+      </div>
+      <div class="persona-card reveal">
+        <span class="persona-ava">🧑‍🍳</span>
+        <div class="persona-name">小林同學</div>
+        <div class="persona-role">料理初學新手</div>
+        <p class="persona-pain">常常買了食材不知道怎麼搭配，嘗試新菜後剩下大量食材不知如何利用，最後全部過期浪費。</p>
+        <div class="persona-solve">✅ AI 根據現有食材自動組合簡易食譜，附上完整步驟與替代食材，省錢省心。</div>
+      </div>
+      <div class="persona-card reveal">
+        <span class="persona-ava">👴</span>
+        <div class="persona-name">王奶奶</div>
+        <div class="persona-role">記憶力退化銀髮族</div>
+        <p class="persona-pain">年紀大了容易忘記食材已買過或即將過期。複雜的操作介面讓她感到困惑，難以管理冰箱食材。</p>
+        <div class="persona-solve">✅ 大字醒目的即期警示、語音互動建議，簡化介面讓長輩輕鬆掌握食材狀態。</div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- MARKET + ROADMAP -->
+  <div class="divider"></div>
+  <section id="market" class="market-section">
+    <div class="reveal">
+      <span class="section-label">06&nbsp;&nbsp;市場潛力與未來展望</span>
+      <h2 class="section-title">從家庭到餐飲業<br>的垂直擴展路徑</h2>
+    </div>
+    <div class="market-inner">
+      <div class="market-stats reveal">
+        <div class="market-stat-item">
+          <div class="market-stat-num">$124.3B</div>
+          <div class="market-stat-lbl">2033 年智慧冰箱全球市場規模</div>
+        </div>
+        <div class="market-stat-item">
+          <div class="market-stat-num">12.37%</div>
+          <div class="market-stat-lbl">預估年複合成長率 (CAGR)</div>
+        </div>
+        <div class="market-stat-item">
+          <div class="market-stat-num">8-10%</div>
+          <div class="market-stat-lbl">預期減少全球溫室氣體排放</div>
+        </div>
+        <div class="market-stat-item">
+          <div class="market-stat-num">Impact</div>
+          <div class="market-stat-lbl">響應聯合國 SDGs 12.3 永續目標</div>
+        </div>
+      </div>
+      <div class="market-roadmap reveal">
+        <div class="roadmap-item">
+          <div class="roadmap-icon">🏠</div>
+          <div>
+            <div class="roadmap-title">Phase 1 · B2C 家庭食材管理</div>
+            <div class="roadmap-desc">智慧冰箱硬體端整合；建立 IndexedDB 本地加密存儲與管理機制。</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-icon">🍴</div>
+          <div>
+            <div class="roadmap-title">Phase 2 · B2B 商業賦能引擎</div>
+            <div class="roadmap-desc">進階圖像分割技術，串接餐飲業庫存系統，提供企業級 AI 模型 API。</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-icon">📈</div>
+          <div>
+            <div class="roadmap-title">Phase 3 · 自動補貨與垂直擴展</div>
+            <div class="roadmap-desc">串接生鮮電商自動補貨，預測 Year 3 獲利將突破 NT$2,190 萬。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION: PROJECT GALLERY (Moved to Bottom) -->
+  <div class="divider"></div>
+  <section id="portfolio" style="padding: 6rem 6% 8rem;">
+    <div class="reveal" style="text-align: center; margin-bottom: 4rem;">
+      <span class="section-label">07&nbsp;&nbsp;技術研發作品集</span>
+      <h2 class="section-title">更多開發實證</h2>
+      <p class="section-desc">涵蓋音訊工程、3D 建模與生成式 AI 開發實錄。</p>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="problem-grid" style="grid-template-columns: 1fr; max-width: 440px; margin: 0 auto;">
+      <!-- Virtual Singer R&D Prototype Card -->
+      <div class="problem-card reveal" onclick="openVividModal()" 
+        style="
+          cursor: pointer; position: relative; overflow: hidden; height: 320px;
+          border-color: rgba(168,85,247,0.4); 
+          background: url('vivid_bg.jpg') center/cover no-repeat;
+          display: flex; flex-direction: column; justify-content: flex-end;
+          padding: 2rem;
+        ">
+        <!-- Overlay for readability -->
+        <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.1) 100%); z-index: 1;"></div>
+        
+        <div style="position: absolute; top:0; right:0; padding: 0.5rem 1rem; background: #a855f7; color: white; font-size: 0.6rem; font-weight: 800; z-index: 2; letter-spacing: 1px;">AI R&D PROTOTYPE (技術實證)</div>
+        
+        <div style="position: relative; z-index: 2;">
+          <span class="problem-num" style="color: #a855f7; opacity: 1; font-size: 2.5rem; margin-bottom: 0;">01</span>
+          <h3 style="margin: 0.5rem 0; color: #fff;">虛擬歌手：AI 研發原型</h3>
+          <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.5;">「工作流實驗室」：專注於 AI 人聲建模與低損音軌分離的研發探索，致力於解決音訊合成中的頻率丟失問題。</p>
+          <div style="color: var(--gold); font-size: 0.8rem; font-weight: 700;">點擊進入核心架構圖 →</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIVID BEATS MODAL (Updated) -->
+  <div id="vividModal" class="modal-root" style="
+    display: none; position: fixed; inset: 0; z-index: 10001;
+    background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
+    align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
+  " onclick="closeVividModal()">
+    <div style="
+      background: #0a0a0a; border: 1px solid rgba(168,85,247,0.4);
+      border-radius: 2rem; width: 95%; max-width: 1200px; padding: 3rem 2rem;
+      position: relative; max-height: 90vh; overflow-y: auto;
+      transform: translateY(20px); transition: transform 0.3s ease;
+    " onclick="event.stopPropagation()">
+      <button onclick="closeVividModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <span style="color: #a855f7; font-weight: 700; letter-spacing: 3px; font-size: 0.8rem;">TECHNICAL PROOF OF CONCEPT</span>
+        <h2 style="font-size: 2.2rem; margin-top: 0.5rem; color: #fff;">虛擬歌手：AI 研發架構圖</h2>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; min-width: 1000px; padding: 2rem 0;">
+        <div style="width: 160px; text-align: center;">
+          <div style="font-size: 0.7rem; color: var(--gold); margin-bottom: 0.8rem; font-weight: 700;">1. 靈感與 Demo 生成</div>
+          <div style="background: rgba(194,156,109,0.1); border: 1px solid var(--gold); border-radius: 1rem; padding: 1.5rem 1rem;">
+            <strong style="color: #fff; display: block; margin-bottom: 0.3rem;">Suno AI</strong>
+            <span style="font-size: 0.6rem; color: var(--muted);">音樂創作引擎</span>
+          </div>
+        </div>
+        <div style="color: rgba(255,255,255,0.2); font-size: 0.8rem;">── 導出音軌 ──▶</div>
+        <div style="width: 160px; text-align: center;">
+          <div style="font-size: 0.7rem; color: #a855f7; margin-bottom: 0.8rem; font-weight: 700;">2. 人聲分離</div>
+          <div style="background: rgba(168,85,247,0.1); border: 1px solid #a855f7; border-radius: 1rem; padding: 1.5rem 1rem;">
+            <strong style="color: #fff; display: block; margin-bottom: 0.3rem;">UVR5</strong>
+            <span style="font-size: 0.6rem; color: var(--muted);">核心處理單元</span>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2.5rem; width: 260px; position: relative;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 0.6rem; color: #3b82f6; white-space: nowrap;">提取純淨 Dry Vocal ▶</div>
+            <div style="flex: 1; background: rgba(59,130,246,0.1); border: 1px solid #3b82f6; border-radius: 1rem; padding: 1rem; text-align: center;">
+              <div style="font-size: 0.65rem; color: #3b82f6; margin-bottom: 0.3rem;">3. 語音建模訓練</div>
+              <strong style="color: #fff; font-size: 0.85rem;">Applio (RVC)</strong>
+              <div style="font-size: 0.55rem; color: #3b82f6; margin-top: 0.3rem;">生成 AI 歌聲</div>
+            </div>
+            <div style="font-size: 0.6rem; color: #3b82f6;">▶</div>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <div style="font-size: 0.65rem; color: #22c55e; white-space: nowrap; width: 100%; text-align: center; border-bottom: 1px dashed rgba(34,197,94,0.3); padding-bottom: 0.5rem;">
+              提取 Instrumental 伴奏 ───────────────▶
+            </div>
+          </div>
+        </div>
+        <div style="width: 180px; text-align: center;">
+          <div style="font-size: 0.7rem; color: #22c55e; margin-bottom: 0.8rem; font-weight: 700;">4. 數位混音後製</div>
+          <div style="background: rgba(34,197,94,0.1); border: 1px solid #22c55e; border-radius: 1rem; padding: 1.5rem 1rem;">
+            <strong style="color: #fff; display: block; margin-bottom: 0.3rem;">Audacity</strong>
+            <span style="font-size: 0.6rem; color: var(--muted);">整合/修復/混音</span>
+          </div>
+        </div>
+        <div style="color: rgba(255,255,255,0.2); font-size: 0.8rem;">──▶</div>
+        <div style="width: 180px;">
+          <div style="background: linear-gradient(135deg, var(--gold), #debb88); color: #000; border-radius: 1rem; padding: 1.5rem 1rem; text-align: center; box-shadow: 0 10px 30px rgba(194,156,109,0.3);">
+            <div style="font-size: 0.6rem; font-weight: 800; opacity: 0.6; margin-bottom: 0.3rem;">FINAL RESULT</div>
+            <strong style="font-size: 0.9rem;">虛擬歌手計畫</strong>
+            <div style="font-size: 0.6rem; margin-top: 0.3rem; font-weight: 700;">概念曲原型產出</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.03); border-radius: 1.5rem; font-size: 0.9rem; line-height: 1.8; color: var(--muted); border: 1px solid rgba(255,255,255,0.05);">
+        <p>💡 <strong>專案技術總結：</strong> 此工作流嚴格遵循 <strong>Mermaid LR 架構</strong>。透過 UVR5 實現高品質的人聲與伴奏分離，確保 RVC (Applio) 訓練模型不受干擾。最終在 Audacity 中進行精確的相位對齊與頻率修補，達成「虛擬歌手」商業級的音訊產出。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT / FOOTER -->
+  <footer id="contact">
+    <div class="footer-glow"></div>
+    <div class="reveal">
+      <span class="section-label" style="display:block; margin-bottom:1rem;">08&nbsp;&nbsp;與我聯繫</span>
+      <h2>期待與您<br>共創未來</h2>
+      <p class="footer-sub">如果您正在尋找具備 AI 應用整合能力與跨領域開發經驗的人才，<br>歡迎透過以下方式與我聯繫，或進一步查看我的完整經歷。</p>
+      
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+        <a href="mailto:darke45678@gmail.com" class="btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 2rem;">
+          <span>📧 Gmail 聯繫</span>
+        </a>
+      </div>
+    </div>
+    <div class="footer-credits">
+      <span>© 2026 FridgeAI 專案小組 · Group 3</span>
+      <div class="footer-stack">
+        <span class="stack-badge">YOLOv11</span>
+        <span class="stack-badge">Gemini API</span>
+        <span class="stack-badge">React 18</span>
+        <span class="stack-badge">Vite</span>
+        <span class="stack-badge">TypeScript</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- TECH INSIGHTS MODAL -->
+  <div id="techModal" class="modal-root" style="
+    display: none; position: fixed; inset: 0; z-index: 10002;
+    background: rgba(0,0,0,0.96); backdrop-filter: blur(25px);
+    align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
+  " onclick="closeTechModal()">
+    <div style="
+      background: #0d0d0d; border: 1px solid var(--border);
+      border-radius: 2rem; width: 95%; max-width: 900px; padding: 3rem 2rem;
+      position: relative; max-height: 85vh; overflow-y: auto;
+      transform: translateY(20px); transition: transform 0.3s ease;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    " onclick="event.stopPropagation()">
+      <button onclick="closeTechModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+      <div id="techModalContent"><!-- Dynamic Content --></div>
+    </div>
+  </div>
+
+  <script>
+    // Tech Modal Logic
+    const techData = {
+      yolo: {
+        label: 'MODEL METRICS',
+        title: 'YOLOv11m 訓練效能分析',
+        html: `
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+            <div style="background:rgba(255,255,255,0.03); padding: 1.5rem; border-radius:1rem; text-align:center;">
+              <div style="font-size: 0.7rem; color: var(--gold); margin-bottom: 0.5rem;">BEST mAP@50</div>
+              <div style="font-size: 2rem; font-weight: 800;">0.868</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.03); padding: 1.5rem; border-radius:1rem; text-align:center;">
+              <div style="font-size: 0.7rem; color: var(--gold); margin-bottom: 0.5rem;">DATASET SIZE</div>
+              <div style="font-size: 2rem; font-weight: 800;">5,560</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.03); padding: 1.5rem; border-radius:1rem; text-align:center;">
+              <div style="font-size: 0.7rem; color: var(--gold); margin-bottom: 0.5rem;">TRAINING EPOCHS</div>
+              <div style="font-size: 2rem; font-weight: 800;">300</div>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.02); padding: 2rem; border-radius:1.5rem; border:1px dashed rgba(255,255,255,0.1);">
+            <h4 style="margin-bottom:1rem; color:var(--gold);">核心模型優化歷程</h4>
+            <ul style="list-size:none; font-size: 0.9rem; color:rgba(255,255,255,0.7); line-height:1.8;">
+              <li>• V1 (1,000張): mAP 0.757 (初步驗證)</li>
+              <li>• V2 (3,948張): mAP 0.846 (精度大幅提升)</li>
+              <li>• <b>Final (5,560張): mAP 0.868 (YOLOv11m 精準識別)</b></li>
+              <li style="margin-top:1rem; color:var(--white); font-weight:600;">優化參數: imgsize=960, batch=-1, workers=16</li>
+            </ul>
+          </div>
+        `
+      },
+      gemini: {
+        label: 'AI GENERATIVE LOGIC',
+        title: 'Gemini 2.5 Flash 核心邏輯',
+        html: `
+          <div style="background:rgba(255,255,255,0.03); padding: 2rem; border-radius:1.5rem; margin-bottom: 1.5rem;">
+            <p style="color:rgba(255,255,255,0.8); line-height:1.8;">將 YOLO 識別出的食材標籤與保鮮期數據，彙整為 Context Payload 並提交給 Gemini 進行「條件約束型生成」。</p>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div style="border-left: 2px solid var(--blue); padding-left: 1rem;">
+              <div style="font-weight:700; color:var(--blue); margin-bottom:0.5rem;">RAG 向量搜尋</div>
+              <div style="font-size:0.8rem; color:var(--muted);">基於現有食材精確匹配推薦食譜，減少模型的幻覺 (Hallucination) 並精準過濾掉過期品。</div>
+            </div>
+            <div style="border-left: 2px solid #ef4444; padding-left: 1rem;">
+              <div style="font-weight:700; color:#ef4444; margin-bottom:0.5rem;">AI 異常防護</div>
+              <div style="font-size:0.8rem; color:var(--muted);">內建 Fallback 機制：若 API 請求失敗，系統自動降級切換至 IndexedDB 內的本地緩存與靜態食譜。</div>
+            </div>
+          </div>
+        `
+      },
+      arch: {
+        label: 'SYSTEM ARCHITECTURE',
+        title: 'Fridge AI 完整系統架構',
+        html: `
+          <div style="padding: 1rem; background:#000; border-radius:1rem; margin-bottom:1.5rem; text-align:center;">
+            <div style="color:var(--gold); border: 1px solid var(--gold); padding:1rem; border-radius:0.5rem; display:inline-block; margin-bottom:1rem;">拍攝捕捉</div>
+            <div style="color:rgba(255,255,255,0.2);">▼</div>
+            <div style="color:#22c55e; border: 1px solid #22c55e; padding:1rem; border-radius:0.5rem; display:inline-block; margin-bottom:1rem;">YOLOv11 視覺推論 (新鮮度判別)</div>
+            <div style="color:rgba(255,255,255,0.2);">▼</div>
+            <div style="display:flex; justify-content:center; gap:2rem;">
+              <div style="border:1px solid #3b82f6; color:#3b82f6; padding:1rem; border-radius:0.5rem;">數據持久化 (IndexedDB)</div>
+              <div style="border:1px solid #a855f7; color:#a855f7; padding:1rem; border-radius:0.5rem;">動態提示詞 Prompt</div>
+            </div>
+            <div style="color:rgba(255,255,255,0.2); margin-top:1rem;">▼</div>
+            <div style="background:var(--gold); color:#000; padding:1rem; border-radius:0.5rem; font-weight:800;">用戶終端 (食譜推薦/到期警示)</div>
+          </div>
+          <p style="font-size:0.85rem; color:var(--muted); text-align:center;">* 本架構實現了 100% 端到端的數據流轉，解決了家庭食材管理碎片化的痛點。</p>
+        `
+      },
+      db: {
+        label: 'DATA PERSISTENCE',
+        title: '數據持久化與加密管理',
+        html: `
+          <ul style="list-size:none; color:rgba(255,255,255,0.8); line-height:2;">
+            <li>• <b>IndexedDB 存儲</b>：取代傳統 Session，支援大規模食材數據與歷史浪費統計的離線存取。</li>
+            <li>• <b>時間戳賦予</b>：每一項入庫食材皆綁定唯一 Unix Timestamp 進行精確保鮮追蹤。</li>
+            <li>• <b>分區邏輯</b>：自動將食材劃分至「冷藏/冷凍」虛擬分舵，提供更真實的存放模擬。</li>
+            <li>• <b>數據安全性</b>：採用的本地端存儲模式，確保用戶的隱私消費數據不出冰箱終端。</li>
+          </ul>
+        `
+      },
+      pytorch: {
+        label: 'TRAINING FRAMEWORK',
+        title: 'PyTorch 訓練與超參數設定',
+        html: `
+          <div style="background:rgba(255,255,255,0.02); padding:1.5rem; border-radius:1rem; font-family:monospace; font-size:0.85rem; color:var(--gold);">
+            <p># 損失函數權重 (Loss Gain)</p>
+            <p>box: 7.5 | cls: 3.0 | dfl: 1.5</p>
+            <p style="margin-top:1rem; color:var(--muted);"># 硬體環境設定</p>
+            <p>imgsz: 960 | batch: -1 | workers: 16</p>
+          </div>
+          <p style="margin-top:1.5rem; font-size:0.85rem; color:var(--muted);">基於 PyTorch 深度神經網絡，通過反向傳播持續優化邊界框回歸 (Bounding Box Regression) 的精準度。</p>
+        `
+      },
+      tailwind: {
+        label: 'UI ARCHITECTURE',
+        title: 'Tailwind CSS 視覺規範',
+        html: `
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+            <div style="background:rgba(255,255,255,0.03); padding:1rem; border-radius:0.75rem;">
+              <strong style="color:var(--blue);">Glassmorphism</strong>
+              <div style="font-size:0.75rem; color:var(--muted); margin-top:0.5rem;">高飽和度模糊背景 (25px blur)，營造層次感。</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.03); padding:1rem; border-radius:0.75rem;">
+              <strong style="color:var(--gold);">Fluid Grid</strong>
+              <div style="font-size:0.75rem; color:var(--muted); margin-top:0.5rem;">響應式 12 欄位系統，完美適配桌機與手持設備。</div>
+            </div>
+          </div>
+        `
+      },
+      react: {
+        label: 'FRONTEND STACK',
+        title: 'React 18 + Vite 高效驅動',
+        html: `
+          <p style="color:rgba(255,255,255,0.8); line-height:1.8;">採用 <b>React 18 Concurrent Mode (併發模式)</b> 確保在大量辨識數據流下，介面依然維持 60 FPS 的流暢度。</p>
+          <div style="margin-top:1rem; border:1px solid var(--border); padding:1rem; border-radius:0.75rem; font-size:0.8rem;">
+            ⚡ <b>Vite HMR:</b> 0.3s 極速局部熱更新，縮短 50% 開發週期。
+          </div>
+        `
+      },
+      dataset: {
+        label: 'DATA PREPROCESSING',
+        title: 'Roboflow 資料增強詳解',
+        html: `
+          <p style="margin-bottom:1rem; font-size:0.85rem; color:var(--gold);">為了解決採光不足與遮擋問題，我們設定了極高強度的 Data Augmentation：</p>
+          <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:0.5rem; font-family:monospace; font-size:0.75rem; color:rgba(255,255,255,0.6);">
+            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• hsv_h: 0.015</div>
+            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• degrees: 15.0</div>
+            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• translate: 0.2</div>
+            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• mosaic: 1.0</div>
+            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• flipud: 0.2</div>
+            <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• mixup: 0.1</div>
+          </div>
+          <p style="margin-top:1rem; font-size:0.8rem; color:var(--muted);">共獲取 5,560 組多樣化樣本，涵蓋強光、弱光與不同角度的食材切面。</p>
+        `
+      }
+    };
+
+    function openTechModal(type) {
+      const data = techData[type];
+      if (!data) return;
+      const modal = document.getElementById('techModal');
+      const content = document.getElementById('techModalContent');
+      content.innerHTML = `
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <span style="color: var(--gold); font-weight: 700; letter-spacing: 2px; font-size: 0.75rem;">${data.label}</span>
+          <h2 style="font-size: 1.8rem; margin-top: 0.5rem; color: #fff;">${data.title}</h2>
+        </div>
+        ${data.html}
+      `;
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.style.opacity = '1';
+        modal.children[0].style.transform = 'translateY(0)';
+      }, 10);
+    }
+    function closeTechModal() {
+      const modal = document.getElementById('techModal');
+      modal.style.opacity = '0';
+      modal.children[0].style.transform = 'translateY(20px)';
+      setTimeout(() => { modal.style.display = 'none'; }, 300);
+    }
+
+    // Demo Video: Mute toggle
+    function toggleMute() {
+      const video = document.getElementById('demoVideo');
+      const icon  = document.getElementById('muteIcon');
+      const label = document.getElementById('muteLabel');
+      video.muted = !video.muted;
+      icon.textContent  = video.muted ? '🔇' : '🔊';
+      label.textContent = video.muted ? '點擊開聲音' : '點擊關聲音';
+    }
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Scroll Reveal (IntersectionObserver)
+    const revealClasses = ['.reveal', '.reveal-left', '.reveal-right'];
+    const allReveal = document.querySelectorAll(revealClasses.join(','));
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Stagger children inside grids
+          const siblings = entry.target.parentElement.querySelectorAll(':scope > .reveal, :scope > .reveal-left, :scope > .reveal-right');
+          let delay = 0;
+          siblings.forEach((el, i) => {
+            if (el === entry.target) delay = i * 100;
+          });
+          setTimeout(() => entry.target.classList.add('active'), delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
+
+    allReveal.forEach(el => observer.observe(el));
+
+    // Vivid Beats Modal
+    function openVividModal() {
+      const vModal = document.getElementById('vividModal');
+      vModal.style.display = 'flex';
+      setTimeout(() => {
+        vModal.style.opacity = '1';
+        vModal.children[0].style.transform = 'translateY(0)';
+      }, 10);
+    }
+    function closeVividModal() {
+      const vModal = document.getElementById('vividModal');
+      vModal.style.opacity = '0';
+      vModal.children[0].style.transform = 'translateY(20px)';
+      setTimeout(() => { vModal.style.display = 'none'; }, 300);
+    }
+
+    // Global Close on ESC
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (typeof closeModal === 'function') closeModal();
+        closeVividModal();
+      }
+    });
+
+    // Mouse Glow Tracking
+    const mouseGlow = document.getElementById('mouseGlow');
+    window.addEventListener('mousemove', (e) => {
+      mouseGlow.style.left = e.clientX + 'px';
+      mouseGlow.style.top = e.clientY + 'px';
+    });
+  </script>
+</body>
+</html>
