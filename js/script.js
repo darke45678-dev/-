@@ -90,17 +90,20 @@ function initAudio() {
     }
   });
 
-  // 音頻同步：當「虛擬歌手」Demo 開始播放時，自動暫停背景配樂
-  const demoAudio = document.getElementById('vividAudioPlayer');
-  if (demoAudio) {
-    demoAudio.addEventListener('play', () => {
-      if (!audio.paused) {
-        audio.pause();
-        btn.classList.remove('playing');
-        btn.querySelector('.audio-status span').textContent = 'OFF';
-      }
-    });
-  }
+  // 音頻同步：當任何一個 Demo 播放器播放時，自動暫停全局背景音樂
+  const players = ['vividAudioPlayer', 'scorePlayer1', 'scorePlayer2'];
+  players.forEach(pid => {
+    const p = document.getElementById(pid);
+    if (p) {
+      p.addEventListener('play', () => {
+        if (!audio.paused) {
+          audio.pause();
+          btn.classList.remove('playing');
+          btn.querySelector('.audio-status span').textContent = 'OFF';
+        }
+      });
+    }
+  });
 }
 
 /**
@@ -536,6 +539,16 @@ function openAudioScoreModal() {
 function closeAudioScoreModal() {
   const a = document.getElementById('audioScoreModal');
   if (!a) return;
+
+  // 關閉時停止所有配樂播放器
+  ['scorePlayer1', 'scorePlayer2'].forEach(pid => {
+    const p = document.getElementById(pid);
+    if (p) {
+      p.pause();
+      p.currentTime = 0;
+    }
+  });
+
   a.style.opacity = '0';
   if (a.children[0]) a.children[0].style.transform = 'translateY(20px)';
   setTimeout(() => {

@@ -622,14 +622,14 @@
         <span style="color: #a855f7; font-weight: 700; letter-spacing: 3px; font-size: 0.8rem;">TECHNICAL PROOF OF
           CONCEPT</span>
         <h2 style="font-size: 2.2rem; margin-top: 0.5rem; margin-bottom: 1.5rem; color: #fff;">虛擬歌手：AI 研發架構圖</h2>
-        
+
         <!-- Tab Buttons -->
         <div style="display:flex; gap:0.5rem; justify-content:center;">
           <button class="vivid-tab" id="btn-vivid-arch" onclick="switchVividTab('vivid-tab-arch')"
-                  style="padding:0.5rem 1.5rem; border-radius:3rem; border:1px solid #a855f7;
+            style="padding:0.5rem 1.5rem; border-radius:3rem; border:1px solid #a855f7;
                          background:rgba(168,85,247,0.15); color:#a855f7; font-size:0.8rem; cursor:pointer; font-weight: 700; transition: all 0.3s;">技術架構 (Architecture)</button>
           <button class="vivid-tab" id="btn-vivid-demo" onclick="switchVividTab('vivid-tab-demo')"
-                  style="padding:0.5rem 1.5rem; border-radius:3rem; border:1px solid rgba(255,255,255,0.15);
+            style="padding:0.5rem 1.5rem; border-radius:3rem; border:1px solid rgba(255,255,255,0.15);
                          background:transparent; color:var(--muted); font-size:0.8rem; cursor:pointer; font-weight: 700; transition: all 0.3s;">實驗紀錄 & 音頻 Demo</button>
         </div>
       </div>
@@ -694,23 +694,33 @@
         </div>
         <div
           style="margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.03); border-radius: 1.5rem; font-size: 0.9rem; line-height: 1.8; color: var(--muted); border: 1px solid rgba(255,255,255,0.05);">
-          <p>💡 <strong>架構總結：</strong> 嚴格遵循 <strong>端到端 (End-to-End) 開發管線</strong>。從 Prompt 驅動起始，跳脫傳統依賴真人音訊克隆的框架。透過 Applio 高達 400 Epochs 的雲端訓練提煉 `.pth` 權重，再於 Audacity 中進行頻率修補，證明「全合成原創數位資產」的建構可行性。</p>
+          <p>💡 <strong>架構總結：</strong> 嚴格遵循 <strong>端到端 (End-to-End) 開發管線</strong>。從 Prompt 驅動起始，跳脫傳統依賴真人音訊克隆的框架。透過
+            Applio 高達 400 Epochs 的雲端訓練提煉 `.pth` 權重，再於 Audacity 中進行頻率修補，證明「全合成原創數位資產」的建構可行性。</p>
         </div>
       </div>
 
       <!-- TAB 2: DEMO & LOG -->
       <div id="vivid-tab-demo" style="display: none; text-align: left;">
-        
+
         <!-- Audio Player Section -->
-        <div style="background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.3); border-radius: 1.5rem; padding: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem;">
-          <div style="width: 48px; height: 48px; border-radius: 50%; background: #a855f7; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">🎧</div>
+        <div
+          style="background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.3); border-radius: 1.5rem; padding: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem;">
+          <div
+            style="width: 48px; height: 48px; border-radius: 50%; background: #a855f7; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+            🎧</div>
           <div style="flex: 1;">
-            <div style="font-size: 0.75rem; color: #a855f7; font-weight: 700; letter-spacing: 1px; margin-bottom: 0.2rem;">PROTOTYPE 1.0</div>
-            <div style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+            <div
+              style="font-size: 0.75rem; color: #a855f7; font-weight: 700; letter-spacing: 1px; margin-bottom: 0.2rem;">
+              PROTOTYPE 1.0</div>
+            <div
+              style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
               完全合成虛擬人聲
-              <span style="font-size: 0.65rem; color: #10b981; border: 1px solid #10b981; background: rgba(16, 185, 129, 0.1); padding: 0.2rem 0.5rem; border-radius: 0.5rem; font-weight: 700;">30sec Technical Demo</span>
+              <span
+                style="font-size: 0.65rem; color: #10b981; border: 1px solid #10b981; background: rgba(16, 185, 129, 0.1); padding: 0.2rem 0.5rem; border-radius: 0.5rem; font-weight: 700;">30sec
+                Technical Demo</span>
             </div>
-            <audio id="vividAudioPlayer" controls style="width: 100%; height: 36px; border-radius: 18px; outline: none; background: #000;">
+            <audio id="vividAudioPlayer" controls
+              style="width: 100%; height: 36px; border-radius: 18px; outline: none; background: #000;">
               <source src="assets/audio/ai_singer_demo.mp3" type="audio/mpeg">
               您的瀏覽器不支援 Audio 播放。
             </audio>
@@ -719,7 +729,8 @@
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
           <!-- Left Column: Core Value -->
-          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
+          <div
+            style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
             <h4 style="color: #a855f7; margin-bottom: 1rem; font-size: 1.1rem;">🧬 版權淨空的原創身分</h4>
             <div style="font-size: 0.85rem; color: var(--muted); line-height: 1.8;">
               與市面上多數依賴「盜用明星聲音」的 AI 翻唱不同，本專案的根源為 <strong>Suno AI 所生成的虛擬音軌</strong>。<br><br>
@@ -728,10 +739,12 @@
           </div>
 
           <!-- Right Column: Limitations & Analysis -->
-          <div style="background: rgba(239, 68, 68, 0.05); border: 1px dashed rgba(239, 68, 68, 0.3); border-radius: 1.5rem; padding: 2rem;">
+          <div
+            style="background: rgba(239, 68, 68, 0.05); border: 1px dashed rgba(239, 68, 68, 0.3); border-radius: 1.5rem; padding: 2rem;">
             <h4 style="color: #ef4444; margin-bottom: 1rem; font-size: 1.1rem;">⚠️ 技術重構與已知限制</h4>
             <div style="font-size: 0.85rem; color: rgba(255,255,255,0.8); line-height: 1.8;">
-              <strong style="color: #fff;">挑戰：</strong>儘管經歷 400 Epochs 的深度訓練，並在 Audacity 套用降噪與低通濾波，最終轉換的人聲在高頻激動處仍會出現「嚴重電子音」或「合成頻率崩潰」。<br><br>
+              <strong style="color: #fff;">挑戰：</strong>儘管經歷 400 Epochs 的深度訓練，並在 Audacity
+              套用降噪與低通濾波，最終轉換的人聲在高頻激動處仍會出現「嚴重電子音」或「合成頻率崩潰」。<br><br>
               <strong style="color: #fff;">根本原因分析：</strong><br>
               1. <strong>Dataset 相位污染：</strong> Suno 原始生成檔案本身即具有 AI 計算產生的微觀相位失真，UVR5 雖洗出人聲，但失真特徵一同被模型吸收。<br>
               2. <strong>RMVPE 提取極限：</strong> RVC 音高提取演算法在面對複雜動態或非純淨基頻時，容易發生誤判，導致輸出特徵碎裂 (Artifacts)。
@@ -764,17 +777,31 @@
         <h2 style="font-size: 2.2rem; margin-top: 0.5rem; color: #fff;">原創配樂創作流程</h2>
       </div>
 
-      <!-- NOW PLAYING UI -->
+      <!-- TRACK 1: GLOBAL SCORE (網頁全局背景音樂) -->
       <div
-        style="margin-bottom: 2.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(37,99,235,0.3); border-radius: 1.5rem; padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
-        <div class="playing-visualizer">
+        style="margin-bottom: 1.5rem; background: rgba(37,99,235,0.05); border: 1px solid rgba(37,99,235,0.3); border-radius: 1.5rem; padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
+        <div class="playing-visualizer" style="flex-shrink:0;">
           <span></span><span></span><span></span><span></span>
         </div>
         <div style="flex: 1;">
-          <h4 style="color: #fff; margin: 0; font-size: 0.95rem; letter-spacing: 0.05em;">正在播放：〈INSTRUMENTAL PROTOTYPE
-            1.0〉</h4>
-          <p style="color: var(--muted); font-size: 0.78rem; margin: 0.25rem 0 0;">本系統全局背景音樂即為此原創作品，展示了沉浸式 UI 與聲景設計的結合。
-          </p>
+          <h4 style="color: #fff; margin: 0; font-size: 0.95rem; letter-spacing: 0.05em;">Track 01: 〈INSTRUMENTAL PROTOTYPE 1.0〉</h4>
+          <p style="color: var(--muted); font-size: 0.78rem; margin: 0.25rem 0 0;">本系統官方背景音樂。展示了 Cyberpunk 高保真聽感與沉浸式 UI 的高度對齊。</p>
+          <audio id="scorePlayer1" controls style="width: 100%; height: 36px; margin-top: 1rem; border-radius: 18px; outline: none; background: #000;">
+            <source src="assets/audio/INSTRUMENT.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+      </div>
+
+      <!-- TRACK 2: SYSTEM DEMO SCORE (實機演示專用配樂) -->
+      <div
+        style="margin-bottom: 2.5rem; background: rgba(34,197,94,0.05); border: 1px solid rgba(34,197,94,0.3); border-radius: 1.5rem; padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: #22c55e; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">🎹</div>
+        <div style="flex: 1;">
+          <h4 style="color: #fff; margin: 0; font-size: 0.95rem; letter-spacing: 0.05em;">Track 02: 〈SYSTEM DEMO SCORE〉</h4>
+          <p style="color: var(--muted); font-size: 0.78rem; margin: 0.25rem 0 0;">專為核心技術錄製影片設計之工業電子節奏。展現了音樂與影像動態的精準對焦。</p>
+          <audio id="scorePlayer2" controls style="width: 100%; height: 36px; margin-top: 1rem; border-radius: 18px; outline: none; background: #000;">
+            <source src="assets/audio/BGM.mp3" type="audio/mpeg">
+          </audio>
         </div>
       </div>
 
@@ -870,7 +897,8 @@
       <p class="footer-sub">如果您正在尋找具備 AI 應用整合能力與跨領域開發經驗的人才，<br>歡迎透過以下方式與我聯繫，或進一步查看我的完整經歷。</p>
 
       <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
-        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=darke45678@gmail.com" target="_blank" rel="noopener noreferrer" class="btn-primary"
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=darke45678@gmail.com" target="_blank"
+          rel="noopener noreferrer" class="btn-primary"
           style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 2rem;">
           <span>📧 Gmail 聯繫</span>
         </a>
