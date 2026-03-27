@@ -543,3 +543,28 @@ document.addEventListener('DOMContentLoaded', () => {
   initEscHandler();
   initAudio();
 });
+
+function switchVividTab(tabId) {
+  document.getElementById('vivid-tab-arch').style.display = 'none';
+  document.getElementById('vivid-tab-demo').style.display = 'none';
+  document.getElementById(tabId).style.display = 'block';
+
+  const btnArch = document.getElementById('btn-vivid-arch');
+  const btnDemo = document.getElementById('btn-vivid-demo');
+
+  if(tabId === 'vivid-tab-arch') {
+    btnArch.style.background = 'rgba(168,85,247,0.15)';
+    btnArch.style.color = '#a855f7';
+    btnArch.style.borderColor = '#a855f7';
+    btnDemo.style.background = 'transparent';
+    btnDemo.style.color = 'var(--muted)';
+    btnDemo.style.borderColor = 'rgba(255,255,255,0.15)';
+  } else {
+    btnDemo.style.background = 'rgba(168,85,247,0.15)';
+    btnDemo.style.color = '#a855f7';
+    btnDemo.style.borderColor = '#a855f7';
+    btnArch.style.background = 'transparent';
+    btnArch.style.color = 'var(--muted)';
+    btnArch.style.borderColor = 'rgba(255,255,255,0.15)';
+  }
+}
