@@ -1,5 +1,10 @@
-// Tech Insights Content Data
+/**
+ * Fridge AI — 技術詳解數據庫 (Project Detail Data)
+ * 此檔案存儲所有彈窗 (Modal) 顯示的技術細節、圖片路徑與 HTML 結構。
+ */
+
 const techData = {
+  // ── YOLO 模型迭代 ──
   yolo: {
     label: 'MODEL ITERATION & PERFORMANCE',
     title: 'YOLOv11 系列訓練深度對比 (V3 vs V4)',
@@ -53,6 +58,8 @@ const techData = {
       </div>
     `,
   },
+
+  // ── Gemini 邏輯 ──
   gemini: {
     label: 'AI GENERATIVE LOGIC',
     title: 'Gemini 2.5 Flash 核心邏輯',
@@ -72,6 +79,8 @@ const techData = {
       </div>
     `
   },
+
+  // ── 系統架構圖 ──
   arch: {
     label: 'SYSTEM ARCHITECTURE',
     title: 'Fridge AI 完整系統架構',
@@ -91,6 +100,8 @@ const techData = {
       <p style="font-size:0.85rem; color:var(--muted); text-align:center;">* 本架構實現了 100% 端到端的數據流轉，解決了家庭食材管理碎片化的痛點。</p>
     `
   },
+
+  // ── 數據庫技術 ──
   db: {
     label: 'DATA PERSISTENCE',
     title: '數據持久化與加密管理',
@@ -98,11 +109,13 @@ const techData = {
       <ul style="list-style:none; color:rgba(255,255,255,0.8); line-height:2;">
         <li>• <b>IndexedDB 存儲</b>：取代傳統 Session，支援大規模食材數據與歷史浪費統計的離線存取。</li>
         <li>• <b>時間戳賦予</b>：每一項入庫食材皆綁定唯一 Unix Timestamp 進行精確保鮮追蹤。</li>
-        <li>• <b>分區邏輯</b>：自動將食材劃分至「冷藏/冷凍」虛擬分舵，提供更真實的存放模擬。</li>
+        <li>• <b>分區邏輯</b>：自動將食材劃分至「冷藏/冷凍」區域，提供更真實的存放模擬。</li>
         <li>• <b>數據安全性</b>：採用的本地端存儲模式，確保用戶的隱私消費數據不出冰箱終端。</li>
       </ul>
     `
   },
+
+  // ── 訓練框架 ──
   pytorch: {
     label: 'TRAINING FRAMEWORK',
     title: 'PyTorch 訓練與超參數設定',
@@ -116,6 +129,8 @@ const techData = {
       <p style="margin-top:1.5rem; font-size:0.85rem; color:var(--muted);">基於 PyTorch 深度神經網絡，通過反向傳播持續優化邊界框回歸 (Bounding Box Regression) 的精準度。</p>
     `
   },
+
+  // ── UI 樣式規範 ──
   tailwind: {
     label: 'UI ARCHITECTURE',
     title: 'Tailwind CSS 視覺規範',
@@ -132,6 +147,8 @@ const techData = {
       </div>
     `
   },
+
+  // ── 前端框架 ──
   react: {
     label: 'FRONTEND STACK',
     title: 'React 18 + Vite 高效驅動',
@@ -142,18 +159,20 @@ const techData = {
       </div>
     `
   },
+
+  // ── 資料處理 ──
   dataset: {
     label: 'DATA PREPROCESSING',
     title: 'Roboflow 資料增強詳解',
     html: `
-      <p style="margin-bottom:1rem; font-size:0.85rem; color:var(--gold);">為了解決採光不足與遮擋問題，我們設定了極高強度的 Data Augmentation：</p>
+      <p style="margin-bottom:1rem; font-size:0.85rem; color:var(--gold);">為了解決採光不足與遮擋問題，我們設定了極高強度的 Data Augmentation (數據增廣)：</p>
       <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:0.5rem; font-family:monospace; font-size:0.75rem; color:rgba(255,255,255,0.6);">
-        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• hsv_h: 0.015</div>
-        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• degrees: 15.0</div>
-        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• translate: 0.2</div>
-        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• mosaic: 1.0</div>
-        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• flipud: 0.2</div>
-        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• mixup: 0.1</div>
+        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• hsv_h: 0.015 (色相)</div>
+        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• degrees: 15.0 (旋轉)</div>
+        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• translate: 0.2 (平移)</div>
+        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• mosaic: 1.0 (馬賽克拼接)</div>
+        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• flipud: 0.2 (垂直翻轉)</div>
+        <div style="background:rgba(0,0,0,0.3); padding:0.5rem;">• mixup: 0.1 (圖像混疊)</div>
       </div>
       <p style="margin-top:1rem; font-size:0.8rem; color:var(--muted);">共獲取 5,560 組多樣化樣本，涵蓋強光、弱光與不同角度的食材切面。</p>
     `

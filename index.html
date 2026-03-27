@@ -6,14 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FridgeAI — 食材智慧管理系統</title>
 
-  <!-- Fonts -->
+  <!-- Google 字體：使用 Outfit 作為全站主字體，營造高級科技感 -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
 
-  <!-- Animation Libraries (CDN) -->
+  <!-- 動畫與滾動插件 (CDN) -->
+  <!-- GSAP: 核心動畫引擎 | ScrollTrigger: 滾動觸發動畫 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <!-- Lenis: 平滑滑鼠滾動支援 -->
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
 
   <!-- Styles -->
@@ -22,7 +24,7 @@
 
 <body class="is-loading">
 
-  <!-- CUSTOM CURSOR -->
+  <!-- 自定義游標：跟隨滑鼠移動的圓點與外圈效果 -->
   <div id="cursor-dot"></div>
   <div id="cursor-outline"></div>
 
@@ -46,11 +48,12 @@
     </div>
   </div>
 
-  <!-- DYNAMIC BACKGROUND LAYER -->
+  <!-- 動態背景層：包含星光粒子與背景閃爍的光團 (Aura Blobs) -->
   <div class="site-bg">
     <div class="grid-layer"></div>
     <div class="aura-blob aura-1" id="aura1"></div>
     <div class="aura-blob aura-2" id="aura2"></div>
+    <!-- 滑動時會跟隨的全局環境輝光 -->
     <div class="mouse-glow" id="mouseGlow"></div>
 
     <!-- MICRO-ANIMATION PARTICLES (reduced to 10 for performance) -->
@@ -91,8 +94,9 @@
     </div>
   </nav>
 
-  <!-- HERO -->
+  <!-- 首頁區域 (Hero Section) -->
   <header class="hero" id="home">
+    <!-- 裝飾性光球 -->
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
     <div class="hero-eyebrow">01&nbsp;&nbsp;智慧食材管理</div>
@@ -102,6 +106,7 @@
       <a href="#features" class="btn-primary">探索功能</a>
       <a href="#stack" class="btn-outline">技術細項</a>
     </div>
+    <!-- 數據統計欄位 -->
     <div class="hero-stats reveal">
       <div class="stat">
         <div class="stat-num">0.868</div>
@@ -132,7 +137,7 @@
       </button>
     </div>
 
-    <!-- The Modal -->
+    <!-- 展示影片彈窗 (Video Modal) -->
     <div id="videoModal" style="
       display: none; position: fixed; inset: 0; z-index: 10000;
       background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
@@ -598,7 +603,7 @@
     </div>
   </section>
 
-  <!-- VIVID BEATS MODAL -->
+  <!-- 虛擬歌手技術詳解彈窗 (Vivid Modal) -->
   <div id="vividModal" class="modal-root" data-lenis-prevent style="
     display: none; position: fixed; inset: 0; z-index: 10001;
     background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
@@ -904,13 +909,13 @@
     </div>
   </div>
 
-  <!-- AUDIO PLAYER -->
+  <!-- 背景音樂播放器：載入您的原創配樂 -->
   <audio id="bg-audio" src="assets/audio/INSTRUMENT.mp3" loop preload="auto"></audio>
 
-  <!-- Scripts -->
+  <!-- 引用外部腳本檔案 -->
   <script src="js/tech-data.js"></script>
   <script src="js/script.js"></script>
-  <!-- GSAP ScrollTrigger Registration -->
+  <!-- GSAP 腳本激活：註冊滾動觸發插件 -->
   <script>if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);</script>
 </body>
 
