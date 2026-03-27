@@ -90,20 +90,20 @@ function initAudio() {
     }
   });
 
-  // 音頻同步：當任何一個 Demo 播放器播放時，自動暫停全局背景音樂
-  const players = ['vividAudioPlayer', 'scorePlayer1', 'scorePlayer2'];
-  players.forEach(pid => {
-    const p = document.getElementById(pid);
-    if (p) {
-      p.addEventListener('play', () => {
-        if (!audio.paused) {
-          audio.pause();
-          btn.classList.remove('playing');
-          btn.querySelector('.audio-status span').textContent = 'OFF';
-        }
-      });
+  // ── 強效同步邏輯：當頁面任何 Demo 音訊/影片播放時，自動自動關閉背景配樂 ──
+  window.addEventListener('play', (e) => {
+    // 過濾掉背景音樂本身
+    if (e.target === audio) return;
+    
+    // 如果播放的是任何一個音頻或影片元素，則暫停背景音樂
+    if (e.target.tagName === 'AUDIO' || e.target.tagName === 'VIDEO') {
+      if (!audio.paused) {
+        audio.pause();
+        btn.classList.remove('playing');
+        btn.querySelector('.audio-status span').textContent = 'OFF';
+      }
     }
-  });
+  }, true); // 使用 Capture 模式確保能抓到所有冒泡上來的 Play 事件
 }
 
 /**
