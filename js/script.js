@@ -81,6 +81,18 @@ function initAudio() {
       btn.querySelector('.audio-status span').textContent = 'OFF';
     }
   });
+
+  // NEW: Pause background music when "Virtual Singer" Demo starts
+  const demoAudio = document.getElementById('vividAudioPlayer');
+  if (demoAudio) {
+    demoAudio.addEventListener('play', () => {
+      if (!audio.paused) {
+        audio.pause();
+        btn.classList.remove('playing');
+        btn.querySelector('.audio-status span').textContent = 'OFF';
+      }
+    });
+  }
 }
 
 function revealHero() {
@@ -457,6 +469,14 @@ function openVividModal() {
 function closeVividModal() {
   const v = document.getElementById('vividModal');
   if (!v) return;
+
+  // Stop the demo audio if it's playing
+  const demoAudio = document.getElementById('vividAudioPlayer');
+  if (demoAudio) {
+    demoAudio.pause();
+    demoAudio.currentTime = 0;
+  }
+
   v.style.opacity = '0';
   if (v.children[0]) v.children[0].style.transform = 'translateY(20px)';
   setTimeout(() => {
