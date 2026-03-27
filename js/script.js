@@ -90,20 +90,53 @@ function initAudio() {
     }
   });
 
-  // ── 強效同步邏輯：當頁面任何 Demo 音訊/影片播放時，自動自動關閉背景配樂 ──
+  // ── 同步邏輯：當任何 Demo 音訊/影片播放時，關閉背景配樂並啟動對應波形 ──
+  const demoPlayers = {
+    'scorePlayer1': 'viz-track1',
+    'scorePlayer2': 'viz-track2'
+  };
+
   window.addEventListener('play', (e) => {
-    // 過濾掉背景音樂本身
-    if (e.target === audio) return;
-    
-    // 如果播放的是任何一個音頻或影片元素，則暫停背景音樂
+    // 1. 如果播放的是背景音樂本身，不需要額外邏輯
+    if (e.target === audio) {
+      // 播放背景時，關閉所有其他波形
+      document.querySelectorAll('.playing-visualizer').forEach(v => v.classList.remove('active'));
+      return;
+    }
+
+    // 2. 如果播放的是任何音頻/影片，則暫停背景音樂
     if (e.target.tagName === 'AUDIO' || e.target.tagName === 'VIDEO') {
       if (!audio.paused) {
         audio.pause();
         btn.classList.remove('playing');
         btn.querySelector('.audio-status span').textContent = 'OFF';
       }
+
+      // 3. 互斥播放：暫停所有「其他」音頻 (除了現在播放的這個)
+      document.querySelectorAll('audio, video').forEach(other => {
+        if (other !== e.target && other !== audio) {
+          other.pause();
+          other.currentTime = 0;
+        }
+      });
+
+      // 4.啟動對應波形動畫
+      document.querySelectorAll('.playing-visualizer').forEach(v => v.classList.remove('active'));
+      const vizId = demoPlayers[e.target.id];
+      if (vizId) document.getElementById(vizId)?.classList.add('active');
     }
-  }, true); // 使用 Capture 模式確保能抓到所有冒泡上來的 Play 事件
+  }, true);
+
+  // 當音軌暫停或結束時，清除波形動畫
+  window.addEventListener('pause', (e) => {
+    const vizId = demoPlayers[e.target.id];
+    if (vizId) document.getElementById(vizId)?.classList.remove('active');
+  }, true);
+
+  window.addEventListener('ended', (e) => {
+    const vizId = demoPlayers[e.target.id];
+    if (vizId) document.getElementById(vizId)?.classList.remove('active');
+  }, true);
 }
 
 /**
@@ -540,7 +573,7 @@ function closeAudioScoreModal() {
   const a = document.getElementById('audioScoreModal');
   if (!a) return;
 
-  // 關閉時停止所有配樂播放器
+  // 關閉時停止所有配樂播放器並清除動畫
   ['scorePlayer1', 'scorePlayer2'].forEach(pid => {
     const p = document.getElementById(pid);
     if (p) {
@@ -548,6 +581,7 @@ function closeAudioScoreModal() {
       p.currentTime = 0;
     }
   });
+  document.querySelectorAll('.playing-visualizer').forEach(v => v.classList.remove('active'));
 
   a.style.opacity = '0';
   if (a.children[0]) a.children[0].style.transform = 'translateY(20px)';
