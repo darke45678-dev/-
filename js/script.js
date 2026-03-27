@@ -141,7 +141,79 @@ function initAudio() {
   window.addEventListener('ended', (e) => {
     const vizId = demoPlayers[e.target.id];
     if (vizId) document.getElementById(vizId)?.classList.remove('active');
+    
+    // 自定義播放器結束狀態回歸
+    if (e.target.id === 'scorePlayer2') {
+      const playBtn = document.getElementById('playBtn2');
+      if (playBtn) {
+        playBtn.classList.remove('is-playing');
+        playBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+      }
+    }
   }, true);
+}
+
+/**
+ * 初始化 Track 2 自定義播放器邏輯
+ */
+function initCustomPlayer() {
+  const audio = document.getElementById('scorePlayer2');
+  const playBtn = document.getElementById('playBtn2');
+  const progressContainer = document.getElementById('progressContainer2');
+  const progressFill = document.getElementById('progressFill2');
+  const currentTimeLabel = document.getElementById('currentTime2');
+  const totalTimeLabel = document.getElementById('totalTime2');
+
+  if (!audio || !playBtn) return;
+
+  // 播放/暫停 切換
+  playBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+  });
+
+  // 音訊載入後顯示總時長
+  audio.addEventListener('loadedmetadata', () => {
+    if (totalTimeLabel) totalTimeLabel.textContent = formatTime(audio.duration);
+  });
+
+  // 監聽播放狀態
+  audio.addEventListener('play', () => {
+    playBtn.classList.add('is-playing');
+    playBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+  });
+
+  audio.addEventListener('pause', () => {
+    playBtn.classList.remove('is-playing');
+    playBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+  });
+
+  // 更新進度條與當前時間
+  audio.addEventListener('timeupdate', () => {
+    const percent = (audio.currentTime / audio.duration) * 100;
+    if (progressFill) progressFill.style.width = percent + '%';
+    if (currentTimeLabel) currentTimeLabel.textContent = formatTime(audio.currentTime);
+  });
+
+  // 點擊進度條跳轉
+  if (progressContainer) {
+    progressContainer.addEventListener('click', (e) => {
+      const width = progressContainer.clientWidth;
+      const clickX = e.offsetX;
+      const duration = audio.duration;
+      audio.currentTime = (clickX / width) * duration;
+    });
+  }
+
+  // 時間格式化工具
+  function formatTime(seconds) {
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60);
+    return `${min}:${sec < 10 ? '0' + sec : sec}`;
+  }
 }
 
 /**
@@ -660,6 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMouseGlow();           // 背景輝光
   initEscHandler();          // 鍵盤開關彈窗
   initAudio();               // 初始化音頻同步邏輯
+  initCustomPlayer();        // 初始化 Track 2 自定義播放器
 });
 
 /**
