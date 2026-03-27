@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FridgeAI — 食材智慧管理系統</title>
-  
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,6 +19,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
+
 <body class="is-loading">
 
   <!-- CUSTOM CURSOR -->
@@ -50,35 +52,43 @@
     <div class="aura-blob aura-1" id="aura1"></div>
     <div class="aura-blob aura-2" id="aura2"></div>
     <div class="mouse-glow" id="mouseGlow"></div>
-    
+
     <!-- MICRO-ANIMATION PARTICLES (reduced to 10 for performance) -->
     <div class="particles">
-       <div class="p p1"></div><div class="p p2"></div><div class="p p3"></div>
-       <div class="p p4"></div><div class="p p5"></div><div class="p p6"></div>
-       <div class="p p7"></div><div class="p p8"></div><div class="p p9"></div>
-       <div class="p p10"></div>
+      <div class="p p1"></div>
+      <div class="p p2"></div>
+      <div class="p p3"></div>
+      <div class="p p4"></div>
+      <div class="p p5"></div>
+      <div class="p p6"></div>
+      <div class="p p7"></div>
+      <div class="p p8"></div>
+      <div class="p p9"></div>
+      <div class="p p10"></div>
     </div>
   </div>
 
   <!-- NAV -->
   <nav id="navbar">
     <a href="#" class="nav-logo">FRIDGE AI</a>
-      <div class="nav-links">
-        <a href="#problem">問題</a>
-        <a href="#features">功能</a>
-        <a href="#portfolio">作品集</a>
-        <a href="#market">前景</a>
-        <a href="#contact" class="nav-btn">聯絡我</a>
-        <button id="audio-toggle" class="audio-btn">
-          <div class="audio-line-group">
-            <div class="audio-line l1"></div>
-            <div class="audio-line l2"></div>
-            <div class="audio-line l3"></div>
-            <div class="audio-line l4"></div>
-          </div>
-          <span class="audio-status">SOUND <span>OFF</span> <i style="font-size: 0.6rem; opacity: 0.5; margin-left: 0.3rem; font-style: normal; letter-spacing: 0.05em;">| ORIGINAL SCORE</i></span>
-        </button>
-      </div>
+    <div class="nav-links">
+      <a href="#problem">問題</a>
+      <a href="#features">功能</a>
+      <a href="#portfolio">作品集</a>
+      <a href="#market">前景</a>
+      <a href="#contact" class="nav-btn">聯絡我</a>
+      <button id="audio-toggle" class="audio-btn">
+        <div class="audio-line-group">
+          <div class="audio-line l1"></div>
+          <div class="audio-line l2"></div>
+          <div class="audio-line l3"></div>
+          <div class="audio-line l4"></div>
+        </div>
+        <span class="audio-status">SOUND <span>OFF</span> <i
+            style="font-size: 0.6rem; opacity: 0.5; margin-left: 0.3rem; font-style: normal; letter-spacing: 0.05em;">|
+            ORIGINAL SCORE</i></span>
+      </button>
+    </div>
   </nav>
 
   <!-- HERO -->
@@ -114,9 +124,10 @@
       <span class="section-label">03&nbsp;&nbsp;核心技術演示</span>
       <h2 class="section-title">Fridge AI<br>系統實機錄製</h2>
       <p class="hero-sub" style="margin-bottom: 2rem;">點擊下方按鈕觀看系統辨識與食譜生成的完整流程。</p>
-      
+
       <!-- Launch Button -->
-      <button onclick="openModal()" class="btn-primary" style="display: inline-flex; align-items: center; gap: 0.75rem; padding: 1rem 2.5rem;">
+      <button onclick="openModal()" class="btn-primary"
+        style="display: inline-flex; align-items: center; gap: 0.75rem; padding: 1rem 2.5rem;">
         <span>播放展示影片</span> <span style="font-size: 1.2rem;">▶️</span>
       </button>
     </div>
@@ -127,7 +138,7 @@
       background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
       align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
     " onclick="closeModal()">
-      
+
       <div style="
         position: relative; max-width: 320px; width: 90%;
         border-radius: 2rem; overflow: hidden;
@@ -135,9 +146,10 @@
         box-shadow: 0 0 50px rgba(194,156,109,0.2);
         transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       " onclick="event.stopPropagation()">
-        
-        <video id="modalVideo" src="assets/videos/FridgeAI_Demo_Final.mp4" playsinline style="width: 100%; display: block;"></video>
-        
+
+        <video id="modalVideo" src="assets/videos/FridgeAI_Demo_Final.mp4" playsinline
+          style="width: 100%; display: block;"></video>
+
         <!-- Close Button -->
         <button onclick="closeModal()" style="
           position: absolute; top: 1rem; right: 1rem;
@@ -199,7 +211,8 @@
         <div class="reveal-left">
           <div class="feat-tag">核心功能 01</div>
           <h3 class="feat-title">高精準食材<br>影像辨識</h3>
-          <p class="feat-desc">從 V1 (mAP 0.757) 持續迭代至 Final 版。搭載 YOLOv11m 模型，透過 5,560 組多樣化食材影像訓練，模型精確度達到業界級的 0.868，能精準區分新鮮與腐敗狀態。</p>
+          <p class="feat-desc">從 V1 (mAP 0.757) 持續迭代至 Final 版。搭載 YOLOv11m 模型，透過 5,560 組多樣化食材影像訓練，模型精確度達到業界級的
+            0.868，能精準區分新鮮與腐敗狀態。</p>
           <div class="feat-tags">
             <span class="tag">YOLOv11m</span>
             <span class="tag">5,560+ Dataset</span>
@@ -272,7 +285,9 @@
         <div class="feat-visual reveal-left">
           <div class="mock-screen">
             <div class="mock-bar">
-              <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+              <div class="mock-dot"></div>
+              <div class="mock-dot"></div>
+              <div class="mock-dot"></div>
             </div>
             <div class="mock-label">📦 冰箱庫存 · 已存 6 項食材</div>
             <div class="mock-items">
@@ -498,30 +513,35 @@
     </div>
 
     <!-- Gallery Grid -->
-    <div class="problem-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); max-width: 900px; margin: 0 auto;">
-      
+    <div class="problem-grid"
+      style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); max-width: 900px; margin: 0 auto;">
+
       <!-- Card 01: Virtual Singer -->
-      <div class="problem-card reveal" onclick="openVividModal()" 
-        style="
+      <div class="problem-card reveal" onclick="openVividModal()" style="
           cursor: pointer; position: relative; overflow: hidden; height: 320px;
           border-color: rgba(168,85,247,0.4); 
           background: url('assets/images/vivid_bg.jpg') center/cover no-repeat;
           display: flex; flex-direction: column; justify-content: flex-end;
           padding: 2rem;
         ">
-        <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.1) 100%); z-index: 1;"></div>
-        <div style="position: absolute; top:0; right:0; padding: 0.5rem 1rem; background: #a855f7; color: white; font-size: 0.6rem; font-weight: 800; z-index: 2; letter-spacing: 1px;">AI AUDIO R&D LAB (技術研發)</div>
-        <span class="problem-num" style="position: absolute; top: 1.5rem; left: 1.5rem; color: #a855f7; opacity: 0.8; font-size: 3rem; margin: 0; z-index: 2; font-family: 'Outfit', sans-serif;">01</span>
+        <div
+          style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.1) 100%); z-index: 1;">
+        </div>
+        <div
+          style="position: absolute; top:0; right:0; padding: 0.5rem 1rem; background: #a855f7; color: white; font-size: 0.6rem; font-weight: 800; z-index: 2; letter-spacing: 1px;">
+          AI AUDIO R&D LAB (技術研發)</div>
+        <span class="problem-num"
+          style="position: absolute; top: 1.5rem; left: 1.5rem; color: #a855f7; opacity: 0.8; font-size: 3rem; margin: 0; z-index: 2; font-family: 'Outfit', sans-serif;">01</span>
         <div style="position: relative; z-index: 2;">
           <h3 style="margin: 0.5rem 0; color: #fff;">虛擬歌手：人聲音頻建模</h3>
-          <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.5;">「深度學習音軌實驗」：專注於 AI 模型在人聲合成與頻率修復上的 R&D 突破。</p>
+          <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.5;">
+            「深度學習音軌實驗」：專注於 AI 模型在人聲合成與頻率修復上的 R&D 突破。</p>
           <div style="color: var(--gold); font-size: 0.8rem; font-weight: 700;">進入技術架構圖 →</div>
         </div>
       </div>
 
       <!-- Card 02: Original Music Composition -->
-      <div class="problem-card reveal" onclick="openAudioScoreModal()" 
-        style="
+      <div class="problem-card reveal" onclick="openAudioScoreModal()" style="
           cursor: pointer; position: relative; overflow: hidden; height: 320px;
           border-color: rgba(37,99,235,0.4); 
           background: url('assets/images/audio_score_new.jpg') center/cover no-repeat;
@@ -529,33 +549,48 @@
           padding: 2rem;
         ">
         <!-- Decoration lines for Audio vibe -->
-        <div style="position: absolute; inset: 0; background: radial-gradient(circle at 70% 20%, rgba(37,99,235,0.15) 0%, transparent 60%);"></div>
-        <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.1) 100%); z-index: 1;"></div>
-        <div style="position: absolute; top:0; right:0; padding: 0.5rem 1rem; background: var(--blue); color: white; font-size: 0.6rem; font-weight: 800; z-index: 2; letter-spacing: 1px;">SOUND EXPERIENCE LAB (感官設計)</div>
-        <span class="problem-num" style="position: absolute; top: 1.5rem; left: 1.5rem; color: var(--blue); opacity: 0.8; font-size: 3rem; margin: 0; z-index: 2; font-family: 'Outfit', sans-serif;">02</span>
+        <div
+          style="position: absolute; inset: 0; background: radial-gradient(circle at 70% 20%, rgba(37,99,235,0.15) 0%, transparent 60%);">
+        </div>
+        <div
+          style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.1) 100%); z-index: 1;">
+        </div>
+        <div
+          style="position: absolute; top:0; right:0; padding: 0.5rem 1rem; background: var(--blue); color: white; font-size: 0.6rem; font-weight: 800; z-index: 2; letter-spacing: 1px;">
+          SOUND EXPERIENCE LAB (感官設計)</div>
+        <span class="problem-num"
+          style="position: absolute; top: 1.5rem; left: 1.5rem; color: var(--blue); opacity: 0.8; font-size: 3rem; margin: 0; z-index: 2; font-family: 'Outfit', sans-serif;">02</span>
         <div style="position: relative; z-index: 2;">
           <h3 style="margin: 0.5rem 0; color: #fff;">原創配樂：沉浸式聲景設計</h3>
-          <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.5;">「人機協作後製」：融合 AI 生成技術與 Audacity 工程調校，打造極致 UI 體驗。</p>
+          <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.5;">
+            「人機協作後製」：融合 AI 生成技術與 Audacity 工程調校，打造極致 UI 體驗。</p>
           <div style="color: var(--gold); font-size: 0.8rem; font-weight: 700;">查看創作工作流 →</div>
         </div>
       </div>
 
       <!-- Card 03: Prompt Engineering -->
-      <div class="problem-card reveal" onclick="openPromptLabModal()" 
-        style="
+      <div class="problem-card reveal" onclick="openPromptLabModal()" style="
           cursor: pointer; position: relative; overflow: hidden; height: 320px;
           border-color: rgba(16,185,129,0.4); 
           background: linear-gradient(135deg, #064e3b 0%, #000 100%);
           display: flex; flex-direction: column; justify-content: flex-end;
           padding: 2rem;
         ">
-        <div style="position: absolute; inset: 0; background: radial-gradient(circle at 70% 20%, rgba(16,185,129,0.15) 0%, transparent 60%);"></div>
-        <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.1) 100%); z-index: 1;"></div>
-        <div style="position: absolute; top:0; right:0; padding: 0.5rem 1rem; background: #10b981; color: white; font-size: 0.6rem; font-weight: 800; z-index: 2; letter-spacing: 1px;">LLM INTERACTION LAB (模型交互)</div>
-        <span class="problem-num" style="position: absolute; top: 1.5rem; left: 1.5rem; color: #10b981; opacity: 0.8; font-size: 3rem; margin: 0; z-index: 2; font-family: 'Outfit', sans-serif;">03</span>
+        <div
+          style="position: absolute; inset: 0; background: radial-gradient(circle at 70% 20%, rgba(16,185,129,0.15) 0%, transparent 60%);">
+        </div>
+        <div
+          style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.1) 100%); z-index: 1;">
+        </div>
+        <div
+          style="position: absolute; top:0; right:0; padding: 0.5rem 1rem; background: #10b981; color: white; font-size: 0.6rem; font-weight: 800; z-index: 2; letter-spacing: 1px;">
+          LLM INTERACTION LAB (模型交互)</div>
+        <span class="problem-num"
+          style="position: absolute; top: 1.5rem; left: 1.5rem; color: #10b981; opacity: 0.8; font-size: 3rem; margin: 0; z-index: 2; font-family: 'Outfit', sans-serif;">03</span>
         <div style="position: relative; z-index: 2;">
           <h3 style="margin: 0.5rem 0; color: #fff;">提示詞架構：黑盒邏輯引導</h3>
-          <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.5;">「系統性溝通工程」：透過精密設計的提示詞鏈，引導大模型實現高度結構化的輸出。</p>
+          <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.5;">
+            「系統性溝通工程」：透過精密設計的提示詞鏈，引導大模型實現高度結構化的輸出。</p>
           <div style="color: var(--gold); font-size: 0.8rem; font-weight: 700;">進入提示詞實驗室 →</div>
         </div>
       </div>
@@ -576,62 +611,131 @@
       position: relative; max-height: 90vh; overflow-y: auto;
       transform: translateY(20px); transition: transform 0.3s ease;
     " onclick="event.stopPropagation()">
-      <button onclick="closeVividModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
-      <div style="text-align: center; margin-bottom: 3rem;">
-        <span style="color: #a855f7; font-weight: 700; letter-spacing: 3px; font-size: 0.8rem;">TECHNICAL PROOF OF CONCEPT</span>
-        <h2 style="font-size: 2.2rem; margin-top: 0.5rem; color: #fff;">虛擬歌手：AI 研發架構圖</h2>
+      <button onclick="closeVividModal()"
+        style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <span style="color: #a855f7; font-weight: 700; letter-spacing: 3px; font-size: 0.8rem;">TECHNICAL PROOF OF
+          CONCEPT</span>
+        <h2 style="font-size: 2.2rem; margin-top: 0.5rem; margin-bottom: 1.5rem; color: #fff;">虛擬歌手：AI 研發架構圖</h2>
+        
+        <!-- Tab Buttons -->
+        <div style="display:flex; gap:0.5rem; justify-content:center;">
+          <button class="vivid-tab" id="btn-vivid-arch" onclick="switchVividTab('vivid-tab-arch')"
+                  style="padding:0.5rem 1.5rem; border-radius:3rem; border:1px solid #a855f7;
+                         background:rgba(168,85,247,0.15); color:#a855f7; font-size:0.8rem; cursor:pointer; font-weight: 700; transition: all 0.3s;">技術架構 (Architecture)</button>
+          <button class="vivid-tab" id="btn-vivid-demo" onclick="switchVividTab('vivid-tab-demo')"
+                  style="padding:0.5rem 1.5rem; border-radius:3rem; border:1px solid rgba(255,255,255,0.15);
+                         background:transparent; color:var(--muted); font-size:0.8rem; cursor:pointer; font-weight: 700; transition: all 0.3s;">實驗紀錄 & 音頻 Demo</button>
+        </div>
       </div>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; min-width: 1000px; padding: 2rem 0;">
-        <div style="width: 160px; text-align: center;">
-          <div style="font-size: 0.7rem; color: var(--gold); margin-bottom: 0.8rem; font-weight: 700;">1. 靈感與 Demo 生成</div>
-          <div style="background: rgba(194,156,109,0.1); border: 1px solid var(--gold); border-radius: 1rem; padding: 1.5rem 1rem;">
-            <strong style="color: #fff; display: block; margin-bottom: 0.3rem;">Suno AI</strong>
-            <span style="font-size: 0.6rem; color: var(--muted);">音樂創作引擎</span>
-          </div>
-        </div>
-        <div style="color: rgba(255,255,255,0.2); font-size: 0.8rem;">── 導出音軌 ──▶</div>
-        <div style="width: 160px; text-align: center;">
-          <div style="font-size: 0.7rem; color: #a855f7; margin-bottom: 0.8rem; font-weight: 700;">2. 人聲分離</div>
-          <div style="background: rgba(168,85,247,0.1); border: 1px solid #a855f7; border-radius: 1rem; padding: 1.5rem 1rem;">
-            <strong style="color: #fff; display: block; margin-bottom: 0.3rem;">UVR5</strong>
-            <span style="font-size: 0.6rem; color: var(--muted);">核心處理單元</span>
-          </div>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 2.5rem; width: 260px; position: relative;">
-          <div style="display: flex; align-items: center; gap: 1rem;">
-            <div style="font-size: 0.6rem; color: #3b82f6; white-space: nowrap;">提取純淨 Dry Vocal ▶</div>
-            <div style="flex: 1; background: rgba(59,130,246,0.1); border: 1px solid #3b82f6; border-radius: 1rem; padding: 1rem; text-align: center;">
-              <div style="font-size: 0.65rem; color: #3b82f6; margin-bottom: 0.3rem;">3. 語音建模訓練</div>
-              <strong style="color: #fff; font-size: 0.85rem;">Applio (RVC)</strong>
-              <div style="font-size: 0.55rem; color: #3b82f6; margin-top: 0.3rem;">生成 AI 歌聲</div>
+
+      <!-- TAB 1: ARCHITECTURE (Existing) -->
+      <div id="vivid-tab-arch">
+        <div
+          style="display: flex; align-items: center; justify-content: center; gap: 1rem; min-width: 1000px; padding: 2rem 0;">
+          <div style="width: 160px; text-align: center;">
+            <div style="font-size: 0.7rem; color: var(--gold); margin-bottom: 0.8rem; font-weight: 700;">1. 靈感與 Demo 生成
             </div>
-            <div style="font-size: 0.6rem; color: #3b82f6;">▶</div>
-          </div>
-          <div style="display: flex; align-items: center;">
-            <div style="font-size: 0.65rem; color: #22c55e; white-space: nowrap; width: 100%; text-align: center; border-bottom: 1px dashed rgba(34,197,94,0.3); padding-bottom: 0.5rem;">
-              提取 Instrumental 伴奏 ───────────────▶
+            <div
+              style="background: rgba(194,156,109,0.1); border: 1px solid var(--gold); border-radius: 1rem; padding: 1.5rem 1rem;">
+              <strong style="color: #fff; display: block; margin-bottom: 0.3rem;">Suno AI</strong>
+              <span style="font-size: 0.6rem; color: var(--muted);">提示詞引導引擎</span>
             </div>
           </div>
-        </div>
-        <div style="width: 180px; text-align: center;">
-          <div style="font-size: 0.7rem; color: #22c55e; margin-bottom: 0.8rem; font-weight: 700;">4. 數位混音後製</div>
-          <div style="background: rgba(34,197,94,0.1); border: 1px solid #22c55e; border-radius: 1rem; padding: 1.5rem 1rem;">
-            <strong style="color: #fff; display: block; margin-bottom: 0.3rem;">Audacity</strong>
-            <span style="font-size: 0.6rem; color: var(--muted);">整合/修復/混音</span>
+          <div style="color: rgba(255,255,255,0.2); font-size: 0.8rem;">── 導出音軌 ──▶</div>
+          <div style="width: 160px; text-align: center;">
+            <div style="font-size: 0.7rem; color: #a855f7; margin-bottom: 0.8rem; font-weight: 700;">2. 人聲分離提取</div>
+            <div
+              style="background: rgba(168,85,247,0.1); border: 1px solid #a855f7; border-radius: 1rem; padding: 1.5rem 1rem;">
+              <strong style="color: #fff; display: block; margin-bottom: 0.3rem;">UVR5</strong>
+              <span style="font-size: 0.6rem; color: var(--muted);">乾淨人聲淬鍊</span>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2.5rem; width: 260px; position: relative;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div style="font-size: 0.6rem; color: #3b82f6; white-space: nowrap;">提取純淨 Dry Vocal ▶</div>
+              <div
+                style="flex: 1; background: rgba(59,130,246,0.1); border: 1px solid #3b82f6; border-radius: 1rem; padding: 1rem; text-align: center;">
+                <div style="font-size: 0.65rem; color: #3b82f6; margin-bottom: 0.3rem;">3. 模型深度訓練</div>
+                <strong style="color: #fff; font-size: 0.85rem;">Applio (RVC)</strong>
+                <div style="font-size: 0.55rem; color: #3b82f6; margin-top: 0.3rem;">400 Epochs (.pth)</div>
+              </div>
+              <div style="font-size: 0.6rem; color: #3b82f6;">▶</div>
+            </div>
+            <div style="display: flex; align-items: center;">
+              <div
+                style="font-size: 0.65rem; color: #22c55e; white-space: nowrap; width: 100%; text-align: center; border-bottom: 1px dashed rgba(34,197,94,0.3); padding-bottom: 0.5rem;">
+                提取 Instrumental 伴奏 ───────────────▶
+              </div>
+            </div>
+          </div>
+          <div style="width: 180px; text-align: center;">
+            <div style="font-size: 0.7rem; color: #22c55e; margin-bottom: 0.8rem; font-weight: 700;">4. 數位混音後製</div>
+            <div
+              style="background: rgba(34,197,94,0.1); border: 1px solid #22c55e; border-radius: 1rem; padding: 1.5rem 1rem;">
+              <strong style="color: #fff; display: block; margin-bottom: 0.3rem;">Audacity</strong>
+              <span style="font-size: 0.6rem; color: var(--muted);">低通濾波/降噪修復</span>
+            </div>
+          </div>
+          <div style="color: rgba(255,255,255,0.2); font-size: 0.8rem;">──▶</div>
+          <div style="width: 180px;">
+            <div
+              style="background: linear-gradient(135deg, var(--gold), #debb88); color: #000; border-radius: 1rem; padding: 1.5rem 1rem; text-align: center; box-shadow: 0 10px 30px rgba(194,156,109,0.3);">
+              <div style="font-size: 0.6rem; font-weight: 800; opacity: 0.6; margin-bottom: 0.3rem;">FINAL RESULT</div>
+              <strong style="font-size: 0.9rem;">全合成歌手</strong>
+              <div style="font-size: 0.6rem; margin-top: 0.3rem; font-weight: 700;">零版權音軌產出</div>
+            </div>
           </div>
         </div>
-        <div style="color: rgba(255,255,255,0.2); font-size: 0.8rem;">──▶</div>
-        <div style="width: 180px;">
-          <div style="background: linear-gradient(135deg, var(--gold), #debb88); color: #000; border-radius: 1rem; padding: 1.5rem 1rem; text-align: center; box-shadow: 0 10px 30px rgba(194,156,109,0.3);">
-            <div style="font-size: 0.6rem; font-weight: 800; opacity: 0.6; margin-bottom: 0.3rem;">FINAL RESULT</div>
-            <strong style="font-size: 0.9rem;">虛擬歌手計畫</strong>
-            <div style="font-size: 0.6rem; margin-top: 0.3rem; font-weight: 700;">概念曲原型產出</div>
+        <div
+          style="margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.03); border-radius: 1.5rem; font-size: 0.9rem; line-height: 1.8; color: var(--muted); border: 1px solid rgba(255,255,255,0.05);">
+          <p>💡 <strong>架構總結：</strong> 嚴格遵循 <strong>端到端 (End-to-End) 開發管線</strong>。從 Prompt 驅動起始，跳脫傳統依賴真人音訊克隆的框架。透過 Applio 高達 400 Epochs 的雲端訓練提煉 `.pth` 權重，再於 Audacity 中進行頻率修補，證明「全合成原創數位資產」的建構可行性。</p>
+        </div>
+      </div>
+
+      <!-- TAB 2: DEMO & LOG -->
+      <div id="vivid-tab-demo" style="display: none; text-align: left;">
+        
+        <!-- Audio Player Section -->
+        <div style="background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.3); border-radius: 1.5rem; padding: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: #a855f7; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">🎧</div>
+          <div style="flex: 1;">
+            <div style="font-size: 0.75rem; color: #a855f7; font-weight: 700; letter-spacing: 1px; margin-bottom: 0.2rem;">PROTOTYPE 1.0</div>
+            <div style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+              完全合成虛擬人聲
+              <span style="font-size: 0.65rem; color: #ef4444; border: 1px solid #ef4444; background: rgba(239, 68, 68, 0.1); padding: 0.2rem 0.5rem; border-radius: 0.5rem; font-weight: 700;">30sec Technical Demo</span>
+            </div>
+            <audio id="vividAudioPlayer" controls style="width: 100%; height: 36px; border-radius: 18px; outline: none; background: #000;">
+              <!-- 暫時抽掉音軌防範版權問題，等待 30 秒 Demo 生成 -->
+              <source src="" type="audio/mpeg">
+              您的瀏覽器不支援 Audio 播放。
+            </audio>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+          <!-- Left Column: Core Value -->
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
+            <h4 style="color: #a855f7; margin-bottom: 1rem; font-size: 1.1rem;">🧬 版權淨空的原創身分</h4>
+            <div style="font-size: 0.85rem; color: var(--muted); line-height: 1.8;">
+              與市面上多數依賴「盜用明星聲音」的 AI 翻唱不同，本專案的根源為 <strong>Suno AI 所生成的虛擬音軌</strong>。<br><br>
+              我透過精密調校提示詞以生成理想的音色與唱腔，隨即以此全合成、無實體真人的音源建立 Dataset。成功證明了不侵犯任何實體人格權的「AI 原創數位人聲」建模是可行的。
+            </div>
+          </div>
+
+          <!-- Right Column: Limitations & Analysis -->
+          <div style="background: rgba(239, 68, 68, 0.05); border: 1px dashed rgba(239, 68, 68, 0.3); border-radius: 1.5rem; padding: 2rem;">
+            <h4 style="color: #ef4444; margin-bottom: 1rem; font-size: 1.1rem;">⚠️ 技術重構與已知限制</h4>
+            <div style="font-size: 0.85rem; color: rgba(255,255,255,0.8); line-height: 1.8;">
+              <strong style="color: #fff;">挑戰：</strong>儘管經歷 400 Epochs 的深度訓練，並在 Audacity 套用降噪與低通濾波，最終轉換的人聲在高頻激動處仍會出現「嚴重電子音」或「合成頻率崩潰」。<br><br>
+              <strong style="color: #fff;">根本原因分析：</strong><br>
+              1. <strong>Dataset 相位污染：</strong> Suno 原始生成檔案本身即具有 AI 計算產生的微觀相位失真，UVR5 雖洗出人聲，但失真特徵一同被模型吸收。<br>
+              2. <strong>RMVPE 提取極限：</strong> RVC 音高提取演算法在面對複雜動態或非純淨基頻時，容易發生誤判，導致輸出特徵碎裂 (Artifacts)。
+            </div>
           </div>
         </div>
       </div>
-      <div style="margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.03); border-radius: 1.5rem; font-size: 0.9rem; line-height: 1.8; color: var(--muted); border: 1px solid rgba(255,255,255,0.05);">
-        <p>💡 <strong>專案技術總結：</strong> 此工作流嚴格遵循 <strong>Mermaid LR 架構</strong>。透過 UVR5 實現高品質的人聲與伴奏分離，確保 RVC (Applio) 訓練模型不受干擾。最終在 Audacity 中進行精確的相位對齊與頻率修補，達成「虛擬歌手」商業級的音訊產出。</p>
-      </div>
+
     </div>
   </div>
 
@@ -647,41 +751,55 @@
       position: relative; max-height: 90vh; overflow-y: auto;
       transform: translateY(20px); transition: transform 0.3s ease;
     " onclick="event.stopPropagation()">
-      <button onclick="closeAudioScoreModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
-      
+      <button onclick="closeAudioScoreModal()"
+        style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+
       <div style="text-align: center; margin-bottom: 2rem;">
-        <span style="color: var(--blue); font-weight: 700; letter-spacing: 3px; font-size: 0.8rem;">CREATIVE WORK: SOUND DESIGN</span>
+        <span style="color: var(--blue); font-weight: 700; letter-spacing: 3px; font-size: 0.8rem;">CREATIVE WORK: SOUND
+          DESIGN</span>
         <h2 style="font-size: 2.2rem; margin-top: 0.5rem; color: #fff;">原創配樂創作流程</h2>
       </div>
 
       <!-- NOW PLAYING UI -->
-      <div style="margin-bottom: 2.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(37,99,235,0.3); border-radius: 1.5rem; padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
+      <div
+        style="margin-bottom: 2.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(37,99,235,0.3); border-radius: 1.5rem; padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
         <div class="playing-visualizer">
           <span></span><span></span><span></span><span></span>
         </div>
         <div style="flex: 1;">
-          <h4 style="color: #fff; margin: 0; font-size: 0.95rem; letter-spacing: 0.05em;">正在播放：〈INSTRUMENTAL PROTOTYPE 1.0〉</h4>
-          <p style="color: var(--muted); font-size: 0.78rem; margin: 0.25rem 0 0;">本系統全局背景音樂即為此原創作品，展示了沉浸式 UI 與聲景設計的結合。</p>
+          <h4 style="color: #fff; margin: 0; font-size: 0.95rem; letter-spacing: 0.05em;">正在播放：〈INSTRUMENTAL PROTOTYPE
+            1.0〉</h4>
+          <p style="color: var(--muted); font-size: 0.78rem; margin: 0.25rem 0 0;">本系統全局背景音樂即為此原創作品，展示了沉浸式 UI 與聲景設計的結合。
+          </p>
         </div>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
+        <div
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
           <h4 style="color: var(--blue); margin-bottom: 1rem;">🎹 AI 協作創作</h4>
-          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">使用進階生成式 AI 模型為項目建立節奏底碼與核心音軌氛圍，確保音樂基調與 Cyberpunk 本質高度契合。</p>
+          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">使用進階生成式 AI 模型為項目建立節奏底碼與核心音軌氛圍，確保音樂基調與
+            Cyberpunk 本質高度契合。</p>
         </div>
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
+        <div
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
           <h4 style="color: var(--blue); margin-bottom: 1rem;">🏗️ 數位音訊後製</h4>
-          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">透過 Audacity 進行多軌編輯（Multi-track Editing），並掛載專業 VST 插件進行噪點消除、頻率修補與動態範圍調整。</p>
+          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">透過 Audacity 進行多軌編輯（Multi-track
+            Editing），並掛載專業 VST 插件進行噪點消除、頻率修補與動態範圍調整。</p>
         </div>
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
+        <div
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
           <h4 style="color: var(--blue); margin-bottom: 1rem;">🎛️ 混音母帶優化</h4>
-          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">手動調整相位與立體聲聲擴展，確保在網頁環境下具備最優化的清晰度與氛圍擴散感。</p>
+          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">手動調整相位與立體聲聲擴展，確保在網頁環境下具備最優化的清晰度與氛圍擴散感。
+          </p>
         </div>
       </div>
 
-      <div style="margin-top: 3rem; padding: 2rem; background: rgba(37,99,235,0.05); border-radius: 1.5rem; border: 1px dashed rgba(37,99,235,0.3); text-align: center;">
-        <p style="font-size: 0.9rem; color: #fff; margin-bottom: 0.5rem;"><strong>💡 AI 生成素材 + 本人 Audacity 精密後製</strong></p>
+      <div
+        style="margin-top: 3rem; padding: 2rem; background: rgba(37,99,235,0.05); border-radius: 1.5rem; border: 1px dashed rgba(37,99,235,0.3); text-align: center;">
+        <p style="font-size: 0.9rem; color: #fff; margin-bottom: 0.5rem;"><strong>💡 AI 生成素材 + 本人 Audacity 精密後製</strong>
+        </p>
         <span style="color: var(--muted); font-size: 0.8rem;">融合 AI 的創意激發與人類工程師的精密調校，達成最優化的感官平衡。</span>
       </div>
     </div>
@@ -699,31 +817,42 @@
       position: relative; max-height: 90vh; overflow-y: auto;
       transform: translateY(20px); transition: transform 0.3s ease;
     " onclick="event.stopPropagation()">
-      <button onclick="closePromptLabModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
-      
+      <button onclick="closePromptLabModal()"
+        style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+
       <div style="text-align: center; margin-bottom: 2rem;">
-        <span style="color: #10b981; font-weight: 700; letter-spacing: 3px; font-size: 0.8rem;">LLM INTERACTION & LOGIC</span>
+        <span style="color: #10b981; font-weight: 700; letter-spacing: 3px; font-size: 0.8rem;">LLM INTERACTION &
+          LOGIC</span>
         <h2 style="font-size: 2.2rem; margin-top: 0.5rem; color: #fff;">系統化提示詞工程</h2>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
+        <div
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
           <h4 style="color: #10b981; margin-bottom: 1rem;">🧬 邏輯約束</h4>
-          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">開發多層級的「角色定義 (Personas)」與「邊界約束」，確保模型在執行食譜生成等任務時，嚴格遵循正確的 JSON 結構與學術性回饋。</p>
+          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">開發多層級的「角色定義
+            (Personas)」與「邊界約束」，確保模型在執行食譜生成等任務時，嚴格遵循正確的 JSON 結構與學術性回饋。</p>
         </div>
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
+        <div
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
           <h4 style="color: #10b981; margin-bottom: 1rem;">⛓️ 實作鏈結</h4>
-          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">運用 CoT (Chain-of-Thought) 思考鏈技術，引導模型進行多步推導。將複雜任務分解為可預測的子邏輯單元，大幅提升輸出穩定性。</p>
+          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">運用 CoT (Chain-of-Thought)
+            思考鏈技術，引導模型進行多步推導。將複雜任務分解為可預測的子邏輯單元，大幅提升輸出穩定性。</p>
         </div>
-        <div style="background: rgba(16,185,129,0.03); border: 1px solid rgba(16,185,129,0.05); border-radius: 1.5rem; padding: 2rem;">
+        <div
+          style="background: rgba(16,185,129,0.03); border: 1px solid rgba(16,185,129,0.05); border-radius: 1.5rem; padding: 2rem;">
           <h4 style="color: #10b981; margin-bottom: 1rem;">🔍 迭代式開發</h4>
-          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">透過 A/B Testing 與壓力測試，對不同的提示詞版本進行比對，從而找出對 Gemini 模型反應最具親和力與穩定度的指令路徑。</p>
+          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">透過 A/B Testing 與壓力測試，對不同的提示詞版本進行比對，從而找出對
+            Gemini 模型反應最具親和力與穩定度的指令路徑。</p>
         </div>
       </div>
 
-      <div style="margin-top: 3rem; padding: 2rem; background: rgba(16,185,129,0.05); border-radius: 1.5rem; border: 1px dashed rgba(16,185,129,0.3); text-align: center;">
+      <div
+        style="margin-top: 3rem; padding: 2rem; background: rgba(16,185,129,0.05); border-radius: 1.5rem; border: 1px dashed rgba(16,185,129,0.3); text-align: center;">
         <p style="font-size: 0.9rem; color: #fff; margin-bottom: 0.5rem;"><strong>💡 這不僅是「說話」，更是「用語言編寫邏輯程式」</strong></p>
-        <span style="color: var(--muted); font-size: 0.8rem;">本項目展現了如何透過 Prompt Engineering 優化 AI 系統效能，達成非預定義功能的高度自動化。</span>
+        <span style="color: var(--muted); font-size: 0.8rem;">本項目展現了如何透過 Prompt Engineering 優化 AI
+          系統效能，達成非預定義功能的高度自動化。</span>
       </div>
     </div>
   </div>
@@ -735,9 +864,10 @@
       <span class="section-label" style="display:block; margin-bottom:1rem;">08&nbsp;&nbsp;與我聯繫</span>
       <h2>期待與您<br>共創未來</h2>
       <p class="footer-sub">如果您正在尋找具備 AI 應用整合能力與跨領域開發經驗的人才，<br>歡迎透過以下方式與我聯繫，或進一步查看我的完整經歷。</p>
-      
+
       <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
-        <a href="mailto:darke45678@gmail.com" class="btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 2rem;">
+        <a href="mailto:darke45678@gmail.com" class="btn-primary"
+          style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 2rem;">
           <span>📧 Gmail 聯繫</span>
         </a>
       </div>
@@ -769,7 +899,8 @@
       transform: translateY(20px); transition: transform 0.3s ease;
       box-shadow: 0 30px 60px rgba(0,0,0,0.5);
     " onclick="event.stopPropagation()">
-      <button onclick="closeTechModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+      <button onclick="closeTechModal()"
+        style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
       <div id="techModalContent"><!-- Dynamic Content --></div>
     </div>
   </div>
@@ -781,6 +912,7 @@
   <script src="js/tech-data.js"></script>
   <script src="js/script.js"></script>
   <!-- GSAP ScrollTrigger Registration -->
-  <script>if(typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);</script>
+  <script>if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);</script>
 </body>
+
 </html>
