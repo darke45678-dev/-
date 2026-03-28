@@ -375,50 +375,78 @@
   <!-- TECH STACK -->
   <section id="stack" class="tech-section">
     <div class="reveal">
-      <span class="section-label">04&nbsp;&nbsp;技術棧</span>
-      <h2 class="section-title">驅動系統的<br>核心技術</h2>
+      <span class="section-label">04&nbsp;&nbsp;技術架構</span>
+      <h2 class="section-title">驅動系統的<br>核心技術矩陣</h2>
     </div>
-    <div class="tech-grid">
-      <div class="tech-card reveal" onclick="openTechModal('yolo')">
-        <span class="tech-emoji">🧠</span>
-        <div class="tech-name">YOLOv11m</div>
-        <div class="tech-role">物件偵測模型 · 精準度實測</div>
+
+    <div class="tech-container" style="margin-top: 4rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem;">
+      
+      <!-- Group 1: YOLO Core (Computer Vision AI) -->
+      <div class="tech-group">
+        <h3 style="font-size: 0.7rem; color: #555; letter-spacing: 2px; margin-bottom: 1.5rem; text-transform: uppercase;">// Computer Vision AI</h3>
+        <div class="tech-column-grid" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="tech-card reveal" onclick="openTechModal('yolo')" style="width: 100%;">
+            <span class="tech-emoji">🧠</span>
+            <div class="tech-name">YOLOv11m</div>
+            <div class="tech-role">核心視覺推論模型</div>
+          </div>
+          <div class="tech-card reveal" onclick="openTechModal('dataset')" style="width: 100%;">
+            <span class="tech-emoji">📊</span>
+            <div class="tech-name">資料集標注</div>
+            <div class="tech-role">Roboflow · 5560樣本</div>
+          </div>
+          <div class="tech-card reveal" onclick="openTechModal('pytorch')" style="width: 100%;">
+            <span class="tech-emoji">🔥</span>
+            <div class="tech-name">PyTorch</div>
+            <div class="tech-role">模型訓練與權重優化</div>
+          </div>
+        </div>
       </div>
-      <div class="tech-card reveal" onclick="openTechModal('gemini')">
-        <span class="tech-emoji">✨</span>
-        <div class="tech-name">Gemini 2.5 Flash</div>
-        <div class="tech-role">LLM 大腦 · RAG 生成引擎</div>
+
+      <!-- Group 2: Web Infra (System & Infrastructure) -->
+      <div class="tech-group">
+        <h3 style="font-size: 0.7rem; color: #555; letter-spacing: 2px; margin-bottom: 1.5rem; text-transform: uppercase;">// System & Infrastructure</h3>
+        <div class="tech-column-grid" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="tech-card reveal" onclick="openTechModal('arch')" style="width: 100%;">
+            <span class="tech-emoji">🏗️</span>
+            <div class="tech-name">系統全架構</div>
+            <div class="tech-role">端到端數據流轉圖</div>
+          </div>
+          <div class="tech-card reveal" onclick="openTechModal('react')" style="width: 100%;">
+            <span class="tech-emoji">⚛️</span>
+            <div class="tech-name">React 18 + Vite</div>
+            <div class="tech-role">高效能 SPA 開發環境</div>
+          </div>
+          <div class="tech-card reveal" onclick="openTechModal('db')" style="width: 100%;">
+            <span class="tech-emoji">🗃️</span>
+            <div class="tech-name">IndexedDB</div>
+            <div class="tech-role">本地 persistent 儲存</div>
+          </div>
+        </div>
       </div>
-      <div class="tech-card reveal" onclick="openTechModal('arch')">
-        <span class="tech-emoji">🏗️</span>
-        <div class="tech-name">系統全架構</div>
-        <div class="tech-role">端到端邏輯 · 數據流轉圖</div>
+
+      <!-- Group 3: UI/Interaction (Interaction & Experience) -->
+      <div class="tech-group">
+        <h3 style="font-size: 0.7rem; color: #555; letter-spacing: 2px; margin-bottom: 1.5rem; text-transform: uppercase;">// Interaction & Experience</h3>
+        <div class="tech-column-grid" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="tech-card reveal" onclick="openTechModal('gemini')" style="width: 100%;">
+            <span class="tech-emoji">✨</span>
+            <div class="tech-name">Gemini API</div>
+            <div class="tech-role">智慧食譜與交互核心</div>
+          </div>
+          <div class="tech-card reveal" onclick="openTechModal('tailwind')" style="width: 100%;">
+            <span class="tech-emoji">🎨</span>
+            <div class="tech-name">Tailwind CSS</div>
+            <div class="tech-role">現代化樣式管理系統</div>
+          </div>
+          <div class="tech-card reveal" style="width: 100%; opacity: 0.6; cursor: wait;">
+            <span class="tech-emoji">🛠️</span>
+            <div class="tech-name">UI 演進歷程</div>
+            <div class="tech-role">內容建構中 • Coming Soon</div>
+          </div>
+        </div>
       </div>
-      <div class="tech-card reveal" onclick="openTechModal('db')">
-        <span class="tech-emoji">🗃️</span>
-        <div class="tech-name">IndexedDB</div>
-        <div class="tech-role">本地資料管理 · 加密存儲</div>
-      </div>
-      <div class="tech-card reveal" onclick="openTechModal('pytorch')">
-        <span class="tech-emoji">🔥</span>
-        <div class="tech-name">PyTorch</div>
-        <div class="tech-role">模型訓練框架</div>
-      </div>
-      <div class="tech-card reveal" onclick="openTechModal('tailwind')">
-        <span class="tech-emoji">🎨</span>
-        <div class="tech-name">Tailwind CSS</div>
-        <div class="tech-role">UI 樣式系統</div>
-      </div>
-      <div class="tech-card reveal" onclick="openTechModal('react')">
-        <span class="tech-emoji">⚛️</span>
-        <div class="tech-name">React 18 + Vite</div>
-        <div class="tech-role">高效能 SPA 框架</div>
-      </div>
-      <div class="tech-card reveal" onclick="openTechModal('dataset')">
-        <span class="tech-emoji">📊</span>
-        <div class="tech-name">資料集標注</div>
-        <div class="tech-role">Roboflow · 5560+ 資料集</div>
-      </div>
+
     </div>
   </section>
 
@@ -873,40 +901,91 @@
       <button onclick="closePromptLabModal()"
         style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
 
-      <div style="text-align: center; margin-bottom: 2rem;">
-        <span style="color: #10b981; font-weight: 700; letter-spacing: 3px; font-size: 0.8rem;">LLM INTERACTION &
-          LOGIC</span>
-        <h2 style="font-size: 2.2rem; margin-top: 0.5rem; color: #fff;">系統化提示詞工程</h2>
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <span style="color: #10b981; font-weight: 700; letter-spacing: 4px; font-size: 0.75rem; text-transform: uppercase;">System Intelligence Architecture</span>
+        <h2 style="font-size: 2.4rem; margin-top: 0.5rem; color: #fff;">提示詞架構：邏輯設計核心</h2>
+        <div style="width: 50px; height: 2px; background: #10b981; margin: 1.5rem auto;"></div>
+        <p style="color: rgba(255,255,255,0.7); font-size: 1rem; max-width: 600px; margin: 0 auto; line-height: 1.8;">
+          本系統不只是與 AI 「對話」，而是透過精密設計的指令架構，將物聯網採集的原始數據轉化為具備業務邏輯的生成決策。
+        </p>
       </div>
 
-      <div
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
-        <div
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
-          <h4 style="color: #10b981; margin-bottom: 1rem;">🧬 邏輯約束</h4>
-          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">開發多層級的「角色定義
-            (Personas)」與「邊界約束」，確保模型在執行食譜生成等任務時，嚴格遵循正確的 JSON 結構與學術性回饋。</p>
+      <!-- THREE TACTICAL PILLARS -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3.5rem;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(16,185,129,0.2); border-radius: 1.5rem; padding: 2rem; position: relative; overflow: hidden;">
+          <div style="font-size: 2rem; margin-bottom: 1rem;">📦</div>
+          <h4 style="color: #fff; margin-bottom: 0.8rem;">結構化輸出控管</h4>
+          <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.7;"><strong>JSON Enforcement</strong>：強制模型以標準 JSON 格式回傳，確保網頁端能精準提取食譜步驟、食材媒合率與營養標籤。</p>
         </div>
-        <div
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem;">
-          <h4 style="color: #10b981; margin-bottom: 1rem;">⛓️ 實作鏈結</h4>
-          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">運用 CoT (Chain-of-Thought)
-            思考鏈技術，引導模型進行多步推導。將複雜任務分解為可預測的子邏輯單元，大幅提升輸出穩定性。</p>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(16,185,129,0.2); border-radius: 1.5rem; padding: 2rem;">
+          <div style="font-size: 2rem; margin-bottom: 1rem;">🛡️</div>
+          <h4 style="color: #fff; margin-bottom: 0.8rem;">安全性負向約束</h4>
+          <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.7;"><strong>Negative Prompting</strong>：顯式定義決策邊界，嚴格禁止系統在生成食譜時包含偵測為「已腐敗」的食材，從指令端杜絕食安隱患。</p>
         </div>
-        <div
-          style="background: rgba(16,185,129,0.03); border: 1px solid rgba(16,185,129,0.05); border-radius: 1.5rem; padding: 2rem;">
-          <h4 style="color: #10b981; margin-bottom: 1rem;">🔍 迭代式開發</h4>
-          <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">透過 A/B Testing 與壓力測試，對不同的提示詞版本進行比對，從而找出對
-            Gemini 模型反應最具親和力與穩定度的指令路徑。</p>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(16,185,129,0.2); border-radius: 1.5rem; padding: 2rem;">
+          <div style="font-size: 2rem; margin-bottom: 1rem;">🧠</div>
+          <h4 style="color: #fff; margin-bottom: 0.8rem;">動態脈絡注入</h4>
+          <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.7;"><strong>Context Optimization</strong>：依據用戶偏好（如低脂、快速）動態調整指令優先權，實現「因物而異、因人而異」的個人化推薦。</p>
         </div>
       </div>
 
-      <div
-        style="margin-top: 3rem; padding: 2rem; background: rgba(16,185,129,0.05); border-radius: 1.5rem; border: 1px dashed rgba(16,185,129,0.3); text-align: center;">
-        <p style="font-size: 0.9rem; color: #fff; margin-bottom: 0.5rem;"><strong>💡 這不僅是「說話」，更是「用語言編寫邏輯程式」</strong></p>
-        <span style="color: var(--muted); font-size: 0.8rem;">本項目展現了如何透過 Prompt Engineering 優化 AI
-          系統效能，達成非預定義功能的高度自動化。</span>
+      <!-- DATA FLOW PIPELINE (VISUAL) -->
+      <div style="background: #000; border: 1px solid rgba(255,255,255,0.05); border-radius: 2rem; padding: 3rem 2rem; text-align: left;">
+        <h4 style="color: #10b981; margin-bottom: 2rem; text-align: center; letter-spacing: 2px;">⚡ 指令流數據轉換管道 (Data Pipeline)</h4>
+        
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 700px; margin: 0 auto;">
+          <!-- Step 1 -->
+          <div style="display: flex; align-items: flex-start; gap: 1.5rem;">
+            <div style="background: #10b981; color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0;">1</div>
+            <div>
+              <div style="color: #fff; font-weight: 700; margin-bottom: 0.4rem;">RAW INPUT · 原始數據獲取</div>
+              <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.8rem;">蒐集 YOLO 辨識標籤、食材新鮮度狀態與 IndexedDB 中的庫存清單。</p>
+              <code style="background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.8rem; color: var(--gold);">[ "Beef": "Fresh", "Spinach": "Expired" ]</code>
+            </div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="padding-left: 15px; color: rgba(16,185,129,0.3); font-size: 1.2rem;">↓</div>
+
+          <!-- Step 2 -->
+          <div style="display: flex; align-items: flex-start; gap: 1.5rem;">
+            <div style="background: #10b981; color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0;">2</div>
+            <div>
+              <div style="color: #fff; font-weight: 700; margin-bottom: 0.4rem;">LOGIC BINDING · 指令模組封裝</div>
+              <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.8rem;">系統自動將原始標籤填入預設指令模板，並根據即期規則進行「邏輯仲裁」。</p>
+              <div style="background: rgba(16,185,129,0.05); border-left: 2px solid #10b981; padding: 1rem; border-radius: 0 0.5rem 0.5rem 0; font-size: 0.8rem; color: #ccc; font-style: italic;">
+                "發現過期菠菜 -> 自動從生成清單中移除 -> 改為生成牛肉相關料理建議..."
+              </div>
+            </div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="padding-left: 15px; color: rgba(16,185,129,0.3); font-size: 1.2rem;">↓</div>
+
+          <!-- Step 3 -->
+          <div style="display: flex; align-items: flex-start; gap: 1.5rem;">
+            <div style="background: #10b981; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; animation: pulse 2s infinite;">✨</div>
+            <div>
+              <div style="color: #fff; font-weight: 700; margin-bottom: 0.4rem;">INTELLIGENT RESPONSE · 結構化回應</div>
+              <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.8rem;">Gemini 解析指令並輸出前端可讀的數據格式，秒速完成 UI 渲染。</p>
+              <div style="background: rgba(0,0,0,0.5); padding: 0.8rem; border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.1); font-family: monospace; font-size: 0.75rem; color: #10b981;">
+                { "recipe_name": "香煎牛肉佐蒜片", "status": "Success" }
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div style="margin-top: 3.5rem; padding: 2rem; background: rgba(16,185,129,0.05); border-radius: 1.5rem; border: 1px dashed rgba(16,185,129,0.3); text-align: center;">
+        <p style="font-size: 0.95rem; color: #fff; margin-bottom: 0.8rem;"><strong>🎯 願景：打造「具備判斷力」而非單純「執行力」的 AI</strong></p>
+        <span style="color: var(--muted); font-size: 0.85rem;">透過精密架構化的提示詞設計，成功將大型語言模型的錯誤率降至 3% 以下，建立穩定可靠的使用者體驗。</span>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
+    </div>
+  </div>
     </div>
   </div>
 
