@@ -26,43 +26,62 @@
   <meta name="theme-color" content="#030303" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=2026033102" />
+  <link rel="stylesheet" href="css/styles.css?v=2026033103" />
   <style>
     @media (max-width: 768px) {
-      /* 1. Splash Portal Fixing */
+      /* 1. Splash Portal & Branding Fix */
       .splash-bg-element {
-        transform: translate(-50%, -50%) scale(0.55) !important;
+        transform: translate(-50%, -50%) scale(0.48) !important; /* 更小規模以容納三核 */
         left: 50% !important;
         top: 45% !important;
         width: 100vw !important;
       }
-      .splash-title { font-size: 3.2rem !important; }
-      .core-satellite-img { display: none !important; }
-      .core-titan-img { width: 140% !important; max-width: none !important; }
+      .splash-title { font-size: 2.2rem !important; margin-bottom: 1rem !important; }
+      .core-satellite-img { 
+        display: block !important; 
+        width: 25% !important; 
+        opacity: 0.4 !important;
+      }
+      .core-titan-img { width: 100% !important; max-width: none !important; }
 
-      /* 2. Hero Stats & Grids Collision Fixing */
-      .hero-stats, .tech-grid, .problem-grid, .persona-grid, .market-inner {
+      /* 2. Grid & Architecture Collision Fixing (THE REAL SURGERY) */
+      .hero-stats, .tech-grid, .problem-grid, .persona-grid, .market-inner, .tech-column-grid {
         display: flex !important;
         flex-direction: column !important;
         gap: 1.5rem !important;
         align-items: center !important;
-        padding: 0 1rem !important;
+        width: 100% !important;
+      }
+      .tech-column-grid {
+         margin-bottom: 2rem !important;
       }
       .stat, .tech-card, .market-stat-item, .problem-card {
         width: 100% !important;
         max-width: 100% !important;
+        flex: none !important;
       }
       .problem-card { height: auto !important; min-height: 280px !important; }
 
-      /* 3. Modal & Content Safety */
-      .modal-root > div { width: 94% !important; padding: 2rem 1.2rem !important; }
+      /* 3. Audio Toggle - Mobile Sticky Right */
+      #audio-toggle {
+        position: fixed !important;
+        top: 1rem !important;
+        right: 1rem !important;
+        z-index: 1001 !important;
+        background: rgba(0,0,0,0.6) !important;
+        backdrop-filter: blur(10px) !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 100px !important;
+      }
+      .audio-status i { display: none !important; } /* 隱藏手機非必要文字 */
+      
+      /* 4. Modal Safety */
+      .modal-root > div { width: 94% !important; max-height: 85vh !important; }
       .modal-root img, .modal-root svg { max-width: 100% !important; height: auto !important; }
       
-      /* Identify Food Cards - Force Grid to column */
+      /* Identify Food Cards - 2 Column Grid */
       .yolo-visual {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* 食材小卡改為兩兩一排，避免一長排排不開 */
-        gap: 0.8rem !important;
+        display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 0.8rem !important;
       }
     }
   </style>
@@ -136,18 +155,18 @@
       <a href="#portfolio">作品集</a>
       <a href="#market">前景</a>
       <a href="#contact" class="nav-btn">聯絡我</a>
-      <button id="audio-toggle" class="audio-btn">
-        <div class="audio-line-group">
-          <div class="audio-line l1"></div>
-          <div class="audio-line l2"></div>
-          <div class="audio-line l3"></div>
-          <div class="audio-line l4"></div>
-        </div>
-        <span class="audio-status">SOUND <span>OFF</span> <i
-            style="font-size: 0.6rem; opacity: 0.5; margin-left: 0.3rem; font-style: normal; letter-spacing: 0.05em;">|
-            ORIGINAL SCORE</i></span>
-      </button>
     </div>
+    <button id="audio-toggle" class="audio-btn">
+      <div class="audio-line-group">
+        <div class="audio-line l1"></div>
+        <div class="audio-line l2"></div>
+        <div class="audio-line l3"></div>
+        <div class="audio-line l4"></div>
+      </div>
+      <span class="audio-status">SOUND <span>OFF</span> <i
+          style="font-size: 0.6rem; opacity: 0.5; margin-left: 0.3rem; font-style: normal; letter-spacing: 0.05em;">|
+          ORIGINAL SCORE</i></span>
+    </button>
   </nav>
 
   <!-- 首頁區域 (Hero Section) -->
