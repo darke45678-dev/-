@@ -1988,30 +1988,24 @@ audio:not([controls]) {
     width: 80vw !important;
     height: 80vw !important;
   }
-  /* 衛星核心隱藏（手機太窄放不下） */
-  .core-satellite-img {
-    display: none !important;
-  }
-  /* 讓入口背景容器不裁切 */
+  /* 衛星核心隱藏（手機直向放不下） */
+  .core-satellite-img { display: none !important; }
+  /* 讓入口背景容器置中且不裁切 */
   .splash-bg-element {
     overflow: visible !important;
-    position: fixed !important;
+    position: absolute !important;
     inset: 0 !important;
     transform: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
-
-  /* 引導頁移動端調整 */
-  .splash-title { font-size: 3.5rem !important; margin-bottom: 1.5rem !important; }
-  .splash-bg-element {
-    transform: scale(0.6) translateY(-50px) !important;
-    transform-origin: center center;
-    width: 100% !important;
-    left: 0 !important;
-    display: flex;
-    justify-content: center;
+  /* 主核以 vw 單位填滿直向螢幕 */
+  .core-titan-img {
+    width: 90vw !important;
+    height: 90vw !important;
+    opacity: 0.15 !important;
   }
-  .core-titan-img { width: 140% !important; max-width: none !important; }
-  .core-satellite-img { display: none !important; } /* 手機端隱藏側邊衛星以集中主核視覺 */
 
   /* 核心格線改為單欄並優化間距 */
   .tech-grid, .problem-grid, .persona-grid {

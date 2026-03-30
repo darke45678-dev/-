@@ -66,13 +66,26 @@
       /* 1. 隱藏自定義游標（那個幽靈圓點的真身！）*/
       #cursor-dot, #cursor-outline { display: none !important; }
 
-      /* 2. Splash Portal */
+      /* 2. Splash Portal — 手機改為單核直向佈局 */
+      /* 衛星核心隱藏，手機直向無空間展示 */
+      .core-satellite-img { display: none !important; }
+      /* 主核充滿直向螢幕，利用高度創造震撼感 */
+      .core-titan-img {
+        width: 90vw !important;
+        height: 90vw !important;
+        opacity: 0.15 !important;
+      }
+      /* 重置 splash-bg-element 為置中全屏 */
       .splash-bg-element {
-        transform: translate(-50%, -50%) scale(0.48) !important;
-        left: 50% !important; top: 45% !important; width: 100vw !important;
+        transform: none !important;
+        position: absolute !important;
+        inset: 0 !important;
+        overflow: visible !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
       }
       .splash-title { font-size: 2.2rem !important; }
-      .core-satellite-img { display: block !important; width: 25% !important; opacity: 0.4 !important; }
 
       /* 3. 技術格網強制單欄 (使用 ID 覆蓋行內樣式) */
       #tech-container {
