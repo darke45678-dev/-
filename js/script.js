@@ -387,20 +387,37 @@ function initCursor() {
   // ── 座標狀態 ──
   let mouseX = 0, mouseY = 0;
   let hexX = 0, hexY = 0;
+  let hasMouseMoved = false;
+
+  // 初始隱藏（防止從左上角飛入）
+  dot.style.opacity = '0';
+  outline.style.opacity = '0';
 
   // ── 核心點：零延遲精準跟隨（GPU transform）──
   window.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
     dot.style.transform = `translate(${mouseX - 5}px, ${mouseY - 5}px)`;
+
+    if (!hasMouseMoved) {
+      // 首次移動：直接傳送，不用 lerp 飛過來
+      hexX = mouseX;
+      hexY = mouseY;
+      hasMouseMoved = true;
+      dot.style.opacity = '1';
+      outline.style.opacity = '1';
+    }
   });
 
   // ── 六角框：lerp 平滑延遲跟隨（GPU transform）──
   (function animateHex() {
-    hexX += (mouseX - hexX) * 0.18;
-    hexY += (mouseY - hexY) * 0.18;
-    // 16 = half of 32px default size
-    outline.style.transform = `translate(${hexX - 16}px, ${hexY - 16}px)`;
+    if (hasMouseMoved) {
+      hexX += (mouseX - hexX) * 0.18;
+      hexY += (mouseY - hexY) * 0.18;
+      // 動態計算中心偏移（半寬），適應 hover 時的尺寸變化
+      const half = outline.offsetWidth / 2;
+      outline.style.transform = `translate(${hexX - half}px, ${hexY - half}px)`;
+    }
     requestAnimationFrame(animateHex);
   })();
 
