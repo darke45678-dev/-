@@ -26,34 +26,27 @@
   <meta name="theme-color" content="#030303" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=2026033103" />
+  <link rel="stylesheet" href="css/styles.css?v=2026033104" />
   <style>
     @media (max-width: 768px) {
       /* 1. Splash Portal & Branding Fix */
       .splash-bg-element {
-        transform: translate(-50%, -50%) scale(0.48) !important; /* 更小規模以容納三核 */
+        transform: translate(-50%, -50%) scale(0.48) !important;
         left: 50% !important;
         top: 45% !important;
         width: 100vw !important;
       }
       .splash-title { font-size: 2.2rem !important; margin-bottom: 1rem !important; }
-      .core-satellite-img { 
-        display: block !important; 
-        width: 25% !important; 
-        opacity: 0.4 !important;
-      }
+      .core-satellite-img { display: block !important; width: 25% !important; opacity: 0.4 !important; }
       .core-titan-img { width: 100% !important; max-width: none !important; }
 
-      /* 2. Grid & Architecture Collision Fixing (THE REAL SURGERY) */
+      /* 2. Grid & Architecture Collision Fixing */
       .hero-stats, .tech-grid, .problem-grid, .persona-grid, .market-inner, .tech-column-grid {
         display: flex !important;
         flex-direction: column !important;
         gap: 1.5rem !important;
         align-items: center !important;
         width: 100% !important;
-      }
-      .tech-column-grid {
-         margin-bottom: 2rem !important;
       }
       .stat, .tech-card, .market-stat-item, .problem-card {
         width: 100% !important;
@@ -73,16 +66,58 @@
         padding: 0.5rem 1rem !important;
         border-radius: 100px !important;
       }
-      .audio-status i { display: none !important; } /* 隱藏手機非必要文字 */
+      .audio-status i { display: none !important; }
       
-      /* 4. Modal Safety */
-      .modal-root > div { width: 94% !important; max-height: 85vh !important; }
+      /* 4. Modal Safety & Architecture Diagram Fix */
+      .modal-root > div { 
+        width: 94% !important; 
+        max-height: 85vh !important; 
+        padding-top: 4rem !important; /* 為關閉按鈕留更多空間 */
+      }
+      
+      /* 修復流程圖文字裁切：允許橫向捲動並增加內距 */
+      #vivid-tab-arch {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 1.5rem !important;
+      }
+      #vivid-tab-arch > div:first-child {
+        min-width: 800px !important; /* 強制流程圖展開，避免文字擠壓 */
+        padding: 1rem !important;
+      }
+
       .modal-root img, .modal-root svg { max-width: 100% !important; height: auto !important; }
       
       /* Identify Food Cards - 2 Column Grid */
       .yolo-visual {
         display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 0.8rem !important;
       }
+
+      /* YOLO Card Aesthetic Refinement: NO MORE BROKEN BORDERS */
+      .yolo-box {
+        overflow: visible !important;
+      }
+      .yolo-corner {
+        position: absolute !important;
+        top: -12px !important;
+        left: 10px !important;
+        background: #030303 !important; /* 確保背景與透明容器一致 */
+        padding: 0 8px !important;
+        font-size: 0.55rem !important;
+        line-height: 1 !important;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 4px;
+        z-index: 2 !important;
+      }
+    }
+
+    /* Global Z-Index Hardening (Prevent Aura Dots on top of Modal) */
+    .site-bg, .aura-blob, .mouse-glow {
+      z-index: -10 !important;
+      pointer-events: none !important;
+    }
+    .modal-root {
+      z-index: 10000 !important;
     }
   </style>
 </head>
