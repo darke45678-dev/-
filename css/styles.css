@@ -53,48 +53,33 @@ body.is-loading {
 /* 隱藏所有原生游標（萬用選擇器確保按鈕也隱藏）*/
 *, *::before, *::after { cursor: none !important; }
 
-/* 精準準星游標 — 十字瞄準線 */
+/* 精準十字準星 — 細小、無圓框 */
 #cursor-dot {
-  width: 10px;
-  height: 10px;
-  background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
+  width: 2px;
+  height: 2px;
+  background: rgba(255,255,255,0.6);
+  border: none;
   position: fixed;
   left: 0; top: 0;
   pointer-events: none;
   z-index: 99999;
   will-change: transform;
-  transition: width 0.2s var(--ease), height 0.2s var(--ease),
-              border-color 0.2s, opacity 0.2s;
-  /* 橫線 */
+  transition: opacity 0.2s;
+  /* 4 向短線標記（±5px，對稱於準星中心）*/
   box-shadow:
-    -8px 0 0 rgba(255,255,255,0.5),   /* 左 */
-     8px 0 0 rgba(255,255,255,0.5),   /* 右 */
-     0 -8px 0 rgba(255,255,255,0.5),  /* 上 */
-     0  8px 0 rgba(255,255,255,0.5);  /* 下 */
+    -5px 0 0 rgba(255,255,255,0.5),
+     5px 0 0 rgba(255,255,255,0.5),
+     0 -5px 0 rgba(255,255,255,0.5),
+     0  5px 0 rgba(255,255,255,0.5);
 }
 
-/* 按鈕懸停：準星變金色+放大 */
-body.cursor-hover #cursor-dot {
-  width: 8px;
-  height: 8px;
-  border-color: var(--gold);
-  opacity: 0.4;
-  box-shadow: none;
-}
-
-/* 點擊：準星壓縮 */
+/* 點擊：準星與 hex 同步消失，讓爆裂獨佔舞台 */
 body.cursor-clicking #cursor-dot {
-  width: 6px;
-  height: 6px;
-  border-color: #a8d8ff;
-  box-shadow:
-    -4px 0 0 rgba(168,216,255,0.7),
-     4px 0 0 rgba(168,216,255,0.7),
-     0 -4px 0 rgba(168,216,255,0.7),
-     0  4px 0 rgba(168,216,255,0.7);
+  opacity: 0 !important;
+  scale: 0;
+  transition: scale 0.08s ease-in, opacity 0.08s ease-in;
 }
+
 
 /* 六角外框外層：JS 定位用（固定 44px 承接 SVG）*/
 #cursor-outline-wrap {
@@ -125,13 +110,7 @@ body.cursor-clicking #cursor-dot {
   transition: stroke 0.3s;
 }
 
-/* 按鈕懸停：刻度變亮 + 整體放大 + 旋轉加速 */
-body.cursor-hover #cursor-dot {
-  width: 4px;
-  height: 4px;
-  opacity: 0.3;
-  box-shadow: none;
-}
+/* 按鈕懸停：hex 刻度變亮 + 放大 + 旋轉加速 */
 body.cursor-hover #cursor-outline {
   scale: 1.6;
   animation: hex-lock-spin 3s linear infinite;

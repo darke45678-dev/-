@@ -386,38 +386,47 @@ function initCursor() {
   if (!dot || !wrap) return;
 
   let mouseX = 0, mouseY = 0;
+  let hexX   = 0, hexY   = 0;  // hex 的 lerp 目標
   let firstMove = true;
 
-  // ── 快取尺寸（避免 offsetWidth 觸發 reflow）──
-  let dotHalf  = 5;   // 10px / 2
-  let wrapHalf = 22;  // 44px（SVG）/ 2
+  // ── 尺寸快取（避免 offsetWidth 觸發 reflow）──
+  const dotHalf  = 1;   // 2px / 2
+  const wrapHalf = 22;  // 44px（SVG）/ 2
 
   // 初始隱藏
   dot.style.opacity  = '0';
   wrap.style.opacity = '0';
 
-  // ── 兩者同步精準跟隨（零延遲，無 reflow）──
+  // ── dot：即時精準跟隨（準星是真實滑鼠位置）──
   window.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    dot.style.transform  = `translate(${mouseX - dotHalf}px, ${mouseY - dotHalf}px)`;
-    wrap.style.transform = `translate(${mouseX - wrapHalf}px, ${mouseY - wrapHalf}px)`;
+    dot.style.transform = `translate(${mouseX - dotHalf}px, ${mouseY - dotHalf}px)`;
     if (firstMove) {
       firstMove = false;
+      hexX = mouseX; hexY = mouseY;  // 初始化 hex 位置，避免第一次跳動
       dot.style.opacity  = '1';
       wrap.style.opacity = '1';
     }
   });
 
-  // ── 按鈕懸停：鎖定 + 更新尺寸快取 ──
+  // ── hex：lerp 緩跟（產生拉扯延遲感）──
+  (function animateHex() {
+    hexX += (mouseX - hexX) * 0.12;  // 12% per frame：流暢但有感
+    hexY += (mouseY - hexY) * 0.12;
+    wrap.style.transform = `translate(${hexX - wrapHalf}px, ${hexY - wrapHalf}px)`;
+    requestAnimationFrame(animateHex);
+  })();
+
+
+  // ── 按鈕懸停：鎖定 hex 狀態（wrapHalf 永遠保持 22，CSS scale 不改 DOM 尺寸）──
   document.querySelectorAll('button, a, .tech-card, .problem-card, [onclick]').forEach(el => {
     el.addEventListener('mouseenter', () => {
       document.body.classList.add('cursor-hover');
-      wrapHalf = 35;  // hover 時 scale:1.6 × 44px = ~70px，半就是 35
+      // wrapHalf 不變！CSS scale:1.6 只是視覺放大，DOM 仍是 44px
     });
     el.addEventListener('mouseleave', () => {
       document.body.classList.remove('cursor-hover');
-      wrapHalf = 22;  // 恢復 44px / 2
     });
   });
 
@@ -726,13 +735,11 @@ const chartDetailContent = `
       <div style="background:rgba(194,156,109,0.05); padding:1rem; border:1px dashed rgba(194,156,109,0.3); border-radius:1rem; margin-bottom:1.5rem; text-align:left;">
         <p style="font-size:0.75rem; color:#fff; line-height:1.6;">💡 <strong>快速導覽：</strong> 對角線（左上至右下）越清晰明亮，代表 AI 的精準度與判斷信心越高。請注意 V6 在關鍵指標 <strong>rotten_meat (腐肉)</strong> 已達到 1.00 的完美辨識率。</p>
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V3 混淆矩陣</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v16.png" style="width:100%;border-radius:0.5rem;"></div>
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V4 混淆矩陣</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v15.png" style="width:100%;border-radius:0.5rem;"></div>
-      </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">V6 混淆矩陣 (rotten_meat:1.00 ✓)</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v14.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">V6 計數混淆矩陣</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v8.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem; margin-bottom:1.5rem;">
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V3 混淆矩陣</p><img onclick="spawnImageLightbox(this.src)" src="assets/images/v16.png" style="width:100%; border-radius:0.5rem; cursor:zoom-in; border:1px solid rgba(255,255,255,0.1);"></div>
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V4 混淆矩陣</p><img onclick="spawnImageLightbox(this.src)" src="assets/images/v15.png" style="width:100%; border-radius:0.5rem; cursor:zoom-in; border:1px solid rgba(255,255,255,0.1);"></div>
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">V6 混淆矩陣 (rotten_meat:1.00 ✓)</p><img onclick="spawnImageLightbox(this.src)" src="assets/images/v14.png" style="width:100%; border-radius:0.5rem; cursor:zoom-in; border:1px solid #22c55e33;"></div>
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">V6 計數混淆矩陣</p><img onclick="spawnImageLightbox(this.src)" src="assets/images/v8.png" style="width:100%; border-radius:0.5rem; cursor:zoom-in; border:1px solid #22c55e33;"></div>
       </div>
     </div>
 
@@ -741,11 +748,11 @@ const chartDetailContent = `
       <div style="background:rgba(37,99,235,0.05); padding:1rem; border:1px dashed rgba(37,99,235,0.3); border-radius:1rem; margin-bottom:1.5rem; text-align:left;">
         <p style="font-size:0.75rem; color:#fff; line-height:1.6;">📈 <strong>學習趨勢：</strong> 隨著訓練輪數 (Epochs) 的增加，折線趨向平緩穩定的「深度水平」，這證明模型已完成深度學習且穩定收斂，能有效應對真實環境的判斷複雜性。</p>
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V3 訓練曲線 (50 Epochs)</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v6.png" style="width:100%;border-radius:0.5rem;"></div>
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V4 訓練曲線 (70 Epochs)</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v4.png" style="width:100%;border-radius:0.5rem;"></div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-bottom:1.5rem;">
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V3 訓練曲線 (50 Epochs)</p><img onclick="spawnImageLightbox(this.src)" src="assets/images/v6.png" style="width:100%; border-radius:0.5rem; cursor:zoom-in; border:1px solid rgba(255,255,255,0.1);"></div>
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V4 訓練曲線 (70 Epochs)</p><img onclick="spawnImageLightbox(this.src)" src="assets/images/v4.png" style="width:100%; border-radius:0.5rem; cursor:zoom-in; border:1px solid rgba(255,255,255,0.1);"></div>
       </div>
-      <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">🏆 V6 訓練曲線 (300 Epochs)</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v2.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
+      <div style="text-align:center; max-width:800px; margin:0 auto;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">🏆 V6 訓練曲線 (300 Epochs)</p><img onclick="spawnImageLightbox(this.src)" src="assets/images/v2.png" style="width:100%; border-radius:0.5rem; cursor:zoom-in; border:1px solid #22c55e33;"></div>
     </div>
 
     <!-- TAB: TABLE (對照表格分頁) -->
