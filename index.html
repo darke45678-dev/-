@@ -73,8 +73,12 @@
       .splash-title { font-size: 2.2rem !important; }
       .core-satellite-img { display: block !important; width: 25% !important; opacity: 0.4 !important; }
 
-      /* 3. 技術格網強制單欄 */
-      .hero-stats, .tech-grid, .problem-grid, .persona-grid, .market-inner, .tech-column-grid {
+      /* 3. 技術格網強制單欄 (使用 ID 覆蓋行內樣式) */
+      #tech-container {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+      }
+      .hero-stats, .problem-grid, .persona-grid, .market-inner {
         display: flex !important; flex-direction: column !important;
         gap: 1.5rem !important; align-items: stretch !important; width: 100% !important;
       }
@@ -490,7 +494,7 @@
       <h2 class="section-title">驅動系統的<br>核心技術矩陣</h2>
     </div>
 
-    <div class="tech-container" style="margin-top: 4rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem;">
+    <div id="tech-container" class="tech-container" style="margin-top: 4rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem;">
       
       <!-- Group 1: YOLO Core (Computer Vision AI) -->
       <div class="tech-group">

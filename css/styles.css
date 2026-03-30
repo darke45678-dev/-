@@ -1982,6 +1982,24 @@ audio:not([controls]) {
   h2 { font-size: 2.2rem; }
   .section-label { font-size: 0.7rem; }
 
+  /* ===== 冰晶元素修復 ===== */
+  /* 核心冰晶：使用 vw 單位適配手機寬度 */
+  .core-titan-img {
+    width: 80vw !important;
+    height: 80vw !important;
+  }
+  /* 衛星核心隱藏（手機太窄放不下） */
+  .core-satellite-img {
+    display: none !important;
+  }
+  /* 讓入口背景容器不裁切 */
+  .splash-bg-element {
+    overflow: visible !important;
+    position: fixed !important;
+    inset: 0 !important;
+    transform: none !important;
+  }
+
   /* 引導頁移動端調整 */
   .splash-title { font-size: 3.5rem !important; margin-bottom: 1.5rem !important; }
   .splash-bg-element {
