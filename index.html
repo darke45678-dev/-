@@ -77,34 +77,34 @@
       /* 主核：用 calc() 置中，不碰 transform（保留旋轉動畫） */
       .core-titan-img {
         position: absolute !important;
-        top: calc(50% - 32.5vw) !important;
-        left: calc(50% - 32.5vw) !important;
-        width: 65vw !important;
-        height: 65vw !important;
-        opacity: 0.12 !important;
-        /* transform 完全不覆蓋，讓 titan-float 動畫自由旋轉 */
+        top: calc(50% - 35vw) !important;
+        left: calc(50% - 35vw) !important;
+        width: 70vw !important;
+        height: 70vw !important;
+        opacity: 0.28 !important;
+        filter: brightness(1.8) contrast(1.2) !important;
       }
-      /* 左衛星：左上角，不覆蓋 transform（保留旋轉動畫） */
+      /* 左衛星：左上角 */
       .core-satellite-img.left {
         display: block !important;
         position: absolute !important;
-        top: 5% !important;
-        left: -5% !important;
-        width: 35vw !important;
-        height: 35vw !important;
-        opacity: 0.06 !important;
-        /* transform 不覆蓋，讓 satellite-float-left 動畫旋轉 */
+        top: 2% !important;
+        left: -8% !important;
+        width: 42vw !important;
+        height: 42vw !important;
+        opacity: 0.15 !important;
+        filter: brightness(1.5) !important;
       }
-      /* 右衛星：右下角，不覆蓋 transform（保留旋轉動畫） */
+      /* 右衛星：右下角 */
       .core-satellite-img.right {
         display: block !important;
         position: absolute !important;
-        bottom: 5% !important;
-        right: -5% !important;
-        width: 30vw !important;
-        height: 30vw !important;
-        opacity: 0.05 !important;
-        /* transform 不覆蓋，讓 satellite-float-right 動畫旋轉 */
+        bottom: 2% !important;
+        right: -8% !important;
+        width: 38vw !important;
+        height: 38vw !important;
+        opacity: 0.12 !important;
+        filter: brightness(1.5) !important;
       }
       .splash-title { font-size: 2.2rem !important; }
 
