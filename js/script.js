@@ -392,7 +392,7 @@ function initCursor() {
   window.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    dot.style.transform = `translate(${mouseX - 2.5}px, ${mouseY - 2.5}px)`;
+    dot.style.transform = `translate(${mouseX - 5}px, ${mouseY - 5}px)`;
   });
 
   // ── 六角框：lerp 平滑延遲跟隨（GPU transform）──

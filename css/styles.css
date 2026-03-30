@@ -53,18 +53,47 @@ body.is-loading {
 /* 隱藏所有原生游標（萬用選擇器確保按鈕也隱藏）*/
 *, *::before, *::after { cursor: none !important; }
 
-/* 核心點：精準零延遲 */
+/* 精準準星游標 — 十字瞄準線 */
 #cursor-dot {
-  width: 5px;
-  height: 5px;
-  background: #fff;
+  width: 10px;
+  height: 10px;
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
   border-radius: 50%;
   position: fixed;
-  left: 0; top: 0;              /* 基準點固定，靠 transform 移動 */
+  left: 0; top: 0;
   pointer-events: none;
   z-index: 99999;
-  will-change: transform;       /* GPU 合成層，不觸發 layout reflow */
-  transition: width 0.2s var(--ease), height 0.2s var(--ease), opacity 0.2s;
+  will-change: transform;
+  transition: width 0.2s var(--ease), height 0.2s var(--ease),
+              border-color 0.2s, opacity 0.2s;
+  /* 橫線 */
+  box-shadow:
+    -8px 0 0 rgba(255,255,255,0.5),   /* 左 */
+     8px 0 0 rgba(255,255,255,0.5),   /* 右 */
+     0 -8px 0 rgba(255,255,255,0.5),  /* 上 */
+     0  8px 0 rgba(255,255,255,0.5);  /* 下 */
+}
+
+/* 按鈕懸停：準星變金色+放大 */
+body.cursor-hover #cursor-dot {
+  width: 8px;
+  height: 8px;
+  border-color: var(--gold);
+  opacity: 0.4;
+  box-shadow: none;
+}
+
+/* 點擊：準星壓縮 */
+body.cursor-clicking #cursor-dot {
+  width: 6px;
+  height: 6px;
+  border-color: #a8d8ff;
+  box-shadow:
+    -4px 0 0 rgba(168,216,255,0.7),
+     4px 0 0 rgba(168,216,255,0.7),
+     0 -4px 0 rgba(168,216,255,0.7),
+     0  4px 0 rgba(168,216,255,0.7);
 }
 
 /* 六角外框：延遲跟隨 */
