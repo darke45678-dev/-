@@ -110,15 +110,49 @@ body.cursor-hover #cursor-outline {
   width: 85vh;
   height: 85vh;
   object-fit: contain;
-  opacity: 0.12; /* 幾何線條需要的透明度較高，才能顯現細節 */
-  filter: brightness(1.3) contrast(1.1); /* 讓全息線條發光 */
-  animation: titan-float 40s linear infinite; /* 極慢的神聖轉動 */
+  opacity: 0.1; /* 主核保持權威感 */
+  filter: brightness(1.3) contrast(1.1);
+  animation: titan-float 45s linear infinite;
+  z-index: 2;
+}
+
+.core-satellite-img {
+  width: 45vh;
+  height: 45vh;
+  object-fit: contain;
+  opacity: 0.04; /* 衛星核心極度隱約，填補邊緣 */
+  filter: brightness(1.2);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.core-satellite-img.left {
+  left: 3%;
+  animation: satellite-float-left 35s linear infinite;
+}
+
+.core-satellite-img.right {
+  right: 3%;
+  animation: satellite-float-right 30s linear infinite;
 }
 
 @keyframes titan-float {
   0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(1.08); }
+  50% { transform: rotate(180deg) scale(1.04); }
   100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes satellite-float-left {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(-360deg); } /* 逆時針 */
+}
+
+@keyframes satellite-float-right {
+  0% { transform: translateY(-50%) rotate(0deg) scale(0.95); }
+  50% { transform: translateY(-50%) rotate(180deg) scale(1.05); }
+  100% { transform: translateY(-50%) rotate(360deg) scale(0.95); }
 }
 
 .splash-bg {
