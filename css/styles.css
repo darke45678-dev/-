@@ -50,9 +50,8 @@ body.is-loading {
    CUSTOM CURSOR — 六角冰晶系統
 ============================ */
 
-/* 隱藏原生游標 */
-body { cursor: none; }
-a, button, .tech-card, .problem-card, [onclick] { cursor: none; }
+/* 隱藏所有原生游標（萬用選擇器確保按鈕也隱藏）*/
+*, *::before, *::after { cursor: none !important; }
 
 /* 核心點：精準零延遲 */
 #cursor-dot {
