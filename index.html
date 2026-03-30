@@ -26,7 +26,46 @@
   <meta name="theme-color" content="#030303" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=2026033101" />
+  <link rel="stylesheet" href="css/styles.css?v=2026033102" />
+  <style>
+    @media (max-width: 768px) {
+      /* 1. Splash Portal Fixing */
+      .splash-bg-element {
+        transform: translate(-50%, -50%) scale(0.55) !important;
+        left: 50% !important;
+        top: 45% !important;
+        width: 100vw !important;
+      }
+      .splash-title { font-size: 3.2rem !important; }
+      .core-satellite-img { display: none !important; }
+      .core-titan-img { width: 140% !important; max-width: none !important; }
+
+      /* 2. Hero Stats & Grids Collision Fixing */
+      .hero-stats, .tech-grid, .problem-grid, .persona-grid, .market-inner {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1.5rem !important;
+        align-items: center !important;
+        padding: 0 1rem !important;
+      }
+      .stat, .tech-card, .market-stat-item, .problem-card {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .problem-card { height: auto !important; min-height: 280px !important; }
+
+      /* 3. Modal & Content Safety */
+      .modal-root > div { width: 94% !important; padding: 2rem 1.2rem !important; }
+      .modal-root img, .modal-root svg { max-width: 100% !important; height: auto !important; }
+      
+      /* Identify Food Cards - Force Grid to column */
+      .yolo-visual {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* 食材小卡改為兩兩一排，避免一長排排不開 */
+        gap: 0.8rem !important;
+      }
+    }
+  </style>
 </head>
 
 <body class="is-loading">
