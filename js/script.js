@@ -388,20 +388,19 @@ function initCursor() {
   let mouseX = 0, mouseY = 0;
   let hexX = 0, hexY = 0;
 
-  // ── 核心點：零延遲精準跟隨 ──
+  // ── 核心點：零延遲精準跟隨（GPU transform）──
   window.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    dot.style.left = mouseX + 'px';
-    dot.style.top  = mouseY + 'px';
+    dot.style.transform = `translate(${mouseX - 2.5}px, ${mouseY - 2.5}px)`;
   });
 
-  // ── 六角框：lerp 平滑延遲跟隨 ──
+  // ── 六角框：lerp 平滑延遲跟隨（GPU transform）──
   (function animateHex() {
     hexX += (mouseX - hexX) * 0.18;
     hexY += (mouseY - hexY) * 0.18;
-    outline.style.left = hexX.toFixed(2) + 'px';
-    outline.style.top  = hexY.toFixed(2) + 'px';
+    // 16 = half of 32px default size
+    outline.style.transform = `translate(${hexX - 16}px, ${hexY - 16}px)`;
     requestAnimationFrame(animateHex);
   })();
 
@@ -696,12 +695,12 @@ const chartDetailContent = `
         <p style="font-size:0.75rem; color:#fff; line-height:1.6;">💡 <strong>快速導覽：</strong> 對角線（左上至右下）越清晰明亮，代表 AI 的精準度與判斷信心越高。請注意 V6 在關鍵指標 <strong>rotten_meat (腐肉)</strong> 已達到 1.00 的完美辨識率。</p>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V3 混淆矩陣</p><img src="assets/images/v16.png" style="width:100%;border-radius:0.5rem;"></div>
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V4 混淆矩陣</p><img src="assets/images/v15.png" style="width:100%;border-radius:0.5rem;"></div>
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V3 混淆矩陣</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v16.png" style="width:100%;border-radius:0.5rem;"></div>
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V4 混淆矩陣</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v15.png" style="width:100%;border-radius:0.5rem;"></div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">V6 混淆矩陣 (rotten_meat:1.00 ✓)</p><img src="assets/images/v14.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">V6 計數混淆矩陣</p><img src="assets/images/v8.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">V6 混淆矩陣 (rotten_meat:1.00 ✓)</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v14.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">V6 計數混淆矩陣</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v8.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
       </div>
     </div>
 
@@ -711,10 +710,10 @@ const chartDetailContent = `
         <p style="font-size:0.75rem; color:#fff; line-height:1.6;">📈 <strong>學習趨勢：</strong> 隨著訓練輪數 (Epochs) 的增加，折線趨向平緩穩定的「深度水平」，這證明模型已完成深度學習且穩定收斂，能有效應對真實環境的判斷複雜性。</p>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V3 訓練曲線 (50 Epochs)</p><img src="assets/images/v6.png" style="width:100%;border-radius:0.5rem;"></div>
-        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V4 訓練曲線 (70 Epochs)</p><img src="assets/images/v4.png" style="width:100%;border-radius:0.5rem;"></div>
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V3 訓練曲線 (50 Epochs)</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v6.png" style="width:100%;border-radius:0.5rem;"></div>
+        <div style="text-align:center;"><p style="font-size:0.7rem;color:var(--gold);margin-bottom:0.4rem;">V4 訓練曲線 (70 Epochs)</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v4.png" style="width:100%;border-radius:0.5rem;"></div>
       </div>
-      <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">🏆 V6 訓練曲線 (300 Epochs)</p><img src="assets/images/v2.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
+      <div style="text-align:center;"><p style="font-size:0.7rem;color:#22c55e;margin-bottom:0.4rem;">🏆 V6 訓練曲線 (300 Epochs)</p><img onclick="spawnImageLightbox(this.src)" style="cursor:zoom-in;" src="assets/images/v2.png" style="width:100%;border-radius:0.5rem;border:1px solid #22c55e33;"></div>
     </div>
 
     <!-- TAB: TABLE (對照表格分頁) -->
@@ -744,7 +743,7 @@ const chartDetailContent = `
 // 生成數據子彈窗的 HTML 結構
 const chartModalHTML = `
   <div id="chartDetailModal" class="modal-root" style="display:none; position:fixed; inset:0; z-index:21000; background:rgba(0,0,0,0.98); backdrop-filter:blur(30px); opacity:0; transition:opacity 0.3s ease; align-items:center; justify-content:center;">
-    <div data-lenis-prevent style="background:#0a0a0a; border:1px solid rgba(255,255,255,0.1); border-radius:2rem; width:95%; max-width:1200px; max-height:92vh; padding:3rem 2rem; position:relative; overflow-y:auto; transform:translateY(20px); transition:transform 0.3s ease;">
+    <div data-lenis-prevent style="background:#0a0a0a; border:1px solid rgba(255,255,255,0.1); border-radius:2rem; width:95%; max-width:1200px; max-height:92vh; padding:3rem 2rem 4rem; position:relative; overflow-y:auto; transform:translateY(20px); transition:transform 0.3s ease;">
       <button onclick="document.getElementById('chartDetailModal').style.display='none'; if(lenis) lenis.start();" style="position:absolute; top:1.5rem; right:1.5rem; background:none; border:1px solid rgba(255,255,255,0.2); color:white; border-radius:50%; width:40px; height:40px; cursor:pointer;">✕</button>
       <div id="chartModalBody"></div>
     </div>
@@ -886,12 +885,65 @@ function closePromptLabModal() {
   setTimeout(() => { p.style.display = 'none'; }, 300);
 }
 
+// ── 圖片燈箱 (IMAGE LIGHTBOX) ────────────────────────────────────────────────
+
+function spawnImageLightbox(src) {
+  // 避免重複建立
+  if (document.getElementById('img-lightbox')) return;
+
+  const lb = document.createElement('div');
+  lb.id = 'img-lightbox';
+  lb.style.cssText = `
+    position: fixed; inset: 0; z-index: 99990;
+    background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
+    display: flex; align-items: center; justify-content: center;
+    cursor: zoom-out; opacity: 0; transition: opacity 0.25s ease;
+  `;
+
+  const img = document.createElement('img');
+  img.src = src;
+  img.style.cssText = `
+    max-width: 92vw; max-height: 88vh;
+    border-radius: 0.75rem;
+    box-shadow: 0 0 60px rgba(168,216,255,0.15);
+    transform: scale(0.92); transition: transform 0.25s ease;
+  `;
+
+  const hint = document.createElement('p');
+  hint.textContent = '點擊任意處或按 ESC 關閉';
+  hint.style.cssText = `
+    position: absolute; bottom: 1.5rem; left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.3); font-size: 0.7rem; letter-spacing: 0.2em;
+    pointer-events: none;
+  `;
+
+  lb.appendChild(img);
+  lb.appendChild(hint);
+  document.body.appendChild(lb);
+
+  requestAnimationFrame(() => {
+    lb.style.opacity = '1';
+    img.style.transform = 'scale(1)';
+  });
+
+  lb.addEventListener('click', closeImageLightbox);
+}
+
+function closeImageLightbox() {
+  const lb = document.getElementById('img-lightbox');
+  if (!lb) return;
+  lb.style.opacity = '0';
+  setTimeout(() => lb.remove(), 250);
+}
+
 // ── 全局鍵盤事件 (GLOBAL ESC HANDLER) ───────────────────────────────────────
 
 function initEscHandler() {
   window.addEventListener('keydown', (e) => {
     // 當按下 Esc 鍵時，關閉所有已打開的彈窗
     if (e.key !== 'Escape') return;
+    closeImageLightbox();       // 先關燈箱（最高層）
     closeModal();
     closeTechModal();
     closeVividModal();
