@@ -96,23 +96,28 @@ body.cursor-clicking #cursor-dot {
      0  4px 0 rgba(168,216,255,0.7);
 }
 
-/* 六角外框：延遲跟隨 */
+/* 六角外框外層：JS 定位用（不帶任何視覺樣式）*/
+#cursor-outline-wrap {
+  position: fixed;
+  left: 0; top: 0;
+  pointer-events: none;
+  z-index: 99998;
+  will-change: transform;       /* GPU 合成層 */
+}
+
+/* 六角外框內層：視覺樣式 + 旋轉動畫（與定位完全分離）*/
 #cursor-outline {
   width: 32px;
   height: 32px;
   background: transparent;
   border: 1.5px solid rgba(194, 156, 109, 0.55);
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  position: fixed;
-  left: 0; top: 0;              /* 基準點固定，靠 transform 移動 */
-  pointer-events: none;
-  z-index: 99998;
-  will-change: transform;       /* GPU 合成層 */
   transition: width 0.35s var(--ease), height 0.35s var(--ease),
-              border-color 0.3s, background 0.3s, opacity 0.3s;
+              border-color 0.3s, background 0.3s, opacity 0.3s, border-width 0.3s;
+  /* clip-path 在旋轉時需要 overflow:visible */
 }
 
-/* 按鈕懸停：六角鎖定態（無旋轉，避免 transform 衝突）*/
+/* 按鈕懸停：六角鎖定態 + 旋轉（安全！與 transform 在不同元素上）*/
 body.cursor-hover #cursor-dot {
   width: 4px;
   height: 4px;
@@ -125,11 +130,11 @@ body.cursor-hover #cursor-outline {
   border-color: var(--gold);
   border-width: 2px;
   background: rgba(194, 156, 109, 0.07);
-  /* 移除 animation，改用靜態光暈 */
   box-shadow: 0 0 12px rgba(194, 156, 109, 0.35), inset 0 0 8px rgba(194, 156, 109, 0.1);
+  animation: hex-lock-spin 3s linear infinite;  /* 安全旋轉！*/
 }
 
-/* 滑鼠按下：六角壓縮 */
+/* 滑鼠按下：六角壓縮（內層元素的尺寸變化）*/
 body.cursor-clicking #cursor-outline {
   width: 22px;
   height: 22px;
@@ -138,7 +143,7 @@ body.cursor-clicking #cursor-outline {
   transition: width 0.08s, height 0.08s;
 }
 
-/* 六角旋轉動畫（用獨立 rotate 屬性，不干擾 JS 的 transform 定位）*/
+/* 六角旋轉動畫（用獨立 rotate 屬性）*/
 @keyframes hex-lock-spin {
   0%   { rotate: 0deg; }
   100% { rotate: 360deg; }

@@ -64,7 +64,7 @@
     @media (max-width: 768px) {
 
       /* 1. 隱藏自定義游標（那個幽靈圓點的真身！）*/
-      #cursor-dot, #cursor-outline { display: none !important; }
+      #cursor-dot, #cursor-outline-wrap { display: none !important; }
 
       /* 2. Splash Portal — 手機：三核對角線排列 (方案 A) */
       .splash-bg-element {
@@ -167,7 +167,9 @@
 
   <!-- 自定義游標：跟隨滑鼠移動的圓點與外圈效果 -->
   <div id="cursor-dot"></div>
-  <div id="cursor-outline"></div>
+  <div id="cursor-outline-wrap"><!-- JS 控制定位 -->
+    <div id="cursor-outline"></div><!-- CSS 控制旋轉 -->
+  </div>
 
   <!-- ═══════════════════════════════════════════════
        SPLASH PORTAL (引導式入口 - 方案一：金屬流體掃光)

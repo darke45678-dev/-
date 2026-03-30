@@ -381,31 +381,32 @@ function revealHero() {
 
 function initCursor() {
   const dot     = document.getElementById('cursor-dot');
-  const outline = document.getElementById('cursor-outline');
-  if (!dot || !outline) return;
+  const wrap    = document.getElementById('cursor-outline-wrap');  // JS 定位層
+  const outline = document.getElementById('cursor-outline');        // CSS 旋轉層
+  if (!dot || !wrap) return;
 
   let mouseX = 0, mouseY = 0;
   let firstMove = true;
 
   // 初始隱藏
-  dot.style.opacity = '0';
-  outline.style.opacity = '0';
+  dot.style.opacity  = '0';
+  wrap.style.opacity = '0';
 
   // ── 兩者同步精準跟隨（零延遲）──
   window.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
 
-    const dotHalf     = dot.offsetWidth / 2;
-    const outlineHalf = outline.offsetWidth / 2;
+    const dotHalf  = dot.offsetWidth / 2;
+    const wrapHalf = (outline ? outline.offsetWidth : 32) / 2;  // 讀內層尺寸
 
-    dot.style.transform     = `translate(${mouseX - dotHalf}px, ${mouseY - dotHalf}px)`;
-    outline.style.transform = `translate(${mouseX - outlineHalf}px, ${mouseY - outlineHalf}px)`;
+    dot.style.transform  = `translate(${mouseX - dotHalf}px, ${mouseY - dotHalf}px)`;
+    wrap.style.transform = `translate(${mouseX - wrapHalf}px, ${mouseY - wrapHalf}px)`;
 
     if (firstMove) {
       firstMove = false;
-      dot.style.opacity     = '1';
-      outline.style.opacity = '1';
+      dot.style.opacity  = '1';
+      wrap.style.opacity = '1';
     }
   });
 
