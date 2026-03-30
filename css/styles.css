@@ -135,10 +135,10 @@ body.cursor-clicking #cursor-outline {
   transition: width 0.08s, height 0.08s;
 }
 
-/* 六角旋轉動畫 */
+/* 六角旋轉動畫（用獨立 rotate 屬性，不干擾 JS 的 transform 定位）*/
 @keyframes hex-lock-spin {
-  0%   { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
+  0%   { rotate: 0deg; }
+  100% { rotate: 360deg; }
 }
 
 /* 點擊冰晶爆裂 */
