@@ -26,10 +26,55 @@
   <meta name="theme-color" content="#030303" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=2026033104" />
+  <link rel="stylesheet" href="css/styles.css?v=2026033105" />
   <style>
+    /* ============================================================
+       全域修復 (GLOBAL FIX) - 不受 media query 限制
+       1. 解放所有被截斷的圖片容器 (Fix Cropped Images)
+       2. 修復 YOLO 標籤切斷邊框的問題 (Fix Broken Border)
+       3. 壓制全局背景特效不穿透前景 (Fix Ghost Dot Z-index)
+    ============================================================ */
+
+    /* 1. 解放圖片容器高度 - 全域 */
+    .feat-visual {
+      height: auto !important;
+      min-height: unset !important;
+      overflow: visible !important;
+    }
+    .yolo-visual {
+      height: auto !important;
+      overflow: visible !important;
+    }
+    .yolo-box {
+      overflow: visible !important;
+      position: relative !important;
+    }
+
+    /* 2. 修復 YOLO 標籤切斷邊框 - 全域 */
+    .yolo-corner {
+      position: absolute !important;
+      top: -11px !important;
+      left: 12px !important;
+      background: #0a0a0a !important;
+      padding: 2px 8px !important;
+      font-size: 0.55rem !important;
+      line-height: 1.4 !important;
+      border-radius: 4px !important;
+      z-index: 2 !important;
+      border: none !important;
+    }
+
+    /* 3. 壓制背景特效 z-index - 全域 */
+    .site-bg { z-index: -10 !important; }
+    .aura-blob { z-index: -10 !important; }
+    .mouse-glow { z-index: -10 !important; pointer-events: none !important; }
+    .modal-root { z-index: 10000 !important; }
+
+    /* ============================================================
+       手機端修復 (MOBILE FIXES)
+    ============================================================ */
     @media (max-width: 768px) {
-      /* 1. Splash Portal & Branding Fix */
+      /* Splash Portal */
       .splash-bg-element {
         transform: translate(-50%, -50%) scale(0.48) !important;
         left: 50% !important;
@@ -40,7 +85,7 @@
       .core-satellite-img { display: block !important; width: 25% !important; opacity: 0.4 !important; }
       .core-titan-img { width: 100% !important; max-width: none !important; }
 
-      /* 2. Grid & Architecture Collision Fixing */
+      /* Grid Collision Fix */
       .hero-stats, .tech-grid, .problem-grid, .persona-grid, .market-inner, .tech-column-grid {
         display: flex !important;
         flex-direction: column !important;
@@ -55,7 +100,7 @@
       }
       .problem-card { height: auto !important; min-height: 280px !important; }
 
-      /* 3. Audio Toggle - Mobile Sticky Right */
+      /* Audio Toggle - Mobile Sticky */
       #audio-toggle {
         position: fixed !important;
         top: 1rem !important;
@@ -67,57 +112,30 @@
         border-radius: 100px !important;
       }
       .audio-status i { display: none !important; }
-      
-      /* 4. Modal Safety & Architecture Diagram Fix */
-      .modal-root > div { 
-        width: 94% !important; 
-        max-height: 85vh !important; 
-        padding-top: 4rem !important; /* 為關閉按鈕留更多空間 */
+
+      /* Modal Safety */
+      .modal-root > div {
+        width: 94% !important;
+        max-height: 85vh !important;
+        overflow-y: auto !important;
       }
-      
-      /* 修復流程圖文字裁切：允許橫向捲動並增加內距 */
+      .modal-root img, .modal-root svg { max-width: 100% !important; height: auto !important; }
+
+      /* Architecture Diagram - Allow Horizontal Scroll */
       #vivid-tab-arch {
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch;
-        padding-bottom: 1.5rem !important;
       }
       #vivid-tab-arch > div:first-child {
-        min-width: 800px !important; /* 強制流程圖展開，避免文字擠壓 */
-        padding: 1rem !important;
+        min-width: 800px !important;
       }
 
-      .modal-root img, .modal-root svg { max-width: 100% !important; height: auto !important; }
-      
-      /* Identify Food Cards - 2 Column Grid */
+      /* YOLO Cards - 2 Column on Mobile */
       .yolo-visual {
-        display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 0.8rem !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.8rem !important;
       }
-
-      /* YOLO Card Aesthetic Refinement: NO MORE BROKEN BORDERS */
-      .yolo-box {
-        overflow: visible !important;
-      }
-      .yolo-corner {
-        position: absolute !important;
-        top: -12px !important;
-        left: 10px !important;
-        background: #030303 !important; /* 確保背景與透明容器一致 */
-        padding: 0 8px !important;
-        font-size: 0.55rem !important;
-        line-height: 1 !important;
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 4px;
-        z-index: 2 !important;
-      }
-    }
-
-    /* Global Z-Index Hardening (Prevent Aura Dots on top of Modal) */
-    .site-bg, .aura-blob, .mouse-glow {
-      z-index: -10 !important;
-      pointer-events: none !important;
-    }
-    .modal-root {
-      z-index: 10000 !important;
     }
   </style>
 </head>
