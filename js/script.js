@@ -6,40 +6,58 @@
 
 // ── 引導式入口門戶 (SPLASH PORTAL) ────────────────────────────────────────────
 
+// ── 引導式入口門戶 (SPLASH PORTAL - CLEAN CHROME EDITION) ─────────────────
+
 function initSplash() {
   const splash = document.getElementById('splash');
   const enterBtn = document.getElementById('splash-enter');
   const navbar = document.getElementById('navbar');
 
   if (!splash || !enterBtn) {
-    // 若 DOM 中不存在引導頁，則立即顯示導航列與首頁內容
     if (navbar) navbar.classList.add('nav-ready');
     document.body.classList.remove('is-loading');
     revealHero();
     return;
   }
 
+  // 1. 鎖住滾動條但「隱藏醜陋的原生鎖定跳動」
+  if (typeof lenis !== 'undefined') {
+    lenis.stop();
+  } else {
+    document.body.classList.add('is-loading');
+  }
+
+  // 2. 進入系統邏輯 (乾淨俐落的純粹動畫，避免瀏覽器濾鏡崩潰)
   enterBtn.addEventListener('click', () => {
-    // 點擊「進入系統」前，強制將視窗捲動至最上方
+    // 讓頁面確保在頂部
     window.scrollTo(0, 0);
-    // 如果有使用 Lenis，則立即將滾動位置重置
     if (typeof lenis !== 'undefined') lenis.scrollTo(0, { immediate: true });
 
-    splash.classList.add('exit'); // 啟動消失動畫
+    // 「提早」解除 CSS 的 is-loading 鎖定，這能確保排版在淡出前就已經穩定，杜絕結尾閃爍
     document.body.classList.remove('is-loading');
+    if (typeof lenis !== 'undefined') lenis.start();
 
-    // 當轉場結束後，從 DOM 中移除引導頁以節省資源
-    splash.addEventListener('transitionend', () => {
-      splash.remove();
-    }, { once: true });
+    // 透過 GSAP 進行高級又穩定的退場轉場 (空間縮入)
+    gsap.to(splash, {
+      opacity: 0,
+      scale: 1.1,         // 輕微的衝刺放大感，取代閃爍的扭曲破壞
+      duration: 1.0,
+      ease: "power3.inOut",
+      onStart: () => {
+        // 防止再點擊
+        splash.style.pointerEvents = 'none';
+      },
+      onComplete: () => {
+        splash.remove(); // 徹底釋放效能
+      }
+    });
 
-    // 稍微延遲後顯現導航列與首頁動畫 (延遲 400ms)
+    // 延遲啟動首頁特效 (在轉場快結束時接上)
     setTimeout(() => {
       if (navbar) navbar.classList.add('nav-ready');
       revealHero();
-      // 啟動背景音樂並附帶淡入效果
       startAudio();
-    }, 400);
+    }, 600);
   });
 }
 
@@ -153,7 +171,7 @@ function initAudio() {
   window.addEventListener('ended', (e) => {
     const vizId = demoPlayers[e.target.id];
     if (vizId) document.getElementById(vizId)?.classList.remove('active');
-    
+
     // 自定義播放器結束狀態回歸
     if (e.target.id === 'scorePlayer2') {
       const playBtn = document.getElementById('playBtn2');
@@ -198,7 +216,7 @@ function setupCustomPlayer(audioId, btnId, containerId, fillId, currentId, total
   // 若部分瀏覽器沒觸發 loadedmetadata，可用 timeupdate 補救
   audio.addEventListener('timeupdate', () => {
     if (totalTimeLabel && totalTimeLabel.textContent === '0:00') {
-        totalTimeLabel.textContent = formatTime(audio.duration);
+      totalTimeLabel.textContent = formatTime(audio.duration);
     }
   });
 
@@ -259,7 +277,7 @@ function revealHero() {
       gsap.fromTo(el,
         { opacity: 0, y: 30 },
         {
-          opacity: 1, y: 0, 
+          opacity: 1, y: 0,
           duration: 0.9,           // 持續時間 0.9 秒
           delay: i * 0.12,         // 每個元素依序延遲 0.12 秒
           ease: 'power3.out',      // 使用平滑的減速效果
@@ -341,8 +359,8 @@ function initSmoothScroll() {
       const targetPath = anchor.getAttribute('href');
       if (targetPath === '#') return;
       const target = document.querySelector(targetPath);
-      if (target) { 
-        e.preventDefault(); 
+      if (target) {
+        e.preventDefault();
         lenis.scrollTo(target, { offset: -80 }); // offset: -80 為導航列留白高度
       }
     });
@@ -360,10 +378,10 @@ function initRevealAnimations() {
       const isLeft = el.classList.contains('reveal-left');
       const isRight = el.classList.contains('reveal-right');
       gsap.fromTo(el,
-        { 
-          opacity: 0, 
-          x: isLeft ? -40 : isRight ? 40 : 0, 
-          y: isLeft || isRight ? 0 : 30 
+        {
+          opacity: 0,
+          x: isLeft ? -40 : isRight ? 40 : 0,
+          y: isLeft || isRight ? 0 : 30
         },
         {
           opacity: 1, x: 0, y: 0,
@@ -456,7 +474,7 @@ function openModal() {
 function restoreBgm() {
   const bgAudio = document.getElementById('bg-audio');
   const btn = document.getElementById('audio-toggle');
-  
+
   if (window.bgmWasPlaying && bgAudio && bgAudio.paused) {
     bgAudio.volume = 0;
     bgAudio.play().catch(e => console.warn(e));
@@ -469,7 +487,7 @@ function restoreBgm() {
         clearInterval(fadeIn);
       }
     }, 100);
-    
+
     if (btn) {
       btn.classList.add('playing');
       btn.querySelector('.audio-status span').textContent = 'ON';
@@ -655,7 +673,7 @@ function openVividModal() {
   const v = document.getElementById('vividModal');
   if (!v) return;
   if (lenis) lenis.stop();
-  
+
   // 進入彈窗不再強制暫停BGM，只有按下Demo播放時才由全局監聽器暫停且紀錄狀態
 
   v.style.display = 'flex';
@@ -692,7 +710,7 @@ function openAudioScoreModal() {
   const a = document.getElementById('audioScoreModal');
   if (!a) return;
   if (lenis) lenis.stop();
-  
+
   // 進入彈窗不再強制暫停BGM，只有按下Track 02播放時才由全局監聽器暫停且紀錄狀態
 
   a.style.display = 'flex';
@@ -712,7 +730,7 @@ function closeAudioScoreModal() {
     p2.pause();
     p2.currentTime = 0;
   }
-  
+
   // 清除 Track 2 的動畫 (Track 1 的動畫會根據背景音樂狀態決定是否清除)
   document.getElementById('viz-track2')?.classList.remove('active');
 
@@ -777,7 +795,7 @@ function initCounters() {
   targets.forEach(el => {
     // 【修正】改用 textContent 確保能抓到尚未渲染的文字，並處理可能夾雜的空白
     const text = el.textContent.trim();
-    
+
     // 萃取前綴、數字與後綴 (如 "$124.3B", "30+", "0.868")
     const match = text.match(/^([^\d]*)(\d+(\.\d+)?)([^\d]*)$/);
     if (!match) return;
@@ -786,12 +804,12 @@ function initCounters() {
     const targetNum = parseFloat(match[2]);
     const suffix = match[4];
     const decimals = match[3] ? match[3].length - 1 : 0;
-    
+
     // 立即將 DOM 顯示為 0，確保未滾動前絕對是 0
     el.textContent = prefix + (0).toFixed(decimals) + suffix;
-    
+
     const obj = { val: 0 };
-    
+
     // 如果是首屏的數字，給予 1.5 秒延遲，確保 Splash 動畫關閉後才開始滾動
     const isHero = el.closest('.hero-stats') !== null;
     const scrollDelay = isHero ? 1.5 : 0;
@@ -821,15 +839,15 @@ function initTypewriter() {
 
   const steps = recipeContainer.querySelectorAll('.recipe-step');
   const originalTexts = [];
-  
+
   steps.forEach(step => {
     const numSpan = step.querySelector('.step-num');
     const numHtml = numSpan ? numSpan.outerHTML : '';
-    
+
     // 只獲取純文字節點，避開 step-num
     const textNodes = Array.from(step.childNodes).filter(n => n.nodeType === Node.TEXT_NODE);
     const text = textNodes.map(n => n.textContent).join('').trim();
-    
+
     step.style.opacity = '0';
     originalTexts.push({ el: step, htmlPrefix: numHtml, text: text });
     step.innerHTML = numHtml + '<span class="type-cursor">|</span>';
@@ -844,11 +862,11 @@ function initTypewriter() {
           const { el, htmlPrefix, text } = originalTexts[stepIndex];
           el.style.opacity = '1';
           let charIndex = 0;
-          
+
           const typingInterval = setInterval(() => {
             charIndex++;
             el.innerHTML = htmlPrefix + text.substring(0, charIndex) + '<span class="type-cursor typewriter-blink">|</span>';
-            
+
             if (charIndex === text.length) {
               clearInterval(typingInterval);
               el.innerHTML = htmlPrefix + text; // 移除游標
@@ -862,7 +880,7 @@ function initTypewriter() {
       }
     });
   }, { threshold: 0.5 });
-  
+
   observer.observe(recipeContainer);
 }
 
@@ -884,7 +902,7 @@ function initAudioVisualizerCanvas() {
   visualCanvas = document.getElementById('audioCanvas');
   const vividC = document.getElementById('vividCanvas');
   const scoreC = document.getElementById('scoreCanvas');
-  
+
   if (visualCanvas) canvasCtx = visualCanvas.getContext('2d', { alpha: true });
   if (vividC) vividCtx = vividC.getContext('2d');
   if (scoreC) scoreCtx = scoreC.getContext('2d');
@@ -898,17 +916,17 @@ function initAudioVisualizerCanvas() {
   window.addEventListener('resize', resize);
   resize();
 
-  // 初始化 150 顆星塵粒子
-  for (let i = 0; i < 150; i++) {
+  // 初始化 60 顆神經元粒子 (效能平衡：維持神經連結密度的同時減輕計算負載)
+  for (let i = 0; i < 60; i++) {
     visualParticles.push({
       x: Math.random() * vw,
       y: Math.random() * vh,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      baseSize: Math.random() * 2 + 0.5,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      baseSize: Math.random() * 1.5 + 0.5,
       // 依比例調配顏色：金、藍、白、紫
       color: Math.random() > 0.7 ? '#c29c6d' : (Math.random() > 0.4 ? '#2563eb' : (Math.random() > 0.5 ? '#10b981' : '#ffffff')),
-      alpha: Math.random() * 0.5 + 0.1,
+      alpha: Math.random() * 0.3 + 0.1,
     });
   }
 
@@ -924,7 +942,7 @@ function bindAudioSource(mediaElement) {
     window.localAudioSimulation = mediaElement; // 記錄目前播放的媒體，用來模擬開關
     return;
   }
-  
+
   // 建立全局 AudioContext (需在使用者互動後產生)
   if (!audioCtx) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -936,7 +954,7 @@ function bindAudioSource(mediaElement) {
     dataArray = new Uint8Array(analyser.frequencyBinCount);
     timeDataArray = new Uint8Array(analyser.fftSize); // 建立 256 點時域緩衝區
   }
-  
+
   // 如果已經休眠則喚醒
   if (audioCtx.state === 'suspended') {
     audioCtx.resume();
@@ -966,13 +984,13 @@ function drawVisualizer() {
 
   let bass = 0;
   let treble = 0;
-  
+
   // ==================== 共享物理引擎數據分析 ====================
   // 取得真實音頻解析數據 (頻譜與時域)
   if (analyser && dataArray && timeDataArray) {
     analyser.getByteFrequencyData(dataArray);
     analyser.getByteTimeDomainData(timeDataArray);
-    
+
     // 計算全局重低音(Bass)
     let bassSum = 0;
     for (let i = 0; i < 6; i++) bassSum += dataArray[i];
@@ -985,43 +1003,82 @@ function drawVisualizer() {
   } else if (window.location.protocol === 'file:' && window.localAudioSimulation && !window.localAudioSimulation.paused) {
     // 開發者模擬模式
     const time = Date.now() / 1000;
-    bass = (Math.sin(time * Math.PI * 2 * (120/60)) * 0.5 + 0.5) * 120 + Math.random() * 40; 
+    bass = (Math.sin(time * Math.PI * 2 * (120 / 60)) * 0.5 + 0.5) * 120 + Math.random() * 40;
     treble = Math.random() * 80 + 40;
   }
 
-  // ==================== 繪製背景星塵 (Smart Pausing 智慧凍結機制) ====================
-  // 只有當彈窗「均屬關閉狀態」時，才會繪製背景，藉此替 GPU 完美避開 backdrop-filter 的瘋狂消耗
+  // ==================== 繪製背景神經群落 (Neural Swarm Mesh Visualizer) ====================
+  // 只有當彈窗「均屬關閉狀態」時，才會繪製背景，藉此替 GPU 完美避開 backdrop-filter 的消耗
   if (!isVividOpen && !isScoreOpen && canvasCtx && visualCanvas) {
     canvasCtx.clearRect(0, 0, vw, vh);
+    
     const bassForce = (bass / 255);
     const trebleForce = (treble / 255);
+    
+    // 背景粒子動態優化：低速、流體感、具備物理連線
     canvasCtx.globalCompositeOperation = 'lighter';
+    
+    // 限制連線距離，避免畫面過於混亂
+    const maxDist = 150 * (1 + bassForce * 0.5); 
 
-    visualParticles.forEach(p => {
-      p.x += p.vx * (1 + bassForce * 8);
-      p.y += p.vy * (1 + bassForce * 8);
-      if (p.x < 0) p.x = vw;
-      if (p.x > vw) p.x = 0;
-      if (p.y < 0) p.y = vh;
-      if (p.y > vh) p.y = 0;
+    for (let i = 0; i < visualParticles.length; i++) {
+        let p = visualParticles[i];
+        
+        // 1. 更新位置：速度大幅調低，維持在 0.5 ~ 1.5 之間，營造優雅感
+        const speedMult = 0.5 + bassForce * 3;
+        p.x += p.vx * speedMult;
+        p.y += p.vy * speedMult;
 
-      const currentSize = p.baseSize + (trebleForce * 4);
-      const currentAlpha = Math.min(1, p.alpha + (bassForce * 0.6) + (trebleForce * 0.3));
+        // 2. 邊界處理 (平滑環繞)
+        if (p.x < 0) p.x = vw;
+        if (p.x > vw) p.x = 0;
+        if (p.y < 0) p.y = vh;
+        if (p.y > vh) p.y = 0;
 
-      canvasCtx.beginPath();
-      canvasCtx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
-      canvasCtx.fillStyle = p.color;
-      canvasCtx.globalAlpha = currentAlpha;
-      canvasCtx.fill();
-    });
+        // 3. 繪製神經元連線 (Neural Linking - 透過間隔取樣優化效能)
+        // 使用 i%2 確保每幀只計算一半粒子的連線，視覺上連線會維持，但 CPU 負擔減半
+        if (i % 2 === 0) {
+            for (let j = i + 1; j < visualParticles.length; j++) {
+                let p2 = visualParticles[j];
+                const dx = p.x - p2.x;
+                const dy = p.y - p2.y;
+                const distSq = dx * dx + dy * dy; // 使用平方距離比較，避開 Math.sqrt() 開根號開銷
+
+                if (distSq < maxDist * maxDist) {
+                    const dist = Math.sqrt(distSq);
+                    const opacity = (1 - dist / maxDist) * (0.15 + bassForce * 0.4);
+                    canvasCtx.beginPath();
+                    canvasCtx.strokeStyle = p.color;
+                    canvasCtx.globalAlpha = opacity;
+                    canvasCtx.lineWidth = 0.5;
+                    canvasCtx.moveTo(p.x, p.y);
+                    canvasCtx.lineTo(p2.x, p2.y);
+                    canvasCtx.stroke();
+                }
+            }
+        }
+
+        // 4. 繪製粒子本體 (Neuron)
+        const currentSize = p.baseSize + (trebleForce * 3);
+        const currentAlpha = Math.min(0.8, p.alpha + (bassForce * 0.4));
+
+        canvasCtx.beginPath();
+        canvasCtx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
+        canvasCtx.fillStyle = p.color;
+        canvasCtx.globalAlpha = currentAlpha;
+        canvasCtx.fill();
+    }
+    
+    // 清理狀態防止影響其他繪圖
     canvasCtx.globalAlpha = 1;
+    canvasCtx.globalCompositeOperation = 'source-over';
   }
 
   // ==================== 繪製虛擬歌手 (Siri / OpenAI 多層次交織貝茲聲波) ====================
   if (isVividOpen && vividCtx) {
     const vc = vividCtx.canvas;
     // 高清 Retina 適配
-    if(vc.width !== vc.clientWidth * 2) {
+    if (vc.width !== vc.clientWidth * 2) {
       vc.width = vc.clientWidth * 2;
       vc.height = vc.clientHeight * 2;
     }
@@ -1066,27 +1123,27 @@ function drawVisualizer() {
         vividCtx.beginPath();
         vividCtx.strokeStyle = setting.color;
         vividCtx.lineWidth = setting.lineW;
-        
+
         // 增加取樣率以實現滑順線條
-        const segments = 100; 
+        const segments = 100;
         for (let i = 0; i <= segments; i++) {
           // x 軸坐標 (0 到 w)
           const x = (i / segments) * w;
           // 計算 X 百分比 (0 到 1)
           const xPercent = i / segments;
-          
+
           // 邊緣收攏 (Edge Damping)：讓波形呈現膠囊狀，避免超出容器邊界
           const edgeDamping = Math.sin(xPercent * Math.PI);
-          
+
           // 核心波動計算 (Sine Math)
-          const yOffset = amplitudeBase * edgeDamping * setting.ampMult * 
-                          Math.sin(time * setting.speed + xPercent * Math.PI * setting.freq + setting.phaseOffset);
-          
+          const yOffset = amplitudeBase * edgeDamping * setting.ampMult *
+            Math.sin(time * setting.speed + xPercent * Math.PI * setting.freq + setting.phaseOffset);
+
           // 疊加來自真實音頻 PCM 的微小雜訊 (Data Jitter)，更有數位電子感的顆粒跳動
           let jitter = 0;
           if (timeDataArray && isVividPlaying) {
-             const dataIdx = Math.floor(xPercent * (timeDataArray.length - 1));
-             jitter = ((timeDataArray[dataIdx] - 128) / 128) * (h * 0.08) * edgeDamping;
+            const dataIdx = Math.floor(xPercent * (timeDataArray.length - 1));
+            jitter = ((timeDataArray[dataIdx] - 128) / 128) * (h * 0.08) * edgeDamping;
           }
 
           const y = (h / 2) + yOffset + jitter;
@@ -1103,7 +1160,7 @@ function drawVisualizer() {
   // ==================== 繪製原創配樂 (工業霓虹光譜等化器) ====================
   if (isScoreOpen && scoreCtx) {
     const sc = scoreCtx.canvas;
-    if(sc.width !== sc.clientWidth * 2) {
+    if (sc.width !== sc.clientWidth * 2) {
       sc.width = sc.clientWidth * 2;
       sc.height = sc.clientHeight * 2;
     }
@@ -1118,30 +1175,30 @@ function drawVisualizer() {
       const bars = 64; // 工業風格：高密度梳狀體
       const barTotalWidth = w / bars;
       const barWidth = barTotalWidth * 0.6; // 留出方塊之間的間隙
-      const step = Math.floor(128 / bars); 
-      
+      const step = Math.floor(128 / bars);
+
       const scoreAudio = document.getElementById('scorePlayer2');
       const isScorePlaying = scoreAudio && !scoreAudio.paused;
-      
+
       // 繪製微弱的水平掃描線 (CRT Scanlines 背景)
       scoreCtx.fillStyle = 'rgba(16, 185, 129, 0.03)';
-      for(let y = 0; y < h; y += 4) {
+      for (let y = 0; y < h; y += 4) {
         scoreCtx.fillRect(0, y, w, 1);
       }
 
       // 定義工業霓虹漸層 (上層主體) - 兩極互補色
-      const gradUp = scoreCtx.createLinearGradient(0, h/2, 0, 0);
+      const gradUp = scoreCtx.createLinearGradient(0, h / 2, 0, 0);
       gradUp.addColorStop(0, '#10b981'); // 近中心：螢光綠
       gradUp.addColorStop(1, 'rgba(37,99,235,0.8)'); // 高頻峰頂：賽博藍
-      
+
       // 定義下層水面倒影漸層 (Reflection)
-      const gradDown = scoreCtx.createLinearGradient(0, h/2, 0, h);
+      const gradDown = scoreCtx.createLinearGradient(0, h / 2, 0, h);
       gradDown.addColorStop(0, 'rgba(16,185,129,0.3)');
       gradDown.addColorStop(1, 'rgba(37,99,235,0)');
 
       let x = barTotalWidth * 0.2; // 初始左右留白偏移
       const centerY = h / 2;
-      
+
       // 啟動全局高光疊加混合 (Neon Glow)
       scoreCtx.globalCompositeOperation = 'lighter';
 
@@ -1149,33 +1206,33 @@ function drawVisualizer() {
         let sum = 0;
         if (dataArray) {
           if (isScorePlaying) {
-             for (let j = 0; j < step; j++) sum += dataArray[i * step + j];
+            for (let j = 0; j < step; j++) sum += dataArray[i * step + j];
           } else {
-             sum = 0; 
+            sum = 0;
           }
         } else {
           // Fallback 本地模擬
           sum = isScorePlaying ? Math.random() * 200 * step : 5;
         }
-        
+
         const avg = sum / step;
         // 把最高高度限制在 centerY (容器上半部) 範圍內
-        let barHeight = (avg / 255) * centerY * 0.85; 
-        if(barHeight < 2) barHeight = 2; // 底噪平線
-        
+        let barHeight = (avg / 255) * centerY * 0.85;
+        if (barHeight < 2) barHeight = 2; // 底噪平線
+
         // --- 1. 繪製向上的實體音訊柱 (帶有圓角) ---
         scoreCtx.fillStyle = gradUp;
         if (barHeight > 4) {
-           scoreCtx.beginPath();
-           // Safari 16+ / Chrome 都已支援 roundRect 繪製圓角矩形
-           if(scoreCtx.roundRect) {
-             scoreCtx.roundRect(x, centerY - barHeight, barWidth, barHeight, [4, 4, 0, 0]);
-             scoreCtx.fill();
-           } else {
-             scoreCtx.fillRect(x, centerY - barHeight, barWidth, barHeight);
-           }
+          scoreCtx.beginPath();
+          // Safari 16+ / Chrome 都已支援 roundRect 繪製圓角矩形
+          if (scoreCtx.roundRect) {
+            scoreCtx.roundRect(x, centerY - barHeight, barWidth, barHeight, [4, 4, 0, 0]);
+            scoreCtx.fill();
+          } else {
+            scoreCtx.fillRect(x, centerY - barHeight, barWidth, barHeight);
+          }
         } else {
-           scoreCtx.fillRect(x, centerY - barHeight, barWidth, barHeight);
+          scoreCtx.fillRect(x, centerY - barHeight, barWidth, barHeight);
         }
 
         // --- 2. 繪製向下的鏡像倒影 (Water Reflection) ---
@@ -1189,32 +1246,32 @@ function drawVisualizer() {
           scoreCtx.peaks[i] -= 1.5; // 重力衰減 (掉落速度)
           if (scoreCtx.peaks[i] < 2) scoreCtx.peaks[i] = 2;
         }
-        
+
         // 畫出漂浮在最頂端的亮點
         scoreCtx.fillStyle = '#38bdf8'; // 亮天藍色
         scoreCtx.fillRect(x, centerY - scoreCtx.peaks[i] - 4, barWidth, 3);
-        
+
         // --- 4. 繪製微弱的頻譜包絡連線 (Spectral Envelope Curve) ---
         if (i > 0) {
-           scoreCtx.beginPath();
-           scoreCtx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
-           scoreCtx.lineWidth = 1.5;
-           const prevX = x - barTotalWidth + (barWidth/2);
-           const prevY = centerY - scoreCtx.peaks[i-1] - 2;
-           const currX = x + (barWidth/2);
-           const currY = centerY - scoreCtx.peaks[i] - 2;
-           scoreCtx.moveTo(prevX, prevY);
-           scoreCtx.lineTo(currX, currY);
-           scoreCtx.stroke();
+          scoreCtx.beginPath();
+          scoreCtx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+          scoreCtx.lineWidth = 1.5;
+          const prevX = x - barTotalWidth + (barWidth / 2);
+          const prevY = centerY - scoreCtx.peaks[i - 1] - 2;
+          const currX = x + (barWidth / 2);
+          const currY = centerY - scoreCtx.peaks[i] - 2;
+          scoreCtx.moveTo(prevX, prevY);
+          scoreCtx.lineTo(currX, currY);
+          scoreCtx.stroke();
         }
 
         x += barTotalWidth;
       }
-      
+
       // 繪製儀表板中央測量基線 (Center Baseline)
       scoreCtx.fillStyle = 'rgba(255,255,255,0.15)';
       scoreCtx.fillRect(0, centerY, w, 1.5);
-      
+
       // 復原環境
       scoreCtx.globalCompositeOperation = 'source-over';
     }

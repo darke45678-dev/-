@@ -93,13 +93,6 @@ body.cursor-hover #cursor-outline {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.9s cubic-bezier(0.7, 0, 0.3, 1), transform 0.9s cubic-bezier(0.7, 0, 0.3, 1);
-}
-
-#splash.exit {
-  opacity: 0;
-  transform: translateY(-4%);
-  pointer-events: none;
 }
 
 .splash-bg {
@@ -173,20 +166,46 @@ body.cursor-hover #cursor-outline {
 .splash-title {
   font-size: clamp(3rem, 12vw, 8rem);
   font-weight: 900;
-  background: linear-gradient(160deg, #ffffff 40%, #94a3af 70%, #475569 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   line-height: 0.9;
   opacity: 0;
   transform: translateY(20px);
   animation: splash-fade-in 1s var(--ease) 0.5s forwards;
+  position: relative;
+  color: #fff;
+}
+
+/* 方案一：金屬流體掃光 (Fluid Chrome Sweep) */
+.chrome-effect {
+  background: linear-gradient(
+    135deg,
+    #fff 0%,
+    #475569 25%,
+    #fff 50%,
+    #475569 75%,
+    #fff 100%
+  );
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: 
+    splash-fade-in 1s var(--ease) 0.5s forwards,
+    chrome-sweep 15s linear infinite;
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
+}
+
+@keyframes chrome-sweep {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .splash-title span {
-  -webkit-text-fill-color: #cbd5e1;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(135deg, #cbd5e1 30%, #475569 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .splash-desc {
@@ -1857,6 +1876,7 @@ audio:not([controls]) {
 
   .tech-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
 
   .market-inner {
@@ -1866,25 +1886,76 @@ audio:not([controls]) {
 }
 
 @media (max-width: 768px) {
+  /* 基礎邊距調整 */
   section {
-    padding: 5rem 5%;
+    padding: 4rem 1.5rem;
   }
 
-  .problem-grid {
-    grid-template-columns: 1fr;
-  }
+  /* 標題與內文縮放 */
+  h1 { font-size: 2.8rem; }
+  h2 { font-size: 2.2rem; }
+  .section-label { font-size: 0.7rem; }
 
-  .persona-grid {
-    grid-template-columns: 1fr;
+  /* 引導頁移動端調整 */
+  .splash-title { font-size: 4rem !important; }
+  .splash-desc { font-size: 0.85rem; padding: 0 1rem; }
+
+  /* 核心格線改為單欄 */
+  .tech-grid, .problem-grid, .persona-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem;
   }
 
   .hero-stats {
-    gap: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
   }
 
   .nav-links {
     display: none;
   }
+
+  /* 彈窗內容移動端優化 */
+  .modal-root > div {
+    width: 92% !important;
+    padding: 2.5rem 1.5rem !important;
+    border-radius: 1.5rem !important;
+  }
+
+  /* 虛擬歌手彈窗專屬調整 */
+  .vivid-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem;
+  }
+
+  /* 客製化播放器在手機上的佈局 (防止太寬) */
+  .custom-audio-player {
+    padding: 0.6rem 1.2rem;
+    gap: 0.8rem;
+    border-radius: 20px; /* 從膠囊變更圓角矩形 */
+  }
+
+  .player-time {
+    display: none; /* 縮小螢幕時隱藏具體時間以留白 */
+  }
+
+  .player-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* 作品集卡片高度調減 */
+  .problem-card {
+    height: 280px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title { font-size: 3rem; }
+  .hero-buttons { flex-direction: column; width: 100%; }
+  .hero-buttons .btn-primary, 
+  .hero-buttons .btn-outline { width: 100%; justify-content: center; }
 }
 
 /* ============================
@@ -1897,8 +1968,6 @@ audio:not([controls]) {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .modal-root>div {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

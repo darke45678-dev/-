@@ -11,12 +11,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
 
+  <!-- 安裝 Three.js 用於方案三：極致液態油滴 (Metaballs) 效果 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
   <!-- 動畫與滾動插件 (CDN) -->
   <!-- GSAP: 核心動畫引擎 | ScrollTrigger: 滾動觸發動畫 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <!-- Lenis: 平滑滑鼠滾動支援 -->
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+
+  <!-- 品牌識別：設置 Favicon 與主題色，消除 404 報錯 -->
+  <link rel="icon" type="image/png" href="assets/images/v11.png" />
+  <meta name="theme-color" content="#030303" />
 
   <!-- Styles -->
   <link rel="stylesheet" href="css/styles.css" />
@@ -29,7 +36,7 @@
   <div id="cursor-outline"></div>
 
   <!-- ═══════════════════════════════════════════════
-       SPLASH PORTAL (引導式入口)
+       SPLASH PORTAL (引導式入口 - 方案一：金屬流體掃光)
   ═══════════════════════════════════════════════ -->
   <div id="splash" class="splash-root">
     <div class="splash-bg">
@@ -38,7 +45,7 @@
     </div>
     <div class="splash-inner">
       <div class="splash-label">LEO · 2026</div>
-      <h1 class="splash-title">FRIDGE<span>AI</span></h1>
+      <h1 class="splash-title chrome-effect" id="main-title">FRIDGE<span>AI</span></h1>
       <p class="splash-desc">以 YOLOv11 影像辨識與 Gemini 生成式 AI 為核心<br>重新定義現代廚房管理體驗</p>
       <button id="splash-enter" class="splash-btn">
         <span>進入系統</span>
