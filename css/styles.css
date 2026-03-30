@@ -1087,6 +1087,25 @@ section {
   background: rgba(255, 255, 255, 0.03);
 }
 
+.type-cursor {
+  display: inline-block;
+  color: #10b981;
+  font-weight: 900;
+  margin-left: 2px;
+  font-size: 0.75rem;
+  opacity: 0;
+  vertical-align: text-bottom;
+}
+
+.typewriter-blink {
+  animation: type-blink 0.8s step-end infinite;
+  opacity: 1;
+}
+
+@keyframes type-blink {
+  50% { opacity: 0; }
+}
+
 .step-num {
   color: var(--gold);
   font-weight: 700;

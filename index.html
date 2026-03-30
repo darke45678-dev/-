@@ -56,19 +56,8 @@
     <!-- 滑動時會跟隨的全局環境輝光 -->
     <div class="mouse-glow" id="mouseGlow"></div>
 
-    <!-- MICRO-ANIMATION PARTICLES (reduced to 10 for performance) -->
-    <div class="particles">
-      <div class="p p1"></div>
-      <div class="p p2"></div>
-      <div class="p p3"></div>
-      <div class="p p4"></div>
-      <div class="p p5"></div>
-      <div class="p p6"></div>
-      <div class="p p7"></div>
-      <div class="p p8"></div>
-      <div class="p p9"></div>
-      <div class="p p10"></div>
-    </div>
+    <!-- AUDIO-REACTIVE CANVAS PARTICLES -->
+    <canvas id="audioCanvas" style="position: absolute; inset: 0; pointer-events: none; z-index: 1; width: 100%; height: 100%;"></canvas>
   </div>
 
   <!-- NAV -->
@@ -605,13 +594,10 @@
       <div class="problem-card reveal" onclick="openPromptLabModal()" style="
           cursor: pointer; position: relative; overflow: hidden; height: 320px;
           border-color: rgba(16,185,129,0.4); 
-          background: linear-gradient(135deg, #064e3b 0%, #000 100%);
+          background: url('assets/images/03.png') center/cover no-repeat;
           display: flex; flex-direction: column; justify-content: flex-end;
           padding: 2rem;
         ">
-        <div
-          style="position: absolute; inset: 0; background: radial-gradient(circle at 70% 20%, rgba(16,185,129,0.15) 0%, transparent 60%);">
-        </div>
         <div
           style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 25%, rgba(0,0,0,0.1) 100%); z-index: 1;">
         </div>
@@ -641,7 +627,7 @@
     <div data-lenis-prevent style="
       background: #0a0a0a; border: 1px solid rgba(168,85,247,0.4);
       border-radius: 2rem; width: 95%; max-width: 1200px; padding: 3rem 2rem;
-      position: relative; max-height: 90vh; overflow-y: auto;
+      position: relative; max-height: 90vh; overflow-y: auto; z-index: 1;
       transform: translateY(20px); transition: transform 0.3s ease;
     " onclick="event.stopPropagation()">
       <button onclick="closeVividModal()"
@@ -732,11 +718,13 @@
 
         <!-- Audio Player Section -->
         <div
-          style="background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.3); border-radius: 1.5rem; padding: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem;">
+          style="position: relative; overflow: hidden; background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.3); border-radius: 1.5rem; padding: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem;">
+          <!-- 特效畫布移至整個外部卡片容器 -->
+          <canvas id="vividCanvas" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.4; mix-blend-mode: screen;"></canvas>
           <div
-            style="width: 48px; height: 48px; border-radius: 50%; background: #a855f7; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+            style="position: relative; z-index: 2; width: 48px; height: 48px; border-radius: 50%; background: #a855f7; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
             🎧</div>
-          <div style="flex: 1;">
+          <div style="flex: 1; position: relative; z-index: 2;">
             <div
               style="font-size: 0.75rem; color: #a855f7; font-weight: 700; letter-spacing: 1px; margin-bottom: 0.2rem;">
               PROTOTYPE 1.0</div>
@@ -747,11 +735,25 @@
                 style="font-size: 0.65rem; color: #10b981; border: 1px solid #10b981; background: rgba(16, 185, 129, 0.1); padding: 0.2rem 0.5rem; border-radius: 0.5rem; font-weight: 700;">30sec
                 Technical Demo</span>
             </div>
-            <audio id="vividAudioPlayer" controls
-              style="width: 100%; height: 36px; border-radius: 18px; outline: none; background: #000;">
-              <source src="assets/audio/ai_singer_demo.mp3" type="audio/mpeg">
-              您的瀏覽器不支援 Audio 播放。
-            </audio>
+            <!-- Custom Premium Audio Player (Vivid) -->
+            <div class="custom-audio-player" id="player-trackVivid" style="border: 1px solid rgba(168,85,247,0.5); background: rgba(0,0,0,0.5); z-index: 2;">
+              <audio id="vividAudioPlayer" preload="metadata" style="position: relative; z-index: 2;">
+                <source src="assets/audio/ai_singer_demo.mp3" type="audio/mpeg">
+              </audio>
+              <div style="display: flex; align-items: center; width: 100%; gap: 1rem; position: relative; z-index: 2;">
+                <button class="player-btn toggle-play" id="playBtnVivid" style="color: #a855f7;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </button>
+                <div class="player-progress-container" id="progressContainerVivid" style="background: rgba(255,255,255,0.1);">
+                  <div class="player-progress-bar">
+                    <div class="player-progress-fill" id="progressFillVivid" style="background: #a855f7;"></div>
+                  </div>
+                </div>
+                <div class="player-time" style="color: #a855f7;">
+                  <span id="currentTimeVivid">0:00</span> / <span id="totalTimeVivid">0:30</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -790,10 +792,11 @@
     background: rgba(0,0,0,0.95); backdrop-filter: blur(25px);
     align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
   " onclick="closeAudioScoreModal()">
+
     <div data-lenis-prevent style="
       background: #0a0a0a; border: 1px solid rgba(37,99,235,0.4);
       border-radius: 2rem; width: 95%; max-width: 900px; padding: 3rem 2rem;
-      position: relative; max-height: 90vh; overflow-y: auto;
+      position: relative; max-height: 90vh; overflow-y: auto; z-index: 1;
       transform: translateY(20px); transition: transform 0.3s ease;
     " onclick="event.stopPropagation()">
       <button onclick="closeAudioScoreModal()"
@@ -825,31 +828,35 @@
 
       <!-- TRACK 02: SYSTEM DEMO SCORE (實機演示專用配樂) -->
       <div
-        style="margin-bottom: 3rem; background: rgba(34,197,94,0.04); border: 1px solid rgba(34,197,94,0.2); border-radius: 1.5rem; padding: 2rem; display: flex; align-items: center; gap: 2rem; transition: all 0.4s ease;">
-        <div class="playing-visualizer green" id="viz-track2" style="flex-shrink:0;">
+        style="position: relative; overflow: hidden; margin-bottom: 3rem; background: rgba(34,197,94,0.04); border: 1px solid rgba(34,197,94,0.2); border-radius: 1.5rem; padding: 2rem; display: flex; align-items: center; gap: 2rem; transition: all 0.4s ease;">
+        <!-- 特效畫布移至整個外部卡片容器 -->
+        <canvas id="scoreCanvas" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.4; mix-blend-mode: screen;"></canvas>
+        <div class="playing-visualizer green" id="viz-track2" style="position: relative; z-index: 2; flex-shrink:0;">
           <span></span><span></span><span></span><span></span>
         </div>
-        <div style="flex: 1;">
+        <div style="flex: 1; position: relative; z-index: 2;">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 0.5rem;">
             <h4 style="color: #fff; margin: 0; font-size: 1rem; font-weight: 700;">Track 02: 〈SYSTEM DEMO SCORE〉</h4>
             <span style="font-size: 0.6rem; color: #22c55e; border: 1px solid #22c55e; padding: 0.2rem 0.6rem; border-radius: 2rem; letter-spacing:1px; font-weight:700;">VIDEO SCORE</span>
           </div>
           <p style="color: var(--muted); font-size: 0.8rem; line-height:1.6; margin: 0 0 1.2rem;">專為 12 類食材辨識演示影片創作之配樂。展現音樂節奏如何與 AI 捕捉動畫進行幀級別的同步。</p>
           <!-- Custom Premium Audio Player -->
-          <div class="custom-audio-player" id="player-track2">
-            <audio id="scorePlayer2" preload="metadata">
+          <div class="custom-audio-player" id="player-track2" style="z-index: 2; background: rgba(0,0,0,0.5);">
+            <audio id="scorePlayer2" preload="metadata" style="position: relative; z-index: 2;">
               <source src="assets/audio/BGM.mp3" type="audio/mpeg">
             </audio>
-            <button class="player-btn toggle-play" id="playBtn2">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            </button>
-            <div class="player-progress-container" id="progressContainer2">
-              <div class="player-progress-bar">
-                <div class="player-progress-fill" id="progressFill2"></div>
+            <div style="display: flex; align-items: center; width: 100%; gap: 1rem; position: relative; z-index: 2;">
+              <button class="player-btn toggle-play" id="playBtn2">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+              <div class="player-progress-container" id="progressContainer2">
+                <div class="player-progress-bar">
+                  <div class="player-progress-fill" id="progressFill2"></div>
+                </div>
               </div>
-            </div>
-            <div class="player-time">
-              <span id="currentTime2">0:00</span> / <span id="totalTime2">0:00</span>
+              <div class="player-time">
+                <span id="currentTime2">0:00</span> / <span id="totalTime2">0:00</span>
+              </div>
             </div>
           </div>
         </div>

@@ -96,16 +96,23 @@ function initAudio() {
   };
 
   window.addEventListener('play', (e) => {
+    // 綁定真實音源以啟動全螢幕 Canvas 粒子特效
+    if (typeof bindAudioSource === 'function') {
+      bindAudioSource(e.target);
+    }
+
     // 1. 背景音樂狀態連動：控制 viz-track1
     if (e.target === audio) {
       document.getElementById('viz-track1')?.classList.add('active');
       return;
     }
 
-    // 2. 如果播放的是任何音頻/影片（且不是背景音樂），則暫停背景音樂
+    // 2. 當任一音頻/影片 (非背景音樂) 啟動播放時，紀錄 BGM 原本狀態並暫停 BGM
     if (e.target.tagName === 'AUDIO' || e.target.tagName === 'VIDEO') {
-      if (!audio.paused) {
-        audio.pause();
+      // 唯有當 BGM 啟動中，才紀錄意圖並將其暫停 (避免覆蓋之前紀錄的狀態)
+      if (btn.classList.contains('playing')) {
+        window.bgmWasPlaying = true;
+        if (!audio.paused) audio.pause();
         btn.classList.remove('playing');
         btn.querySelector('.audio-status span').textContent = 'OFF';
       }
@@ -136,6 +143,11 @@ function initAudio() {
     if (e.target === audio) return; // 已有獨立監聽
     const vizId = demoPlayers[e.target.id];
     if (vizId) document.getElementById(vizId)?.classList.remove('active');
+
+    // 當任意 Demo 影片或音軌暫停時，若 BGM 之前是因它而暫停，則立刻復播
+    if (e.target.tagName === 'AUDIO' || e.target.tagName === 'VIDEO') {
+      restoreBgm();
+    }
   }, true);
 
   window.addEventListener('ended', (e) => {
@@ -156,20 +168,23 @@ function initAudio() {
 /**
  * 初始化 Track 2 自定義播放器邏輯
  */
-function initCustomPlayer() {
-  const audio = document.getElementById('scorePlayer2');
-  const playBtn = document.getElementById('playBtn2');
-  const progressContainer = document.getElementById('progressContainer2');
-  const progressFill = document.getElementById('progressFill2');
-  const currentTimeLabel = document.getElementById('currentTime2');
-  const totalTimeLabel = document.getElementById('totalTime2');
+/**
+ * 初始化自定義播放器邏輯 (支援多個實例)
+ */
+function setupCustomPlayer(audioId, btnId, containerId, fillId, currentId, totalId) {
+  const audio = document.getElementById(audioId);
+  const playBtn = document.getElementById(btnId);
+  const progressContainer = document.getElementById(containerId);
+  const progressFill = document.getElementById(fillId);
+  const currentTimeLabel = document.getElementById(currentId);
+  const totalTimeLabel = document.getElementById(totalId);
 
   if (!audio || !playBtn) return;
 
   // 播放/暫停 切換
   playBtn.addEventListener('click', () => {
     if (audio.paused) {
-      audio.play();
+      audio.play().catch(e => console.warn('Play blocked:', e));
     } else {
       audio.pause();
     }
@@ -178,6 +193,13 @@ function initCustomPlayer() {
   // 音訊載入後顯示總時長
   audio.addEventListener('loadedmetadata', () => {
     if (totalTimeLabel) totalTimeLabel.textContent = formatTime(audio.duration);
+  });
+
+  // 若部分瀏覽器沒觸發 loadedmetadata，可用 timeupdate 補救
+  audio.addEventListener('timeupdate', () => {
+    if (totalTimeLabel && totalTimeLabel.textContent === '0:00') {
+        totalTimeLabel.textContent = formatTime(audio.duration);
+    }
   });
 
   // 監聽播放狀態
@@ -193,7 +215,7 @@ function initCustomPlayer() {
 
   // 更新進度條與當前時間
   audio.addEventListener('timeupdate', () => {
-    const percent = (audio.currentTime / audio.duration) * 100;
+    const percent = Math.min(100, (audio.currentTime / (audio.duration || 1)) * 100);
     if (progressFill) progressFill.style.width = percent + '%';
     if (currentTimeLabel) currentTimeLabel.textContent = formatTime(audio.currentTime);
   });
@@ -203,17 +225,25 @@ function initCustomPlayer() {
     progressContainer.addEventListener('click', (e) => {
       const width = progressContainer.clientWidth;
       const clickX = e.offsetX;
-      const duration = audio.duration;
+      const duration = audio.duration || 0;
       audio.currentTime = (clickX / width) * duration;
     });
   }
 
   // 時間格式化工具
   function formatTime(seconds) {
+    if (isNaN(seconds)) return '0:00';
     const min = Math.floor(seconds / 60);
     const sec = Math.floor(seconds % 60);
     return `${min}:${sec < 10 ? '0' + sec : sec}`;
   }
+}
+
+function initCustomPlayers() {
+  // 1. 原創配樂
+  setupCustomPlayer('scorePlayer2', 'playBtn2', 'progressContainer2', 'progressFill2', 'currentTime2', 'totalTime2');
+  // 2. 虛擬歌手 (Vivid)
+  setupCustomPlayer('vividAudioPlayer', 'playBtnVivid', 'progressContainerVivid', 'progressFillVivid', 'currentTimeVivid', 'totalTimeVivid');
 }
 
 /**
@@ -410,12 +440,9 @@ const vNode = document.getElementById('modalVideo');
 function openModal() {
   if (!modal || !vNode) return;
 
-  // 暫停全局頁面滾動
   if (lenis) lenis.stop();
 
-  // 播放影片時，同步暫停背景配樂
-  const bgAudio = document.getElementById('bg-audio');
-  if (bgAudio) bgAudio.pause();
+  // 進入彈窗不再強制暫停BGM，只有按下Demo影片播放時才由全局監聽器暫停且紀錄狀態
 
   modal.style.display = 'flex';
   requestAnimationFrame(() => {
@@ -424,6 +451,31 @@ function openModal() {
   });
   vNode.play();
   vNode.muted = false; // 確保聲音處於開啟狀態
+}
+
+function restoreBgm() {
+  const bgAudio = document.getElementById('bg-audio');
+  const btn = document.getElementById('audio-toggle');
+  
+  if (window.bgmWasPlaying && bgAudio && bgAudio.paused) {
+    bgAudio.volume = 0;
+    bgAudio.play().catch(e => console.warn(e));
+    let vol = 0;
+    const fadeIn = setInterval(() => {
+      if (vol < 0.6) {
+        vol += 0.05;
+        bgAudio.volume = Math.min(vol, 0.6);
+      } else {
+        clearInterval(fadeIn);
+      }
+    }, 100);
+    
+    if (btn) {
+      btn.classList.add('playing');
+      btn.querySelector('.audio-status span').textContent = 'ON';
+    }
+  }
+  window.bgmWasPlaying = false; // 重置狀態
 }
 
 function closeModal() {
@@ -436,12 +488,8 @@ function closeModal() {
     vNode.currentTime = 0; // 重置影片進度
     if (lenis) lenis.start();
 
-    // 關閉後，若原本音樂是開啟的，則恢復背景配樂
-    const bgAudio = document.getElementById('bg-audio');
-    const audioBtn = document.getElementById('audio-toggle');
-    if (bgAudio && audioBtn && audioBtn.classList.contains('playing')) {
-      bgAudio.play();
-    }
+    // 關閉後，智慧復播背景配樂
+    restoreBgm();
   }, 300);
 }
 
@@ -607,6 +655,9 @@ function openVividModal() {
   const v = document.getElementById('vividModal');
   if (!v) return;
   if (lenis) lenis.stop();
+  
+  // 進入彈窗不再強制暫停BGM，只有按下Demo播放時才由全局監聽器暫停且紀錄狀態
+
   v.style.display = 'flex';
   requestAnimationFrame(() => {
     v.style.opacity = '1';
@@ -630,6 +681,8 @@ function closeVividModal() {
   setTimeout(() => {
     v.style.display = 'none';
     if (lenis) lenis.start();
+    // 智慧復播
+    restoreBgm();
   }, 300);
 }
 
@@ -640,14 +693,7 @@ function openAudioScoreModal() {
   if (!a) return;
   if (lenis) lenis.stop();
   
-  // 打開彈窗時，檢查背景音樂是否正在播放，若是則啟動 Track 01 的波形
-  const bgAudio = document.getElementById('bg-audio');
-  const viz1 = document.getElementById('viz-track1');
-  if (bgAudio && !bgAudio.paused) {
-    viz1?.classList.add('active');
-  } else {
-    viz1?.classList.remove('active');
-  }
+  // 進入彈窗不再強制暫停BGM，只有按下Track 02播放時才由全局監聽器暫停且紀錄狀態
 
   a.style.display = 'flex';
   requestAnimationFrame(() => {
@@ -714,6 +760,468 @@ function initEscHandler() {
   });
 }
 
+// ── 數字滾動動畫 (Count-Up Numbers) ──────────────────────────
+
+function initCounters() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+  const selectors = [
+    '.hero-stats .stat-num',
+    '.market-stats .market-stat-item:nth-child(1) .market-stat-num',
+    '.market-stats .market-stat-item:nth-child(2) .market-stat-num',
+    '.feat-row .feat-stat .num'
+  ];
+
+  const targets = document.querySelectorAll(selectors.join(','));
+
+  targets.forEach(el => {
+    // 【修正】改用 textContent 確保能抓到尚未渲染的文字，並處理可能夾雜的空白
+    const text = el.textContent.trim();
+    
+    // 萃取前綴、數字與後綴 (如 "$124.3B", "30+", "0.868")
+    const match = text.match(/^([^\d]*)(\d+(\.\d+)?)([^\d]*)$/);
+    if (!match) return;
+
+    const prefix = match[1];
+    const targetNum = parseFloat(match[2]);
+    const suffix = match[4];
+    const decimals = match[3] ? match[3].length - 1 : 0;
+    
+    // 立即將 DOM 顯示為 0，確保未滾動前絕對是 0
+    el.textContent = prefix + (0).toFixed(decimals) + suffix;
+    
+    const obj = { val: 0 };
+    
+    // 如果是首屏的數字，給予 1.5 秒延遲，確保 Splash 動畫關閉後才開始滾動
+    const isHero = el.closest('.hero-stats') !== null;
+    const scrollDelay = isHero ? 1.5 : 0;
+
+    gsap.to(obj, {
+      val: targetNum,
+      duration: 2.5,
+      delay: scrollDelay,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 95%',
+        toggleActions: 'play none none none'
+      },
+      onUpdate: () => {
+        el.textContent = prefix + obj.val.toFixed(decimals) + suffix;
+      }
+    });
+  });
+}
+
+// ── AI 打字機特效 (Typewriter) ──────────────────────────
+
+function initTypewriter() {
+  const recipeContainer = document.querySelector('.recipe-steps');
+  if (!recipeContainer) return;
+
+  const steps = recipeContainer.querySelectorAll('.recipe-step');
+  const originalTexts = [];
+  
+  steps.forEach(step => {
+    const numSpan = step.querySelector('.step-num');
+    const numHtml = numSpan ? numSpan.outerHTML : '';
+    
+    // 只獲取純文字節點，避開 step-num
+    const textNodes = Array.from(step.childNodes).filter(n => n.nodeType === Node.TEXT_NODE);
+    const text = textNodes.map(n => n.textContent).join('').trim();
+    
+    step.style.opacity = '0';
+    originalTexts.push({ el: step, htmlPrefix: numHtml, text: text });
+    step.innerHTML = numHtml + '<span class="type-cursor">|</span>';
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        let stepIndex = 0;
+        function typeStep() {
+          if (stepIndex >= originalTexts.length) return;
+          const { el, htmlPrefix, text } = originalTexts[stepIndex];
+          el.style.opacity = '1';
+          let charIndex = 0;
+          
+          const typingInterval = setInterval(() => {
+            charIndex++;
+            el.innerHTML = htmlPrefix + text.substring(0, charIndex) + '<span class="type-cursor typewriter-blink">|</span>';
+            
+            if (charIndex === text.length) {
+              clearInterval(typingInterval);
+              el.innerHTML = htmlPrefix + text; // 移除游標
+              stepIndex++;
+              setTimeout(typeStep, 250); // 切換下一行的延遲
+            }
+          }, 35); // 每個字生成的毫秒數
+        }
+        typeStep();
+        observer.disconnect(); // 觸發過後就解除監聽
+      }
+    });
+  }, { threshold: 0.5 });
+  
+  observer.observe(recipeContainer);
+}
+
+// ── 音訊視覺化全息星塵 (Audio Reactive Canvas Dust) ───────────────────
+
+let audioCtx = null;
+let analyser = null;
+let dataArray = null;
+let timeDataArray = null; // 【新增】時域分析數據 (供虛擬歌手點陣波段)
+let canvasCtx = null;
+let visualCanvas = null;
+let vividCtx = null; // 【新增】虛擬歌手的專屬全息畫布
+let scoreCtx = null; // 【新增】原創配樂的專屬等化器畫布
+let vw, vh;
+let visualParticles = [];
+let sourceMap = new Map(); // 紀錄已綁定的 audio/video 元件
+
+function initAudioVisualizerCanvas() {
+  visualCanvas = document.getElementById('audioCanvas');
+  const vividC = document.getElementById('vividCanvas');
+  const scoreC = document.getElementById('scoreCanvas');
+  
+  if (visualCanvas) canvasCtx = visualCanvas.getContext('2d', { alpha: true });
+  if (vividC) vividCtx = vividC.getContext('2d');
+  if (scoreC) scoreCtx = scoreC.getContext('2d');
+
+  if (!visualCanvas) return;
+
+  const resize = () => {
+    vw = visualCanvas.width = window.innerWidth;
+    vh = visualCanvas.height = window.innerHeight;
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  // 初始化 150 顆星塵粒子
+  for (let i = 0; i < 150; i++) {
+    visualParticles.push({
+      x: Math.random() * vw,
+      y: Math.random() * vh,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      baseSize: Math.random() * 2 + 0.5,
+      // 依比例調配顏色：金、藍、白、紫
+      color: Math.random() > 0.7 ? '#c29c6d' : (Math.random() > 0.4 ? '#2563eb' : (Math.random() > 0.5 ? '#10b981' : '#ffffff')),
+      alpha: Math.random() * 0.5 + 0.1,
+    });
+  }
+
+  requestAnimationFrame(drawVisualizer);
+}
+
+function bindAudioSource(mediaElement) {
+  if (!mediaElement) return;
+
+  // 【重大修復】: 避免本機 (file://) 開啟時，瀏覽器基於 CORS 安全性將媒體靜音
+  if (window.location.protocol === 'file:') {
+    console.warn("Web Audio API 被瀏覽器安全性阻擋 (file:// 協定)。已自動切回普通播放模式，視覺化改採模擬波動。部署至 GitHub Pages 後即會啟動真實頻譜解析。");
+    window.localAudioSimulation = mediaElement; // 記錄目前播放的媒體，用來模擬開關
+    return;
+  }
+  
+  // 建立全局 AudioContext (需在使用者互動後產生)
+  if (!audioCtx) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    audioCtx = new AudioContext();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.8;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    timeDataArray = new Uint8Array(analyser.fftSize); // 建立 256 點時域緩衝區
+  }
+  
+  // 如果已經休眠則喚醒
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
+  // 防止重複將同一個 element 建立 media source，導致瀏覽器報錯
+  if (!sourceMap.has(mediaElement)) {
+    try {
+      const source = audioCtx.createMediaElementSource(mediaElement);
+      source.connect(analyser);
+      analyser.connect(audioCtx.destination);
+      sourceMap.set(mediaElement, source);
+    } catch (e) {
+      console.warn("無法綁定分析節點 (可能已被其他模塊佔用):", e);
+    }
+  }
+}
+
+function drawVisualizer() {
+  requestAnimationFrame(drawVisualizer);
+
+  // 1. 取得當前彈窗狀態
+  const m1 = document.getElementById('vividModal');
+  const m2 = document.getElementById('audioScoreModal');
+  const isVividOpen = m1 && m1.style.display === 'flex';
+  const isScoreOpen = m2 && m2.style.display === 'flex';
+
+  let bass = 0;
+  let treble = 0;
+  
+  // ==================== 共享物理引擎數據分析 ====================
+  // 取得真實音頻解析數據 (頻譜與時域)
+  if (analyser && dataArray && timeDataArray) {
+    analyser.getByteFrequencyData(dataArray);
+    analyser.getByteTimeDomainData(timeDataArray);
+    
+    // 計算全局重低音(Bass)
+    let bassSum = 0;
+    for (let i = 0; i < 6; i++) bassSum += dataArray[i];
+    bass = bassSum / 6;
+
+    // 計算高音/人聲(Treble)
+    let trebleSum = 0;
+    for (let i = 15; i < 50; i++) trebleSum += dataArray[i];
+    treble = trebleSum / 35;
+  } else if (window.location.protocol === 'file:' && window.localAudioSimulation && !window.localAudioSimulation.paused) {
+    // 開發者模擬模式
+    const time = Date.now() / 1000;
+    bass = (Math.sin(time * Math.PI * 2 * (120/60)) * 0.5 + 0.5) * 120 + Math.random() * 40; 
+    treble = Math.random() * 80 + 40;
+  }
+
+  // ==================== 繪製背景星塵 (Smart Pausing 智慧凍結機制) ====================
+  // 只有當彈窗「均屬關閉狀態」時，才會繪製背景，藉此替 GPU 完美避開 backdrop-filter 的瘋狂消耗
+  if (!isVividOpen && !isScoreOpen && canvasCtx && visualCanvas) {
+    canvasCtx.clearRect(0, 0, vw, vh);
+    const bassForce = (bass / 255);
+    const trebleForce = (treble / 255);
+    canvasCtx.globalCompositeOperation = 'lighter';
+
+    visualParticles.forEach(p => {
+      p.x += p.vx * (1 + bassForce * 8);
+      p.y += p.vy * (1 + bassForce * 8);
+      if (p.x < 0) p.x = vw;
+      if (p.x > vw) p.x = 0;
+      if (p.y < 0) p.y = vh;
+      if (p.y > vh) p.y = 0;
+
+      const currentSize = p.baseSize + (trebleForce * 4);
+      const currentAlpha = Math.min(1, p.alpha + (bassForce * 0.6) + (trebleForce * 0.3));
+
+      canvasCtx.beginPath();
+      canvasCtx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
+      canvasCtx.fillStyle = p.color;
+      canvasCtx.globalAlpha = currentAlpha;
+      canvasCtx.fill();
+    });
+    canvasCtx.globalAlpha = 1;
+  }
+
+  // ==================== 繪製虛擬歌手 (Siri / OpenAI 多層次交織貝茲聲波) ====================
+  if (isVividOpen && vividCtx) {
+    const vc = vividCtx.canvas;
+    // 高清 Retina 適配
+    if(vc.width !== vc.clientWidth * 2) {
+      vc.width = vc.clientWidth * 2;
+      vc.height = vc.clientHeight * 2;
+    }
+    const w = vc.width;
+    const h = vc.height;
+    vividCtx.clearRect(0, 0, w, h);
+
+    if (timeDataArray || window.location.protocol === 'file:') {
+      const vividAudio = document.getElementById('vividAudioPlayer');
+      const isVividPlaying = vividAudio && !vividAudio.paused;
+
+      // 1. 計算總體音量 (Volume) 以控制波浪振幅
+      let volume = 0;
+      if (timeDataArray && isVividPlaying) {
+        let sum = 0;
+        for (let i = 0; i < timeDataArray.length; i++) {
+          sum += Math.abs(timeDataArray[i] - 128);
+        }
+        volume = sum / timeDataArray.length; // 範圍約 0 ~ 128
+      } else if (isVividPlaying) {
+        volume = Math.random() * 40 + 20; // fallback 模擬訊號
+      }
+
+      // 控制振幅基準 (平靜時保留極細微的呼吸感)
+      let normalizedVol = Math.min(volume / 40, 1);
+      let amplitudeBase = isVividPlaying ? (h * 0.25 * normalizedVol) + (h * 0.05) : (h * 0.015);
+
+      // 利用時間作為波浪流動的相位驅動
+      const time = Date.now() / 1000;
+
+      // 2. 定義 4 條不同層次的波形參數
+      const waveSettings = [
+        { color: 'rgba(168, 85, 247, 0.8)', phaseOffset: 0, freq: 2, ampMult: 1, speed: 3, lineW: 4 },     // 主賽博紫 (最粗最穩)
+        { color: 'rgba(192, 132, 252, 0.6)', phaseOffset: 2, freq: 3.5, ampMult: 0.75, speed: -2, lineW: 3 }, // 淺紫逆向波
+        { color: 'rgba(216, 180, 254, 0.4)', phaseOffset: 4, freq: 1.5, ampMult: 0.5, speed: 4, lineW: 2 },  // 高頻細波
+        { color: 'rgba(56, 189, 248, 0.5)', phaseOffset: 1, freq: 2.5, ampMult: 0.85, speed: -3, lineW: 3 }  // 螢光藍點綴
+      ];
+
+      vividCtx.globalCompositeOperation = 'lighter'; // 讓波浪重疊處產生高光霓虹效果
+
+      waveSettings.forEach((setting) => {
+        vividCtx.beginPath();
+        vividCtx.strokeStyle = setting.color;
+        vividCtx.lineWidth = setting.lineW;
+        
+        // 增加取樣率以實現滑順線條
+        const segments = 100; 
+        for (let i = 0; i <= segments; i++) {
+          // x 軸坐標 (0 到 w)
+          const x = (i / segments) * w;
+          // 計算 X 百分比 (0 到 1)
+          const xPercent = i / segments;
+          
+          // 邊緣收攏 (Edge Damping)：讓波形呈現膠囊狀，避免超出容器邊界
+          const edgeDamping = Math.sin(xPercent * Math.PI);
+          
+          // 核心波動計算 (Sine Math)
+          const yOffset = amplitudeBase * edgeDamping * setting.ampMult * 
+                          Math.sin(time * setting.speed + xPercent * Math.PI * setting.freq + setting.phaseOffset);
+          
+          // 疊加來自真實音頻 PCM 的微小雜訊 (Data Jitter)，更有數位電子感的顆粒跳動
+          let jitter = 0;
+          if (timeDataArray && isVividPlaying) {
+             const dataIdx = Math.floor(xPercent * (timeDataArray.length - 1));
+             jitter = ((timeDataArray[dataIdx] - 128) / 128) * (h * 0.08) * edgeDamping;
+          }
+
+          const y = (h / 2) + yOffset + jitter;
+
+          if (i === 0) vividCtx.moveTo(x, y);
+          else vividCtx.lineTo(x, y);
+        }
+        vividCtx.stroke();
+      });
+      vividCtx.globalCompositeOperation = 'source-over'; // 還原混合模式
+    }
+  }
+
+  // ==================== 繪製原創配樂 (工業霓虹光譜等化器) ====================
+  if (isScoreOpen && scoreCtx) {
+    const sc = scoreCtx.canvas;
+    if(sc.width !== sc.clientWidth * 2) {
+      sc.width = sc.clientWidth * 2;
+      sc.height = sc.clientHeight * 2;
+    }
+    const w = sc.width;
+    const h = sc.height;
+    scoreCtx.clearRect(0, 0, w, h);
+
+    // 儲存掉落刻度 (Gravity Peaks) 的陣列狀態
+    if (!scoreCtx.peaks) scoreCtx.peaks = new Array(64).fill(0);
+
+    if (dataArray || window.location.protocol === 'file:') {
+      const bars = 64; // 工業風格：高密度梳狀體
+      const barTotalWidth = w / bars;
+      const barWidth = barTotalWidth * 0.6; // 留出方塊之間的間隙
+      const step = Math.floor(128 / bars); 
+      
+      const scoreAudio = document.getElementById('scorePlayer2');
+      const isScorePlaying = scoreAudio && !scoreAudio.paused;
+      
+      // 繪製微弱的水平掃描線 (CRT Scanlines 背景)
+      scoreCtx.fillStyle = 'rgba(16, 185, 129, 0.03)';
+      for(let y = 0; y < h; y += 4) {
+        scoreCtx.fillRect(0, y, w, 1);
+      }
+
+      // 定義工業霓虹漸層 (上層主體) - 兩極互補色
+      const gradUp = scoreCtx.createLinearGradient(0, h/2, 0, 0);
+      gradUp.addColorStop(0, '#10b981'); // 近中心：螢光綠
+      gradUp.addColorStop(1, 'rgba(37,99,235,0.8)'); // 高頻峰頂：賽博藍
+      
+      // 定義下層水面倒影漸層 (Reflection)
+      const gradDown = scoreCtx.createLinearGradient(0, h/2, 0, h);
+      gradDown.addColorStop(0, 'rgba(16,185,129,0.3)');
+      gradDown.addColorStop(1, 'rgba(37,99,235,0)');
+
+      let x = barTotalWidth * 0.2; // 初始左右留白偏移
+      const centerY = h / 2;
+      
+      // 啟動全局高光疊加混合 (Neon Glow)
+      scoreCtx.globalCompositeOperation = 'lighter';
+
+      for (let i = 0; i < bars; i++) {
+        let sum = 0;
+        if (dataArray) {
+          if (isScorePlaying) {
+             for (let j = 0; j < step; j++) sum += dataArray[i * step + j];
+          } else {
+             sum = 0; 
+          }
+        } else {
+          // Fallback 本地模擬
+          sum = isScorePlaying ? Math.random() * 200 * step : 5;
+        }
+        
+        const avg = sum / step;
+        // 把最高高度限制在 centerY (容器上半部) 範圍內
+        let barHeight = (avg / 255) * centerY * 0.85; 
+        if(barHeight < 2) barHeight = 2; // 底噪平線
+        
+        // --- 1. 繪製向上的實體音訊柱 (帶有圓角) ---
+        scoreCtx.fillStyle = gradUp;
+        if (barHeight > 4) {
+           scoreCtx.beginPath();
+           // Safari 16+ / Chrome 都已支援 roundRect 繪製圓角矩形
+           if(scoreCtx.roundRect) {
+             scoreCtx.roundRect(x, centerY - barHeight, barWidth, barHeight, [4, 4, 0, 0]);
+             scoreCtx.fill();
+           } else {
+             scoreCtx.fillRect(x, centerY - barHeight, barWidth, barHeight);
+           }
+        } else {
+           scoreCtx.fillRect(x, centerY - barHeight, barWidth, barHeight);
+        }
+
+        // --- 2. 繪製向下的鏡像倒影 (Water Reflection) ---
+        scoreCtx.fillStyle = gradDown;
+        scoreCtx.fillRect(x, centerY, barWidth, barHeight * 0.6);
+
+        // --- 3. 處理重力波峰亮點 (Falling Peak Caps) ---
+        if (barHeight > scoreCtx.peaks[i]) {
+          scoreCtx.peaks[i] = barHeight; // 瞬間頂到最高點
+        } else {
+          scoreCtx.peaks[i] -= 1.5; // 重力衰減 (掉落速度)
+          if (scoreCtx.peaks[i] < 2) scoreCtx.peaks[i] = 2;
+        }
+        
+        // 畫出漂浮在最頂端的亮點
+        scoreCtx.fillStyle = '#38bdf8'; // 亮天藍色
+        scoreCtx.fillRect(x, centerY - scoreCtx.peaks[i] - 4, barWidth, 3);
+        
+        // --- 4. 繪製微弱的頻譜包絡連線 (Spectral Envelope Curve) ---
+        if (i > 0) {
+           scoreCtx.beginPath();
+           scoreCtx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+           scoreCtx.lineWidth = 1.5;
+           const prevX = x - barTotalWidth + (barWidth/2);
+           const prevY = centerY - scoreCtx.peaks[i-1] - 2;
+           const currX = x + (barWidth/2);
+           const currY = centerY - scoreCtx.peaks[i] - 2;
+           scoreCtx.moveTo(prevX, prevY);
+           scoreCtx.lineTo(currX, currY);
+           scoreCtx.stroke();
+        }
+
+        x += barTotalWidth;
+      }
+      
+      // 繪製儀表板中央測量基線 (Center Baseline)
+      scoreCtx.fillStyle = 'rgba(255,255,255,0.15)';
+      scoreCtx.fillRect(0, centerY, w, 1.5);
+      
+      // 復原環境
+      scoreCtx.globalCompositeOperation = 'source-over';
+    }
+  }
+}
+
+
 // ── 核心啟動初始化 (INIT ALL) ─────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -732,7 +1240,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initMouseGlow();           // 背景輝光
   initEscHandler();          // 鍵盤開關彈窗
   initAudio();               // 初始化音頻同步邏輯
-  initCustomPlayer();        // 初始化 Track 2 自定義播放器
+  initCustomPlayers();       // 初始化客製化播放器
+  initCounters();            // 初始化數字滾動動畫
+  initTypewriter();          // 初始化 AI 打字機特效
+  initAudioVisualizerCanvas(); // 初始化全息星塵 Canvas
 });
 
 /**
