@@ -29,35 +29,34 @@ function initSplash() {
 
   // 2. 進入系統邏輯 (乾淨俐落的純粹動畫，避免瀏覽器濾鏡崩潰)
   enterBtn.addEventListener('click', () => {
-    // 讓頁面確保在頂部
+    // 讓頁面確保在頂部，並且防止點擊重複觸發
+    enterBtn.style.pointerEvents = 'none';
+    splash.style.pointerEvents = 'none';
+
     window.scrollTo(0, 0);
     if (typeof lenis !== 'undefined') lenis.scrollTo(0, { immediate: true });
 
-    // 「提早」解除 CSS 的 is-loading 鎖定，這能確保排版在淡出前就已經穩定，杜絕結尾閃爍
-    document.body.classList.remove('is-loading');
-    if (typeof lenis !== 'undefined') lenis.start();
-
-    // 透過 GSAP 進行高級又穩定的退場轉場 (空間縮入)
+    // 透過 GSAP 進行高級快節奏的退場轉場
     gsap.to(splash, {
       opacity: 0,
-      scale: 1.1,         // 輕微的衝刺放大感，取代閃爍的扭曲破壞
-      duration: 1.0,
-      ease: "power3.inOut",
-      onStart: () => {
-        // 防止再點擊
-        splash.style.pointerEvents = 'none';
-      },
+      scale: 1.15,        // 衝刺放大感更強烈
+      duration: 0.45,     // 縮短時間，拔除「殘留感」
+      ease: "power2.in",  // 加速退場
       onComplete: () => {
-        splash.remove(); // 徹底釋放效能
+        // 【核心修正】第一時間藏起引導頁，並解除滾動鎖定
+        splash.style.display = 'none';
+        document.body.classList.remove('is-loading');
+        if (typeof lenis !== 'undefined') lenis.start();
+
+        // 等引導頁「完全消失」後，再啟動主畫面動畫，杜絕前後畫面重疊造成的閃爍或殘留感
+        if (navbar) navbar.classList.add('nav-ready');
+        revealHero();
+        startAudio();
+
+        // 確保 DOM 渲染穩定後釋放記憶體
+        setTimeout(() => splash.remove(), 100);
       }
     });
-
-    // 延遲啟動首頁特效 (在轉場快結束時接上)
-    setTimeout(() => {
-      if (navbar) navbar.classList.add('nav-ready');
-      revealHero();
-      startAudio();
-    }, 600);
   });
 }
 
