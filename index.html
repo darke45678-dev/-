@@ -840,8 +840,34 @@
         <div style="position: relative; z-index: 2;">
           <h3 style="margin: 0.5rem 0; color: #fff;">DV Editor (v8.0 Prototype)</h3>
           <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.5;">
-            「單檔案原生開發驗證版」：實驗性實作多層離屏 Canvas 渲染、Web Workers 動態運算池與熱傳導擴散補完演算法 (Diffusion Healing)。</p>
+            「單檔案原生開發驗證版」：實驗性實作多層離屏 Canvas 渲染、Web Workers 動態運算池與熱傳導擴散補完演算法 (Diffusion Healing).</p>
           <div style="color: #f97316; font-size: 0.8rem; font-weight: 700;">◬ 進入內部實驗室 (Live Demo) →</div>
+        </div>
+      </div>
+
+      <!-- Card 06: OmniFlow Suite Simulator (NEW) -->
+      <div class="problem-card reveal" onclick="openSimulatorModal()" style="
+          cursor: pointer; position: relative; overflow: hidden; height: 320px;
+          border-color: rgba(34,197,94,0.4); 
+          background: #07070a;
+          display: flex; flex-direction: column; justify-content: flex-end;
+          padding: 2rem;
+        ">
+        <!-- Green scanner visual overlay -->
+        <div style="position: absolute; inset: 0; background: radial-gradient(circle at 70% 30%, rgba(34,197,94,0.1) 0%, transparent 60%);"></div>
+        <div
+          style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.95) 30%, rgba(7,7,10,0.3) 100%); z-index: 1;">
+        </div>
+        <div
+          style="position: absolute; top:0; right:0; padding: 0.5rem 1rem; background: #22c55e; color: white; font-size: 0.6rem; font-weight: 800; z-index: 2; letter-spacing: 1px;">
+          SIMULATION LAB (系統模擬)</div>
+        <span class="problem-num"
+          style="position: absolute; top: 1.5rem; left: 1.5rem; color: #22c55e; opacity: 0.8; font-size: 3rem; margin: 0; z-index: 2; font-family: 'Outfit', sans-serif;">06</span>
+        <div style="position: relative; z-index: 2;">
+          <h3 style="margin: 0.5rem 0; color: #fff;">OmniFlow Suite 系統模擬器</h3>
+          <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.5;">
+            「企業雙軌系統去敏感展示版」：前端 Fetch 攔截模擬 Notion/Gemini API、自研 LINE Webhook Toast 推播模擬。</p>
+          <div style="color: #22c55e; font-size: 0.8rem; font-weight: 700;">進入模擬器架構 →</div>
         </div>
       </div>
 
@@ -1559,6 +1585,107 @@
       </div>
 
 
+
+    </div>
+  </div>
+
+  <!-- Simulator 技術詳解彈窗 (Simulator Modal) (NEW) -->
+  <div id="simulatorModal" class="modal-root" data-lenis-prevent style="
+    display: none; position: fixed; inset: 0; z-index: 10001;
+    background: rgba(2,5,2,0.97); backdrop-filter: blur(25px);
+    align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
+    overflow-y: auto;
+  " onclick="closeSimulatorModal()">
+    <div data-lenis-prevent style="
+      background: #020704; border: 1px solid rgba(34,197,94,0.4);
+      border-radius: 2.5rem; width: 95%; max-width: 1100px; padding: 4rem 2rem;
+      position: relative; max-height: 92vh; overflow-y: auto; z-index: 1;
+      transform: translateY(30px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 100px rgba(34,197,94,0.15);
+    " onclick="event.stopPropagation()">
+      
+      <!-- Close Button -->
+      <button onclick="closeSimulatorModal()"
+        style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s;">✕</button>
+      
+      <!-- Header -->
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <span style="color: #22c55e; font-weight: 800; letter-spacing: 4px; font-size: 0.75rem; text-transform: uppercase;">OmniFlow Suite Simulator</span>
+        <h2 style="font-size: clamp(1.8rem, 4vw, 2.8rem); margin-top: 0.8rem; color: #fff; font-family: 'Outfit', sans-serif;">智慧雙軌系統模擬器架構</h2>
+        <p style="color: rgba(255,255,255,0.5); max-width: 600px; margin: 1rem auto 0; line-height: 1.6; font-size: 0.9rem;">
+          將高度依賴企業雲端 API（Notion, Gemini, LINE）的 HR-CRM 雙核心系統，重構為「零伺服器、零環境變數、開箱即用」的本地模擬器。
+        </p>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════
+           ARCHITECTURE COMPARISON FLOW
+      ════════════════════════════════════════════════════ -->
+      <div style="font-family: 'Outfit', 'Inter', sans-serif; max-width: 900px; margin: 0 auto 3rem;">
+        
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+          
+          <!-- Column 1: Original Production Architecture -->
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.5rem; padding: 2rem;">
+            <div style="color: #c29c6d; font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 1rem; text-transform: uppercase;">// 實際生產環境架構 (Original Production)</div>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.82rem; color: rgba(255,255,255,0.7);">
+              <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 0.5rem; border-left: 3px solid #c29c6d;">
+                <strong>前端託管層</strong>：GitHub Pages 提供靜態網頁與 HR/CRM 整合 UI。
+              </div>
+              <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 0.5rem; border-left: 3px solid #c29c6d;">
+                <strong>雲端邊緣計算</strong>：Cloudflare Workers 接收前端 API 請求，處理身分驗證與 Token 加密。
+              </div>
+              <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 0.5rem; border-left: 3px solid #c29c6d;">
+                <strong>第三方整合管道</strong>：Notion API (資料庫)、Google Drive API (收據上傳)、Gemini API (AI 自動報帳解析)、LINE Messaging API (群組推播通知)。
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Sandbox Mock Simulator -->
+          <div style="background: rgba(34,197,94,0.03); border: 1px solid rgba(34,197,94,0.2); border-radius: 1.5rem; padding: 2rem;">
+            <div style="color: #22c55e; font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 1rem; text-transform: uppercase;">// 作品集模擬器架構 (Sandbox Mock Simulator)</div>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.82rem; color: rgba(255,255,255,0.7);">
+              <div style="background: rgba(34,197,94,0.06); padding: 0.8rem; border-radius: 0.5rem; border-left: 3px solid #22c55e;">
+                <strong>網路請求攔截引擎</strong>：使用自研 Mock Fetch 引擎拦截所有 `window.fetch` 的 API 路由請求。
+              </div>
+              <div style="background: rgba(34,197,94,0.06); padding: 0.8rem; border-radius: 0.5rem; border-left: 3px solid #22c55e;">
+                <strong>本地沙盒資料庫</strong>：運用 `localStorage` 對初始資料進行動態 CRUD 保存，模擬真實資料庫存取。
+              </div>
+              <div style="background: rgba(34,197,94,0.06); padding: 0.8rem; border-radius: 0.5rem; border-left: 3px solid #22c55e;">
+                <strong>全交互推播與 AI 模擬</strong>：自研 LINE Toast 系統模擬群組即時訊息，並提供 Gemini 語意辨識發票與 AI 對話問答的延遲渲染模擬。
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div><!-- end ARCH DIAGRAM -->
+
+      <!-- ── 技術突破摘要 ── -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1rem; margin-bottom: 3rem;">
+        
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 2rem;">
+          <h4 style="color: #22c55e; margin-bottom: 1.2rem; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;"><span>🛠️</span> 模擬器開發亮點</h4>
+          <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.82rem; color: rgba(255,255,255,0.65); display: flex; flex-direction: column; gap: 0.7rem; line-height: 1.6;">
+            <li><strong style="color: #22c55e;">去敏感化設計</strong>：確保企業真實帳密與機密 API 絕對不寫入代碼中。</li>
+            <li><strong style="color: #22c55e;">無伺服器運行</strong>：純前端 HTML+CSS+JS，不需配置 Node.js/Python 伺服器即可完美執行。</li>
+            <li><strong style="color: #22c55e;">雙軌一鍵體驗</strong>：保留原始 HR 員工自助服務與 CRM 客戶管理兩大複雜子系統的切換能力。</li>
+          </ul>
+        </div>
+
+        <div style="background: rgba(34,197,94,0.04); border: 1px solid rgba(34,197,94,0.15); border-radius: 1.5rem; padding: 2rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+          <h4 style="color: #fff; margin-bottom: 0.5rem; font-size: 1.1rem;">立即啟動系統模擬器</h4>
+          <p style="color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-bottom: 1.5rem; line-height: 1.4;">一鍵進入免密碼登入的 Demo 展示模式，親身體驗雙核心系統的完整運作。</p>
+          <a href="https://darke45678-dev.github.io/simulator/" target="_blank" class="btn-primary" style="
+            display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 2rem;
+            background: #22c55e; border-color: #22c55e; color: #000; font-weight: 800; box-shadow: 0 0 20px rgba(34,197,94,0.3);
+          ">
+            <span>💻 啟動 Live Demo 模擬器</span>
+          </a>
+        </div>
+
+      </div>
 
     </div>
   </div>

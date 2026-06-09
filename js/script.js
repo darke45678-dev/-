@@ -948,6 +948,30 @@ function closeLineBotModal() {
   }, 300);
 }
 
+// ── Simulator 系統模擬器彈窗 (SIMULATOR MODAL) (NEW) ───────────────────────────
+
+function openSimulatorModal() {
+  const s = document.getElementById('simulatorModal');
+  if (!s) return;
+  if (lenis) lenis.stop();
+  s.style.display = 'flex';
+  requestAnimationFrame(() => {
+    s.style.opacity = '1';
+    if (s.children[0]) s.children[0].style.transform = 'translateY(0)';
+  });
+}
+
+function closeSimulatorModal() {
+  const s = document.getElementById('simulatorModal');
+  if (!s) return;
+  s.style.opacity = '0';
+  if (s.children[0]) s.children[0].style.transform = 'translateY(30px)';
+  setTimeout(() => {
+    s.style.display = 'none';
+    if (lenis) lenis.start();
+  }, 300);
+}
+
 // ── 圖片燈箱 (IMAGE LIGHTBOX) ────────────────────────────────────────────────
 
 function spawnImageLightbox(src) {
@@ -1013,6 +1037,7 @@ function initEscHandler() {
     closeAudioScoreModal();
     closePromptLabModal();
     closeLineBotModal();
+    closeSimulatorModal();
     const chartModal = document.getElementById('chartDetailModal');
     if (chartModal) chartModal.style.display = 'none';
   });
