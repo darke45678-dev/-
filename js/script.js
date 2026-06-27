@@ -184,10 +184,12 @@ function initAudio() {
 
   btn.addEventListener('click', () => {
     if (audio.paused) {
+      window.userMutedBgm = false; // 使用者主動開啟，清除靜音意圖
       audio.play();
       btn.classList.add('playing');
       btn.querySelector('.audio-status span').textContent = 'ON';
     } else {
+      window.userMutedBgm = true;  // 使用者主動關閉，記錄靜音意圖
       audio.pause();
       btn.classList.remove('playing');
       btn.querySelector('.audio-status span').textContent = 'OFF';
@@ -638,6 +640,9 @@ function openModal() {
 function restoreBgm() {
   const bgAudio = document.getElementById('bg-audio');
   const btn = document.getElementById('audio-toggle');
+
+  // 使用者主動關閉音樂時，不強制復播
+  if (window.userMutedBgm) { window.bgmWasPlaying = false; return; }
 
   if (window.bgmWasPlaying && bgAudio && bgAudio.paused) {
     bgAudio.volume = 0;
