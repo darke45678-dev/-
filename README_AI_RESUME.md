@@ -2,7 +2,7 @@
 
 **專案名稱**：LEO · PORTFOLIO (ULTRA-FridgeAI 智慧核心系統)
 **Live Demo**：https://darke45678-dev.github.io/leo-portfolio/
-**最後存檔時間**：2026-04-06 22:18 (Portfolio Finalized & GitHub Sync)
+**最後存檔時間**：2026-07-21 00:42 (Card 07 Added & Resume Repaired)
 
 ---
 
@@ -60,64 +60,14 @@
 *   **卡片 1 - Siri/OpenAI 語音波段 (Multilayer Bezier)**：捨棄單調點陣，實作為 4 層相位相異、頻率交錯的賽博紫與螢光藍貝茲曲線。結合 `lighter` 混合模式、邊緣收攏 (Edge Damping) 與真空 PCM 數據雜訊 (Jitter)，打造出彷彿具備呼吸感的實體 AI 聲波。
 *   **卡片 2 - 賽博重力鏡像頻譜 (Mirrored Gravity EQ)**：重構為水平對稱鏡像頻譜，加入向下衰減的「水面倒影 (Reflection)」，且實作了帶有物理重力的波峰漂浮亮點 (Falling Peak Caps)、光譜包絡連線 (Spectral Envelope) 及微弱的 CRT 掃描背景線，工業力學美感發揮至極致。
 *   **卡片 3 - 提示詞工程背景重構 (Visual Asset Update)**：將原本的漸層背景替換為自定義視覺資產 `03.png`，配合精密的 Z-index 遮罩處理，確保資產紋理與文字可讀性達成最佳平衡。
-*   **精準靜止態漏洞修復**：全面切斷 `localAudioSimulation` 導致的全局干擾，現在所有畫布的渲染核心皆嚴格綁定對應的 `<## 🟢 9. 已完成進度 (2026-04-06 LINE Bot 作品集完整整合)
-
-### 🤖 AI Agent 雲端助理展示 (LINE Bot Full Integration)
-*   **作品集卡片擴充 (Portfolio Card 04)**：新增完整的第 04 號作品卡片「數位助理：24H 雲端自動化」。
-    *   **底圖整合**：使用 `assets/images/04.jpg` 作為卡片底圖，磁青色色調讖色層 + 深色漸層遮罩，風格與其他三張卡片完全一致。
-    *   **磁青主題色**：設計主题投影色 `rgba(6,182,212)`，使卡片的科技感與彈窗內部的架構圖前後煎托。
-*   **美化架構圖 (Cyberpunk Architecture Diagram)**：完全重建彈窗內的架構圖，將白底刊斉轉化為具備資料科蓉感的圖解：
-    *   **5 層次引源設計**：實現了「顧客 (LINE App)」→「LINE 互動層」→「Hugging Face / FastAPI 核心」→「外部服務 (Gemini+Sheets)」→「LINE Messaging API」的完整循環。
-    *   **賣博禜克風格**：運用深紫博入口起點、金色號図框線記运算庖、齒形築選網、紫色排程管源、靑色分流器、螢光綠輸出閘道行跡，整體風格與網站都高度一致。
-    *   **進階細節**：命名標籤、數支路由分流番號 (Sheet A/B/C)、SCHEDULER 標籤、輸出分簓說明、回当導覽箆頭，全部奔自原始架構圖。
-*   **作品集段落說明更新**：將第 07 節的說明字更新为在內容，反映目前四張占幵全番作品的實際內容。
-*   **所有變更已推播至 GitHub main 分支**。
+*   **精準靜止態漏洞修復**：全面切斷 `localAudioSimulation` 導致的全局干擾，現在所有畫布的渲染核心皆嚴格綁定對應的媒體對象，以防止在靜止狀態下的重複計算。
 
 ---
 
+## 🟢 5. 已完成進度 (2026-03-30 移動端與效能調優)
 
----
-
-## 🟢 10. 已完成進度 (2026-04-06 LINE Bot Phase 4 多層級動態選單)
-
-### 🗂️ AI 行為邏輯深化 (System Prompt Upgrade)
-*   **關聯推薦機制**：優化 LLM 的人設指令，要求 AI 在推薦單項產品時，必須自動關聯檢索其他類別的相關單品，提供完整穿搭組合提案。
-*   **格式規範化**：制定嚴謹的回覆範本，確保 AI 輸出結果在移動端裝置上具備最佳可讀性與專業感。
-
-### 🔀 智慧路由與分流技術 (Smart Routing Architecture)
-*   **動態選單切換 (Zero-AI Routing)**：透過後端 Python 腳本精準攔截特定關鍵字，直接操作 LINE Messaging API 進行選單層級切換，過程**完全不呼叫 AI**，實現零 Token 消耗的即時反應。
-*   **數據分流檢索 (Category-Aware Retrieval)**：新增路由字典，根據用戶選擇的品類精準載入對應 Google Sheets 分頁。此優化使單次 AI 請求的 Token 消耗量**降低約 60%**，顯著減少模型運算開銷。
-
-### 📋 動態選單管理系統 (Rich Menu API Control)
-*   **Messaging API 程式化管理**：捨棄手動建立方式，改由 Python 腳本透過 LINE Messaging API 全自動建立、上傳與管理 Rich Menu，取得完整控制權與 
-ichMenuId。
-*   **雙層選單架構**：設計「主選單」與「分類選單」的雙層結構，支援即時回傳、跳轉與返回等複雜交互邏輯。
-*   **資源壓縮與優化**：處理選單圖像的壓縮與格式化，解決跨平台傳輸的大小限制，並透過 API 進行全域用戶權限設定。
-
-### 💰 運作成本優化矩陣 (Token Cost Efficiency Matrix)
-
-| 選單動作 | Token / 算力消耗 | 處理方式 |
-|---|---|---|
-| 常見問題、品牌資訊 | 0 | 靜態攔截回覆 |
-| 導覽切換、返回主選單 | 0 | API 直接操作選單層 |
-| 外部連結跳轉 | 0 | URI 直接導向 |
-| 產品類別查詢 | 💰 極低量 (精準數據集) | AI 僅讀取單一分頁 |
-
-*   **清理與維護**：移除開發過程中產生的一次性部署與測試腳本，保持專案目錄簡潔。
-
----
-
-## 🟡 未完成 / 待續任務 (Next Steps - Unified List)
-
-1.  **UI 演進歷程補完 (UI Evolution Trace)**：將現有的 21 張 V-系列演進影像整理入時間軸（`index.html` 第 612 行佔位符）。
-2.  **多瀏覽器最終驗收**：進行最後的移動端流暢度掃描與相容性測試。
-
----
-
-> **致下一次開啟此對話的 AI 助手**：
->
-> LEO PORTFOLIO 目前擁有 4 張完整的高階展示作品卡（號碼 01-04），所有彈窗、JS 邏輯、底圖與架構圖均已完工並推播至 GitHub。現階段運作穩定。接續容先處理「UI 演進歷程 (Timeline)」補完小任務：將 `assets/images/` 下的 YOLO 訓練過程影像導入時間軸展示。
-�� 60 顆，並引入「間隔取樣 (Temporal Sampling)」與「平方距離比對」，將 CPU 運算開銷降低 80%，在保有豐富視覺的同時維持全站 60 FPS。
+### ⚡ 粒子渲染與物理優化 (Performance Optimization)
+*   **背景粒子量優化**：粒子總數限制在 60 顆，並引入「間隔取樣 (Temporal Sampling)」與「平方距離比對」，將 CPU 運算開銷降低 80%，在保有豐富視覺的同時維持全站 60 FPS。
 *   **音頻感知 (Bass Pulse)**：背景連線與粒子速度會隨著 BGM 的低音頻率產生「呼吸式閃爍」，讓整個網站與音樂共振。
 
 ### 📱 移動端全設備調優 (Mobile Device Tuning)
@@ -172,13 +122,10 @@ ichMenuId。
 *   **技術詳解彈窗開發 (LineBot Architecture Modal)**：為該作品實作了專屬的高規格彈窗，深度展示開發日誌 (WORKLOG) 中的核心技術：
     *   **視覺化架構管道 (Workflow UI)**：以 HTML/CSS 建構互動式架構圖，清晰呈現從用戶、FastAPI Webhook、語意攔截層到 Gemini AI 與 Google Sheets 的數據流向。
     *   **營運成本優化對照表 (Cost Efficiency Graph)**：文件化了「零成本語意攔截」技術，詳細對比 0 Token 消耗（FAQ 與選單導覽）與極低消耗（精準資料集查詢）的運作模型。
-    *   **技術突破文件化**：強調了基於 FastAPI 的非同步處理能力，以及針對 Cloud 環境的 Webhook 權限優化方案。
+    *   **技術突破文件化**：強調了基於 FastAPI 的非同步處理能力，以及針對 Cloud環境的 Webhook 權限優化方案。
 *   **系統交互補完 (System Interaction Adjustments)**：
     *   在 `script.js` 中新增其專屬的 Modal 控制邏輯與動畫。
     *   更新全局 ESC Handler 與 Navbar 導覽同步，確保全站交互的一致性。
-
----
-
 
 ---
 
@@ -193,21 +140,38 @@ ichMenuId。
 *   **數據分流檢索 (Category-Aware Retrieval)**：新增路由字典，根據用戶選擇的品類精準載入對應 Google Sheets 分頁。此優化使單次 AI 請求的 Token 消耗量**降低約 60%**，顯著減少模型運算開銷。
 
 ### 📋 動態選單管理系統 (Rich Menu API Control)
-*   **Messaging API 程式化管理**：捨棄手動建立方式，改由 Python 腳本透過 LINE Messaging API 全自動建立、上傳與管理 Rich Menu，取得完整控制權與 
-ichMenuId。
+*   **Messaging API 程式化管理**：捨棄手動建立方式，改由 Python 腳本透過 LINE Messaging API 全自動建立、上傳與管理 Rich Menu，取得完整控制權與 `richMenuId`。
 *   **雙層選單架構**：設計「主選單」與「分類選單」的雙層結構，支援即時回傳、跳轉與返回等複雜交互邏輯。
 *   **資源壓縮與優化**：處理選單圖像的壓縮與格式化，解決跨平台傳輸的大小限制，並透過 API 進行全域用戶權限設定。
 
-### 💰 運作成本優化矩陣 (Token Cost Efficiency Matrix)
+---
 
-| 選單動作 | Token / 算力消耗 | 處理方式 |
-|---|---|---|
-| 常見問題、品牌資訊 | 0 | 靜態攔截回覆 |
-| 導覽切換、返回主選單 | 0 | API 直接操作選單層 |
-| 外部連結跳轉 | 0 | URI 直接導向 |
-| 產品類別查詢 | 💰 極低量 (精準數據集) | AI 僅讀取單一分頁 |
+## 🟢 11. 已完成進度 (2026-04-17 DV Editor 實驗性展示整合)
 
-*   **清理與維護**：移除開發過程中產生的一次性部署與測試腳本，保持專案目錄簡潔。
+### 🧪 影像編輯器原型展示 (Experimental Build)
+*   **作品集卡片擴充 (Card 05)**：根據 `README-PS.md` 架構在作品集區新增了「DV Editor (v8.0 Prototype)」卡片。
+*   **實驗室視覺語彙 (Lab UI Style)**：
+    *   考量到該專案仍為「不公開測試版」，刻意有別於前四張卡片的精緻底圖，採用了 **「警告橘 (#f97316) 搭配工程斜線斑紋背景 (Repeating Linear Gradient)」**，呈現出高度硬核的開發實驗室風格。
+    *   標籤採用了 `⚠️ EXPERIMENTAL LAB`，清楚向用戶傳達這是一個前端技術概念驗證 (PoC) 原型，而非正式商用產品。
+*   **連結導向更新**：該卡片暫不實作彈窗，點擊會直接透過 `window.open` 另開新分頁連往實際 Deployed 的 GitHub Pages 試作站。
+
+---
+
+## 🟢 12. 已完成進度 (2026-07-21 LLM 自動化工作流與教學系統設計)
+
+### 🏗️ LLM 自動化工作流開發與模組化教學系統 (Card 07 Expansion)
+*   **作品集卡片擴充 (Card 07)**：於作品集中新增第 07 號卡片「LLM 自動化工作流與教學系統」，採用琥珀金 (#f59e0b) 主題配色與點陣粒子網格背景。
+*   **端到端無人化腳本生成 (Make.com & Gemini Integration)**：
+    *   **分鏡腳本生成**：監控雲端資料庫（GCS/Drive）實施事件驅動，調用 Gemini 多模態 API 解析音畫內容並透過 JSON Enforcement 輸出標準結構，ETL 自動化寫入試算表模板。
+    *   **新聞口播腳本**：定時 RSS 抓取新聞源，搭配 Iterator 實現並行處理，利用 Text Aggregator 文本聚合交由 Gemini 產出 60 秒口播腳本，自動推送電子郵件通知。
+*   **模組化 SOP 團隊賦能 (Part 2)**：
+    *   實作「技術白話化轉譯」對照表，降低非技術人員的 AI 工具導入難度。
+    *   獨創包含「步驟－工具－動作名稱－白話說明－觀念重點」的**五維度 SOP 教材模板**。
+*   **系統彈窗優化**：
+    *   於 `index.html` 中實作高階 `workflowModal` 彈窗，支援雙分頁切換（技術實作與 SOP 教學展示）。
+    *   於 `js/script.js` 寫入 `openWorkflowModal`/`closeWorkflowModal`/`switchWorkflowTab` 方法，並接通 ESC 關閉快捷鍵。
+*   **全站佈局優化**：
+    *   將作品集畫廊 grid 的 `max-width` 從 `900px` 拓寬至 `1100px`，使 7 個卡片於大螢幕排列更加優雅美觀。
 
 ---
 
@@ -220,15 +184,4 @@ ichMenuId。
 
 > **致下一次開啟此對話的 AI 助手**：
 >
-> 專案已完成「DV Editor 原型」在作品集中的整合，包含第 05 號實驗室卡片 (🚧 實驗性視覺與連結重定向)。目前全站具備 5 張高階展示卡。接續任務應回歸計畫中的 UI 演進歷程 (Timeline) 補完，將 `assets/images/` 下的 YOLO 訓練過程影像具現化。
-
----
-
-## 🟢 11. 已完成進度 (2026-04-17 DV Editor 實驗性展示整合)
-
-### 🧪 影像編輯器原型展示 (Experimental Build)
-*   **作品集卡片擴充 (Card 05)**：根據 `README-PS.md` 架構在作品集區新增了「DV Editor (v8.0 Prototype)」卡片。
-*   **實驗室視覺語彙 (Lab UI Style)**：
-    *   考量到該專案仍為「不公開測試版」，刻意有別於前四張卡片的精緻底圖，採用了 **「警告橘 (#f97316) 搭配工程斜線斑紋背景 (Repeating Linear Gradient)」**，呈現出高度硬核的開發實驗室風格。
-    *   標籤採用了 `⚠️ EXPERIMENTAL LAB`，清楚向用戶傳達這是一個前端技術概念驗證 (PoC) 原型，而非正式商用產品。
-*   **連結導向更新**：該卡片暫不實作彈窗，點擊會直接透過 `window.open` 另開新分頁連往實際 Deployed 的 GitHub Pages 試作站。
+> 專案已完成第 07 號作品卡片「LLM 自動化工作流與教學系統」的開發與整合，目前全站具備 7 張展示卡片（Card 01 - Card 07）。後續任務可繼續補完 UI 演進歷程 (Timeline) 或是進行多瀏覽器相容性測試。

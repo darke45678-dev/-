@@ -977,6 +977,57 @@ function closeSimulatorModal() {
   }, 300);
 }
 
+// ── Workflow 自動化工作流彈窗 (WORKFLOW MODAL) (NEW) ───────────────────────────
+
+function openWorkflowModal() {
+  const w = document.getElementById('workflowModal');
+  if (!w) return;
+  if (lenis) lenis.stop();
+  w.style.display = 'flex';
+  requestAnimationFrame(() => {
+    w.style.opacity = '1';
+    if (w.children[0]) w.children[0].style.transform = 'translateY(0)';
+  });
+}
+
+function closeWorkflowModal() {
+  const w = document.getElementById('workflowModal');
+  if (!w) return;
+  w.style.opacity = '0';
+  if (w.children[0]) w.children[0].style.transform = 'translateY(30px)';
+  setTimeout(() => {
+    w.style.display = 'none';
+    if (lenis) lenis.start();
+  }, 300);
+}
+
+function switchWorkflowTab(tabId) {
+  // 隱藏內容區
+  document.getElementById('workflow-tab-part1').style.display = 'none';
+  document.getElementById('workflow-tab-part2').style.display = 'none';
+  document.getElementById(tabId).style.display = 'block';
+
+  const btnPart1 = document.getElementById('btn-workflow-part1');
+  const btnPart2 = document.getElementById('btn-workflow-part2');
+
+  // 切換按鈕的 Active 視覺狀態
+  if (tabId === 'workflow-tab-part1') {
+    btnPart1.style.background = 'rgba(245,158,11,0.15)';
+    btnPart1.style.color = '#f59e0b';
+    btnPart1.style.borderColor = '#f59e0b';
+    btnPart2.style.background = 'transparent';
+    btnPart2.style.color = 'var(--muted)';
+    btnPart2.style.borderColor = 'rgba(255,255,255,0.15)';
+  } else {
+    btnPart2.style.background = 'rgba(245,158,11,0.15)';
+    btnPart2.style.color = '#f59e0b';
+    btnPart2.style.borderColor = '#f59e0b';
+    btnPart1.style.background = 'transparent';
+    btnPart1.style.color = 'var(--muted)';
+    btnPart1.style.borderColor = 'rgba(255,255,255,0.15)';
+  }
+}
+
 // ── 圖片燈箱 (IMAGE LIGHTBOX) ────────────────────────────────────────────────
 
 function spawnImageLightbox(src) {
@@ -1043,6 +1094,7 @@ function initEscHandler() {
     closePromptLabModal();
     closeLineBotModal();
     closeSimulatorModal();
+    closeWorkflowModal();
     const chartModal = document.getElementById('chartDetailModal');
     if (chartModal) chartModal.style.display = 'none';
   });

@@ -714,7 +714,7 @@
 
     <!-- Gallery Grid -->
     <div class="problem-grid"
-      style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); max-width: 900px; margin: 0 auto;">
+      style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); max-width: 1100px; margin: 0 auto;">
 
       <!-- Card 01: Virtual Singer -->
       <div class="problem-card reveal" onclick="openVividModal()" style="
@@ -868,6 +868,33 @@
           <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.5;">
             「企業雙軌系統去敏感展示版」：前端 Fetch 攔截模擬 Notion/Gemini API、自研 LINE Webhook Toast 推播模擬。</p>
           <div style="color: #22c55e; font-size: 0.8rem; font-weight: 700;">進入模擬器架構 →</div>
+        </div>
+      </div>
+
+      <!-- Card 07: LLM Workflow Automation (NEW) -->
+      <div class="problem-card reveal" onclick="openWorkflowModal()" style="
+          cursor: pointer; position: relative; overflow: hidden; height: 320px;
+          border-color: rgba(245,158,11,0.4); 
+          background: url('assets/images/07.jpg') center/cover no-repeat;
+          display: flex; flex-direction: column; justify-content: flex-end;
+          padding: 2rem;
+        ">
+        <!-- Amber glow visual overlay -->
+        <div style="position: absolute; inset: 0; background: radial-gradient(circle at 30% 70%, rgba(245,158,11,0.08) 0%, transparent 60%);"></div>
+        <div style="position: absolute; inset: 0; background-image: radial-gradient(rgba(245,158,11,0.15) 1px, transparent 0); background-size: 16px 16px;"></div>
+        <div
+          style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.95) 30%, rgba(8,7,5,0.3) 100%); z-index: 1;">
+        </div>
+        <div
+          style="position: absolute; top:0; right:0; padding: 0.5rem 1rem; background: #f59e0b; color: #000; font-size: 0.6rem; font-weight: 800; z-index: 2; letter-spacing: 1px;">
+          AUTOMATION LAB (自動化研發)</div>
+        <span class="problem-num"
+          style="position: absolute; top: 1.5rem; left: 1.5rem; color: #f59e0b; opacity: 0.8; font-size: 3rem; margin: 0; z-index: 2; font-family: 'Outfit', sans-serif;">07</span>
+        <div style="position: relative; z-index: 2;">
+          <h3 style="margin: 0.5rem 0; color: #fff;">LLM 自動化工作流與教學系統</h3>
+          <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.82rem; line-height: 1.5;">
+            「Make.com + Gemini 整合實踐」：多模態自動分鏡腳本生成、新聞流 AI 口播推送，及五維度模組化 SOP 賦能教學。</p>
+          <div style="color: #f59e0b; font-size: 0.8rem; font-weight: 700;">探索自動化工作流 →</div>
         </div>
       </div>
 
@@ -1685,6 +1712,198 @@
           </a>
         </div>
 
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Workflow 自動化工作流彈窗 (Workflow Modal) (NEW) -->
+  <div id="workflowModal" class="modal-root" data-lenis-prevent style="
+    display: none; position: fixed; inset: 0; z-index: 10001;
+    background: rgba(5,3,0,0.97); backdrop-filter: blur(25px);
+    align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
+    overflow-y: auto;
+  " onclick="closeWorkflowModal()">
+    <div data-lenis-prevent style="
+      background: #080603; border: 1px solid rgba(245,158,11,0.4);
+      border-radius: 2.5rem; width: 95%; max-width: 1100px; padding: 4rem 2rem;
+      position: relative; max-height: 92vh; overflow-y: auto; z-index: 1;
+      transform: translateY(30px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 100px rgba(245,158,11,0.15);
+    " onclick="event.stopPropagation()">
+      
+      <!-- Close Button -->
+      <button onclick="closeWorkflowModal()"
+        style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s;">✕</button>
+      
+      <!-- Header -->
+      <div style="text-align: center; margin-bottom: 2.5rem;">
+        <span style="color: #f59e0b; font-weight: 800; letter-spacing: 4px; font-size: 0.75rem; text-transform: uppercase;">LLM Workflow Automation & Training SOP</span>
+        <h2 style="font-size: clamp(1.8rem, 4vw, 2.8rem); margin-top: 0.8rem; color: #fff; font-family: 'Outfit', sans-serif;">LLM 自動化工作流與教學系統設計</h2>
+        <p style="color: rgba(255,255,255,0.5); max-width: 650px; margin: 1rem auto 0; line-height: 1.6; font-size: 0.9rem;">
+          使用 Make.com 串接 Gemini API 解決影視與新聞採編痛點，並獨創五維度 SOP 教學模組實現團隊的高效 AI 轉型賦能。
+        </p>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div style="display:flex; gap:0.5rem; justify-content:center; margin-bottom: 3rem;">
+        <button class="vivid-tab" id="btn-workflow-part1" onclick="switchWorkflowTab('workflow-tab-part1')"
+          style="padding:0.6rem 2rem; border-radius:3rem; border:1px solid #f59e0b;
+                 background:rgba(245,158,11,0.15); color:#f59e0b; font-size:0.85rem; cursor:pointer; font-weight: 700; transition: all 0.3s;">
+          Part 1｜自動化工作流開發
+        </button>
+        <button class="vivid-tab" id="btn-workflow-part2" onclick="switchWorkflowTab('workflow-tab-part2')"
+          style="padding:0.6rem 2rem; border-radius:3rem; border:1px solid rgba(255,255,255,0.15);
+                 background:transparent; color:var(--muted); font-size:0.85rem; cursor:pointer; font-weight: 700; transition: all 0.3s;">
+          Part 2｜模組化教學與 SOP
+        </button>
+      </div>
+
+      <!-- TAB 1: Part 1｜LLM 自動化工作流開發（技術實作） -->
+      <div id="workflow-tab-part1">
+        <div style="font-family: 'Outfit', 'Inter', sans-serif; max-width: 900px; margin: 0 auto;">
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 2rem 2.5rem; margin-bottom: 2rem;">
+            <p style="color: rgba(255,255,255,0.7); line-height: 1.8; font-size: 0.95rem; margin: 0;">
+              針對影視製作與新聞採編的流程痛點，使用 <strong>Make.com</strong> 串接 <strong>Google Gemini LLM API</strong>，建構兩套端到端（End-to-End）無人化腳本生成系統：
+            </p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
+            
+            <!-- System 1: 多模態自動化分鏡腳本生成系統 -->
+            <div style="background: rgba(245,158,11,0.03); border: 1px solid rgba(245,158,11,0.2); border-radius: 1.5rem; padding: 2.2rem; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem;">
+                  <span style="font-size: 1.8rem;">🎬</span>
+                  <h3 style="color: #fff; font-size: 1.25rem; margin: 0;">1. 多模態自動化分鏡腳本生成</h3>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 1.2rem; font-size: 0.88rem; color: rgba(255,255,255,0.75); line-height: 1.6;">
+                  <div>
+                    <strong style="color: #f59e0b; display: block; margin-bottom: 0.2rem;">⚡ 事件驅動觸發 (Event-Driven Trigger)</strong>
+                    實時監控雲端資料庫（如 GCS/Drive），實現影視素材一上傳即刻自動啟動後台流程。
+                  </div>
+                  <div>
+                    <strong style="color: #f59e0b; display: block; margin-bottom: 0.2rem;">🧠 LLM 結構化輸出 (JSON Enforcement)</strong>
+                    調用 Gemini API 的多模態理解能力解析音畫內容，並引導模型嚴格輸出標準 JSON 結構，消弭生成隨機性。
+                  </div>
+                  <div>
+                    <strong style="color: #f59e0b; display: block; margin-bottom: 0.2rem;">📊 ETL 自動化寫入 (Automated Ingest)</strong>
+                    後端自動解析 JSON 格式資料流，並複製標準分鏡試算表模板，自動完成鏡號、畫面描述、音效等欄位的填入與存檔。
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- System 2: 即時新聞流 AI 口播腳本生成與推送系統 -->
+            <div style="background: rgba(245,158,11,0.03); border: 1px solid rgba(245,158,11,0.2); border-radius: 1.5rem; padding: 2.2rem; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem;">
+                  <span style="font-size: 1.8rem;">📰</span>
+                  <h3 style="color: #fff; font-size: 1.25rem; margin: 0;">2. 即時新聞流 AI 口播腳本與推送</h3>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 1.2rem; font-size: 0.88rem; color: rgba(255,255,255,0.75); line-height: 1.6;">
+                  <div>
+                    <strong style="color: #f59e0b; display: block; margin-bottom: 0.2rem;">📡 RSS 擷取與批次分流 (Parallel Iterator)</strong>
+                    自動定時抓取新聞 RSS 資訊源，搭配 Make 的 Iterator 運算子，實現多筆新聞的獨立並行處理（Parallel Processing）。
+                  </div>
+                  <div>
+                    <strong style="color: #f59e0b; display: block; margin-bottom: 0.2rem;">✍️ 文本聚合與語意改寫 (Text Aggregator)</strong>
+                    運用 Text Aggregator 整合新聞內容，交由 Gemini 改寫為適合短影音的 60 秒結構化口播腳本。
+                  </div>
+                  <div>
+                    <strong style="color: #f59e0b; display: block; margin-bottom: 0.2rem;">📧 多管道自動分發 (Multi-Channel Dispatch)</strong>
+                    解析完口播數據後，自動寫入雲端資料表歸檔，並同步觸發 Email 即時推播給主播或團隊。
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: Part 2｜模組化教學與 SOP 撰寫（團隊賦能） -->
+      <div id="workflow-tab-part2" style="display: none;">
+        <div style="font-family: 'Outfit', 'Inter', sans-serif; max-width: 900px; margin: 0 auto;">
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 2rem 2.5rem; margin-bottom: 2.5rem;">
+            <p style="color: rgba(255,255,255,0.7); line-height: 1.8; font-size: 0.95rem; margin: 0;">
+              為了將複雜的工程架構與 AI 邏輯進行抽象化轉譯，我獨創了<strong>五維度教學模組</strong>，旨在降低非技術團隊導入 AI 工作流的門檻：
+            </p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+            
+            <!-- Block 1 -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 2rem;">
+              <div style="font-size: 2rem; margin-bottom: 1rem;">🗣️</div>
+              <h4 style="color: #fff; margin-bottom: 0.8rem; font-size: 1.1rem;">技術白話化轉譯</h4>
+              <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">
+                將 API 串接、JSON Parsing、迭代處理等硬核概念，轉化為非技術人員（如企劃、主播、小編）一讀即懂的白話對照表。
+              </p>
+            </div>
+
+            <!-- Block 2 -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 2rem;">
+              <div style="font-size: 2rem; margin-bottom: 1rem;">📋</div>
+              <h4 style="color: #fff; margin-bottom: 0.8rem; font-size: 1.1rem;">五維度 SOP 教材設計</h4>
+              <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">
+                建立包含「<strong>步驟－工具－動作名稱－白話說明－觀念重點</strong>」的標準化教學模板，確保整個工作流流程可被完美複現。
+              </p>
+            </div>
+
+            <!-- Block 3 -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 2rem;">
+              <div style="font-size: 2rem; margin-bottom: 1rem;">🏆</div>
+              <h4 style="color: #fff; margin-bottom: 0.8rem; font-size: 1.1rem;">企業級 AI 賦能資產</h4>
+              <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.7;">
+                產出之自動化教學圖鑑，可直接作為企業內部 AI 工具轉型培訓之教材與作業標準書。
+              </p>
+            </div>
+
+          </div>
+
+          <!-- SOP Sample Table/Visualization -->
+          <div style="background: #000; border: 1px solid rgba(245,158,11,0.2); border-radius: 2rem; padding: 2rem; text-align: left;">
+            <h4 style="color: #f59e0b; margin-bottom: 1.5rem; text-align: center; letter-spacing: 2px; font-size: 1rem;">📋 五維度教學模板範例 (5-D SOP Template)</h4>
+            <div style="overflow-x:auto; border-radius:0.75rem; border:1px solid rgba(255,255,255,0.08);">
+              <table style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left; min-width: 600px;">
+                <thead style="background:rgba(245,158,11,0.15); color:#f59e0b;">
+                  <tr>
+                    <th style="padding:0.8rem 1rem;">維度 1：步驟</th>
+                    <th style="padding:0.8rem 1rem;">維度 2：工具</th>
+                    <th style="padding:0.8rem 1rem;">維度 3：動作名稱</th>
+                    <th style="padding:0.8rem 1rem;">維度 4：白話說明</th>
+                    <th style="padding:0.8rem 1rem;">維度 5：觀念重點</th>
+                  </tr>
+                </thead>
+                <tbody style="color:rgba(255,255,255,0.85);">
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding:0.8rem 1rem; font-weight: 700;">1. 資料接收</td>
+                    <td style="padding:0.8rem 1rem; color: #60a5fa;">Make.com / Webhook</td>
+                    <td style="padding:0.8rem 1rem; font-family: monospace; color: #a78bfa;">Custom Mailhook</td>
+                    <td style="padding:0.8rem 1rem;">當有新 Email 寄到特定信箱時啟動。</td>
+                    <td style="padding:0.8rem 1rem; color: #f59e0b;">流程的「啟動開關」，自動接過資料。</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding:0.8rem 1rem; font-weight: 700;">2. 智慧分析</td>
+                    <td style="padding:0.8rem 1rem; color: #38bdf8;">Google Gemini API</td>
+                    <td style="padding:0.8rem 1rem; font-family: monospace; color: #a78bfa;">Generate Content</td>
+                    <td style="padding:0.8rem 1rem;">AI 閱讀新聞內容，改寫成口播腳本。</td>
+                    <td style="padding:0.8rem 1rem; color: #f59e0b;">約束 Prompt，指定輸出 JSON 格式。</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:0.8rem 1rem; font-weight: 700;">3. 自動存檔</td>
+                    <td style="padding:0.8rem 1rem; color: #10b981;">Google Sheets</td>
+                    <td style="padding:0.8rem 1rem; font-family: monospace; color: #a78bfa;">Add a Row</td>
+                    <td style="padding:0.8rem 1rem;">將口播文字與生成時間自動寫入表格。</td>
+                    <td style="padding:0.8rem 1rem; color: #f59e0b;">結構化儲存，供後續追蹤與重複調用。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
       </div>
 
     </div>
