@@ -1028,6 +1028,64 @@ function switchWorkflowTab(tabId) {
   }
 }
 
+// ── Fridge AI 彈窗控制 (FRIDGE MODAL) (NEW) ───────────────────────────────────
+
+function openFridgeModal() {
+  const w = document.getElementById('fridgeModal');
+  if (!w) return;
+  if (lenis) lenis.stop();
+  w.style.display = 'flex';
+  requestAnimationFrame(() => {
+    w.style.opacity = '1';
+    if (w.children[0]) w.children[0].style.transform = 'translateY(0)';
+  });
+}
+
+function closeFridgeModal() {
+  const w = document.getElementById('fridgeModal');
+  if (!w) return;
+  w.style.opacity = '0';
+  if (w.children[0]) w.children[0].style.transform = 'translateY(30px)';
+  setTimeout(() => {
+    w.style.display = 'none';
+    if (lenis) lenis.start();
+  }, 300);
+}
+
+function switchFridgeTab(tabId) {
+  // 隱藏所有頁籤內容
+  document.getElementById('fridge-tab-overview').style.display = 'none';
+  document.getElementById('fridge-tab-features').style.display = 'none';
+  document.getElementById('fridge-tab-tech').style.display = 'none';
+  document.getElementById('fridge-tab-roadmap').style.display = 'none';
+  
+  // 顯示選定頁籤內容
+  document.getElementById(tabId).style.display = 'block';
+
+  // 取得按鈕元件
+  const btnOverview = document.getElementById('btn-fridge-overview');
+  const btnFeatures = document.getElementById('btn-fridge-features');
+  const btnTech = document.getElementById('btn-fridge-tech');
+  const btnRoadmap = document.getElementById('btn-fridge-roadmap');
+
+  const btns = [btnOverview, btnFeatures, btnTech, btnRoadmap];
+  const targetBtnId = 'btn-' + tabId;
+
+  // 切換按鈕 active 狀態
+  btns.forEach(btn => {
+    if (!btn) return;
+    if (btn.id === targetBtnId) {
+      btn.style.background = 'rgba(194,156,109,0.15)';
+      btn.style.color = 'var(--gold)';
+      btn.style.borderColor = 'var(--gold)';
+    } else {
+      btn.style.background = 'transparent';
+      btn.style.color = 'var(--muted)';
+      btn.style.borderColor = 'rgba(255,255,255,0.15)';
+    }
+  });
+}
+
 // ── 圖片燈箱 (IMAGE LIGHTBOX) ────────────────────────────────────────────────
 
 function spawnImageLightbox(src) {
@@ -1095,6 +1153,7 @@ function initEscHandler() {
     closeLineBotModal();
     closeSimulatorModal();
     closeWorkflowModal();
+    closeFridgeModal();
     const chartModal = document.getElementById('chartDetailModal');
     if (chartModal) chartModal.style.display = 'none';
   });

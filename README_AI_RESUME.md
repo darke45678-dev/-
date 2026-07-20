@@ -2,7 +2,7 @@
 
 **專案名稱**：LEO · PORTFOLIO (ULTRA-FridgeAI 智慧核心系統)
 **Live Demo**：https://darke45678-dev.github.io/leo-portfolio/
-**最後存檔時間**：2026-07-21 00:42 (Card 07 Added & Resume Repaired)
+**最後存檔時間**：2026-07-21 01:32 (FridgeAI Consolidated into Card 00 & Nav Simplified)
 
 ---
 
@@ -175,6 +175,21 @@
 
 ---
 
+## 🟢 13. 已完成進度 (2026-07-21 主頁精簡化重構與代表作 Card 00 濃縮)
+
+### 🏗️ 主頁簡潔化與核心項目彈窗化 (Featured Card 00 Consolidation)
+*   **導覽列精簡 (Nav Simplification)**：移除了原本指向冰箱專案局部段落的「問題」、「功能」、「前景」導覽連結，替換為個人介紹「關於我」與「作品集」，使頂部 Navbar 極致精簡。
+*   **Hero 區個人品牌化 (Personal Branding Hero)**：將主頁大標題改為 `LEO · PORTFOLIO`，主攻 AI 工程應用與沉浸式互動，並將冰箱統計指標改為全站專案與模組統計。
+*   **寬版 Featured 卡片 (Card 00)**：於 Gallery 最頂端放置寬版 Featured 代表作（佔滿整行寬度，格網跨距 `1 / -1`），主色調設定為專案金色 `var(--gold)`。
+*   **全螢幕冰箱彈窗 (`fridgeModal`)**：
+    *   **概述分頁 (Overview)**：移入冰箱統計數據、實機錄製播放按鈕與三大痛點卡片。
+    *   **功能分頁 (Features)**：完整移入影像辨識、庫存管理、AI 食譜生成等原主頁核心功能。
+    *   **技術分頁 (Tech)**：移入九宮格技術架構圖，保留點擊彈窗功能。
+    *   **展望分頁 (Roadmap)**：移入目標用戶卡片、市場潛力數據與三階段發展路線圖。
+*   **JS 最小侵入式整合**：新增 `openFridgeModal`、`closeFridgeModal`、`switchFridgeTab` 等彈窗及分頁控制函數，並在 `initEscHandler` 中接入 Esc 關閉鍵，絕不隨意改動原有邏輯，確保高度穩定性。
+
+---
+
 ## 🟡 未完成 / 待續任務 (Next Steps - Unified List)
 
 1.  **UI 演進歷程補完 (UI Evolution Trace)**：將現有的 21 張 V-系列演進影像整理入時間軸（`index.html` 第 612 行佔位符）。
@@ -184,4 +199,5 @@
 
 > **致下一次開啟此對話的 AI 助手**：
 >
-> 專案已完成第 07 號作品卡片「LLM 自動化工作流與教學系統」的開發與整合，目前全站具備 7 張展示卡片（Card 01 - Card 07）。後續任務可繼續補完 UI 演進歷程 (Timeline) 或是進行多瀏覽器相容性測試。
+> 專案已完成主頁精簡重構，現在主頁面直接為個人品牌 Hero 與 8 個展示卡片（Card 00 - Card 07）。FridgeAI 作為 Card 00 Featured 代表作，內含 4 頁籤全螢幕彈窗。後續可處理 UI 演進歷程 (Timeline) 或是多瀏覽器相容性測試。
+

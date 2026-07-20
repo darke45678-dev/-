@@ -243,10 +243,8 @@
   <nav id="navbar">
     <a href="#" class="nav-logo">LEO · PORTFOLIO</a>
     <div class="nav-links">
-      <a href="#problem">問題</a>
-      <a href="#features">功能</a>
+      <a href="#home">關於我</a>
       <a href="#portfolio">作品集</a>
-      <a href="#market">前景</a>
       <a href="#contact" class="nav-btn">聯絡我</a>
     </div>
     <button id="audio-toggle" class="audio-btn">
@@ -262,459 +260,119 @@
     </button>
   </nav>
 
-  <!-- 首頁區域 (Hero Section) -->
+  <!-- 首頁區域 (Hero Section) — 個人品牌簡介 -->
   <header class="hero" id="home">
     <!-- 裝飾性光球 -->
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
-    <div class="hero-eyebrow">01&nbsp;&nbsp;智慧食材管理</div>
-    <h1 class="reveal">冰箱<span>革命</span><br>FRIDGE AI</h1>
-    <p class="hero-sub reveal">以 YOLOv11 影像辨識與 Gemini 生成式 AI 為核心，解決家庭食材浪費問題，重新定義現代廚房管理體驗。</p>
+    <div class="hero-eyebrow">01&nbsp;&nbsp;AI Engineering & Immersive Interaction</div>
+    <h1 class="reveal">LEO ·<span> PORTFOLIO</span></h1>
+    <p class="hero-sub reveal">專注於 AI 工程應用、自動化工作流設計與沉浸式交互體驗開發。<br>涵蓋電腦視覺、LLM 整合、雲端部署與全端系統架構。</p>
     <div class="hero-buttons reveal">
-      <a href="#features" class="btn-primary">探索功能</a>
-      <a href="#stack" class="btn-outline">技術細項</a>
+      <a href="#portfolio" class="btn-primary">瀏覽作品集</a>
+      <a href="#contact" class="btn-outline">與我聯繫</a>
     </div>
     <!-- 數據統計欄位 -->
     <div class="hero-stats reveal">
       <div class="stat">
-        <div class="stat-num">0.868</div>
-        <div class="stat-label">Final mAP@50 辨識率</div>
+        <div class="stat-num">8</div>
+        <div class="stat-label">技術研發作品</div>
       </div>
       <div class="stat">
-        <div class="stat-num">10.5B</div>
-        <div class="stat-label">全球年產食物浪費(噸)</div>
+        <div class="stat-num">6</div>
+        <div class="stat-label">AI / LLM 整合專案</div>
       </div>
       <div class="stat">
-        <div class="stat-num">12.37%</div>
-        <div class="stat-label">智慧冰箱市場 CAGR</div>
+        <div class="stat-num">30+</div>
+        <div class="stat-label">技術模組實作</div>
       </div>
     </div>
   </header>
 
-  <!-- DEMO VIDEO SECTION -->
-  <section id="demo" style="padding: 6rem 6% 4rem; text-align: center;">
-    <div class="reveal">
-      <span class="section-label">03&nbsp;&nbsp;核心技術演示</span>
-      <h2 class="section-title">Fridge AI<br>系統實機錄製</h2>
-      <p class="hero-sub" style="margin-bottom: 2rem;">點擊下方按鈕觀看系統辨識與食譜生成的完整流程。</p>
 
-      <!-- Launch Button -->
-      <button onclick="openModal()" class="btn-primary"
-        style="display: inline-flex; align-items: center; gap: 0.75rem; padding: 1rem 2.5rem;">
-        <span>播放展示影片</span> <span style="font-size: 1.2rem;">▶️</span>
-      </button>
-    </div>
-
-    <!-- 展示影片彈窗 (Video Modal) -->
-    <div id="videoModal" style="
-      display: none; position: fixed; inset: 0; z-index: 10000;
-      background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-      align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
-    " onclick="closeModal()">
-
+  <!-- 影片彈窗 (Video Modal) — 保留供 fridgeModal 內呼叫 -->
+  <div id="videoModal" style="
+    display: none; position: fixed; inset: 0; z-index: 10002;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+    align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
+  " onclick="closeModal()">
+    <div style="
+      position: relative; max-width: 320px; width: 90%;
+      border-radius: 2rem; overflow: hidden;
+      border: 1px solid rgba(194,156,109,0.4);
+      box-shadow: 0 0 50px rgba(194,156,109,0.2);
+      transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    " onclick="event.stopPropagation()">
+      <video id="modalVideo" src="assets/videos/FridgeAI_Demo_BGM.mp4" playsinline
+        style="width: 100%; display: block;"></video>
+      <button onclick="closeModal()" style="
+        position: absolute; top: 1rem; right: 1rem;
+        background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+        width: 36px; height: 36px; border-radius: 50%; color: white;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        font-weight: bold;
+      ">✕</button>
       <div style="
-        position: relative; max-width: 320px; width: 90%;
-        border-radius: 2rem; overflow: hidden;
-        border: 1px solid rgba(194,156,109,0.4);
-        box-shadow: 0 0 50px rgba(194,156,109,0.2);
-        transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      " onclick="event.stopPropagation()">
-
-        <video id="modalVideo" src="assets/videos/FridgeAI_Demo_BGM.mp4" playsinline
-          style="width: 100%; display: block;"></video>
-
-        <!-- Close Button -->
-        <button onclick="closeModal()" style="
-          position: absolute; top: 1rem; right: 1rem;
-          background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
-          width: 36px; height: 36px; border-radius: 50%; color: white;
-          cursor: pointer; display: flex; align-items: center; justify-content: center;
-          font-weight: bold;
-        ">✕</button>
-
-        <!-- Video Info -->
-        <div style="
-          position: absolute; bottom: 0; left: 0; right: 0;
-          padding: 1rem; background: linear-gradient(transparent, rgba(0,0,0,0.8));
-          color: white; font-size: 0.8rem; pointer-events: none;
-        ">
-          Fridge AI Demo • 實機錄製版
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROBLEM -->
-  <section id="problem">
-    <div class="reveal">
-      <span class="section-label">02&nbsp;&nbsp;問題背景</span>
-      <h2 class="section-title">家庭廚房面臨的<br>三個核心痛點</h2>
-      <p class="section-desc">全台灣每年食物浪費高達 363 萬公噸，其中大部分來自家庭端不當的食材管理習慣。</p>
-    </div>
-    <div class="problem-grid">
-      <div class="problem-card reveal">
-        <span class="problem-num">01</span>
-        <span class="problem-icon">🙈</span>
-        <h3>看不見的庫存</h3>
-        <p>冰箱缺乏系統記錄。根據 UNEP (2024) 統計，全球每年產生 10.5 億噸食物浪費，每人年均浪費 74 公斤。</p>
-      </div>
-      <div class="problem-card reveal">
-        <span class="problem-num">02</span>
-        <span class="problem-icon">⏰</span>
-        <h3>即期食材腐敗</h3>
-        <p>缺乏提醒機制導致食材悄悄腐壞。全球每年因此損失高達 9,400 億美元，60% 浪費來自家庭端。</p>
-      </div>
-      <div class="problem-card reveal">
-        <span class="problem-num">03</span>
-        <span class="problem-icon">🤔</span>
-        <h3>剩食難以利用</h3>
-        <p>缺乏即時靈感。Fridge AI 透過 RAG 向量搜尋，將決策時間從 15 分鐘縮短至 30 秒，減少不必要購買。</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- FEATURED FUNCTIONS -->
-  <div class="featured" id="features">
-
-    <!-- Feature 1: YOLO Detection -->
-    <div class="featured-inner">
-      <div class="feat-row">
-        <div class="reveal-left">
-          <div class="feat-tag">核心功能 01</div>
-          <h3 class="feat-title">高精準食材<br>影像辨識</h3>
-          <p class="feat-desc">針對 6 類核心食材（蘋果、香蕉、橘子、菠菜、高麗菜、肉類）進行深度優化。搭載 YOLOv11m 模型，透過 5,560 組真實標注樣本訓練，不僅能辨識類別，更能精準區分「新鮮」與「腐敗」之雙向生命週期狀態。</p>
-          <div class="feat-tags">
-            <span class="tag">YOLOv11m</span>
-            <span class="tag">5,560+ Dataset</span>
-            <span class="tag">mAP@50: 0.868</span>
-            <span class="tag">雙棲狀態辨識</span>
-          </div>
-          <div class="feat-stat-row">
-            <div class="feat-stat"><span class="num">0.854</span><span class="lbl">mAP@50</span></div>
-            <div class="feat-stat"><span class="num">12 階</span><span class="lbl">智慧狀態判定</span></div>
-            <div class="feat-stat"><span class="num">即時</span><span class="lbl">偵測速度</span></div>
-          </div>
-        </div>
-        <div class="feat-visual reveal-right">
-          <div class="yolo-visual">
-            <div class="yolo-box green">
-              <span class="yolo-corner">YOLOv11</span>
-              <span class="yolo-emoji">🍎</span>
-              <span class="yolo-conf">98.2%</span>
-              <span class="yolo-name">蘋果·新鮮</span>
-            </div>
-            <div class="yolo-box green">
-              <span class="yolo-emoji">🍌</span>
-              <span class="yolo-conf">96.5%</span>
-              <span class="yolo-name">香蕉·新鮮</span>
-            </div>
-            <div class="yolo-box green">
-              <span class="yolo-emoji">🥩</span>
-              <span class="yolo-conf">94.8%</span>
-              <span class="yolo-name">肉類·新鮮</span>
-            </div>
-            <div class="yolo-box green">
-              <span class="yolo-emoji">🥬</span>
-              <span class="yolo-conf">96.5%</span>
-              <span class="yolo-name">高麗菜·新鮮</span>
-            </div>
-            <div class="yolo-box red">
-              <span class="yolo-emoji">🌿</span>
-              <span class="yolo-conf">88.3%</span>
-              <span class="yolo-name">菠菜·腐敗</span>
-            </div>
-            <div class="yolo-box red">
-              <span class="yolo-emoji">🍊</span>
-              <span class="yolo-conf">79.4%</span>
-              <span class="yolo-name">橘子·腐敗</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Feature 2: Inventory -->
-    <div class="featured-inner">
-      <div class="feat-row reverse">
-        <div class="reveal-right">
-          <div class="feat-tag">核心功能 02</div>
-          <h3 class="feat-title">智慧庫存<br>管理系統</h3>
-          <p class="feat-desc">辨識後自動建立食材清單，追蹤入庫日期與預估保鮮期。3天內即將過期的食材會優先顯示並推播提醒，將廚房管理化繁為簡。</p>
-          <div class="feat-tags">
-            <span class="tag">React 18</span>
-            <span class="tag">TypeScript</span>
-            <span class="tag">即期提醒</span>
-            <span class="tag">視覺化儀表板</span>
-          </div>
-          <div class="feat-stat-row">
-            <div class="feat-stat"><span class="num">3天</span><span class="lbl">預警時間</span></div>
-            <div class="feat-stat"><span class="num">自動</span><span class="lbl">記錄時間戳</span></div>
-            <div class="feat-stat"><span class="num">2區</span><span class="lbl">冷藏/冷凍</span></div>
-          </div>
-        </div>
-        <div class="feat-visual reveal-left">
-          <div class="mock-screen">
-            <div class="mock-bar">
-              <div class="mock-dot"></div>
-              <div class="mock-dot"></div>
-              <div class="mock-dot"></div>
-            </div>
-            <div class="mock-label">📦 冰箱庫存 · 已存 6 項食材</div>
-            <div class="mock-items">
-              <div class="mock-item">
-                <div class="mock-item-left">🥦 花椰菜</div>
-                <span class="mock-badge badge-fresh">新鮮 7天</span>
-              </div>
-              <div class="mock-item">
-                <div class="mock-item-left">🍎 蘋果</div>
-                <span class="mock-badge badge-fresh">新鮮 5天</span>
-              </div>
-              <div class="mock-item">
-                <div class="mock-item-left">🥬 高麗菜</div>
-                <span class="mock-badge badge-warn">注意 2天</span>
-              </div>
-              <div class="mock-item">
-                <div class="mock-item-left">🥩 豬肉</div>
-                <span class="mock-badge badge-warn">即期 1天</span>
-              </div>
-              <div class="mock-item">
-                <div class="mock-item-left">🌿 菠菜</div>
-                <span class="mock-badge badge-old">已過期</span>
-              </div>
-              <div class="mock-item">
-                <div class="mock-item-left">🥚 雞蛋</div>
-                <span class="mock-badge badge-fresh">新鮮 14天</span>
-              </div>
-            </div>
-            <div class="mock-progress" style="margin-top:auto;">
-              <div class="mock-fill" style="width: 100%;"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Feature 3: Recipe AI -->
-    <div class="featured-inner">
-      <div class="feat-row">
-        <div class="reveal-left">
-          <div class="feat-tag">核心功能 03</div>
-          <h3 class="feat-title">AI 驅動<br>食譜生成</h3>
-          <p class="feat-desc">串接 Google Gemini 2.5 Flash 大型語言模型，根據冰箱現有食材一鍵生成個人化食譜。優先消耗即期食材，提供完整烹飪步驟與替代食材建議。</p>
-          <div class="feat-tags">
-            <span class="tag">Gemini 2.5 Flash</span>
-            <span class="tag">LLM Prompting</span>
-            <span class="tag">個人化推薦</span>
-            <span class="tag">一鍵生成</span>
-          </div>
-          <div class="feat-stat-row">
-            <div class="feat-stat"><span class="num">1鍵</span><span class="lbl">生成食譜</span></div>
-            <div class="feat-stat"><span class="num">Gemini</span><span class="lbl">2.5 Flash</span></div>
-            <div class="feat-stat"><span class="num">客製</span><span class="lbl">烹飪建議</span></div>
-          </div>
-        </div>
-        <div class="feat-visual reveal-right">
-          <div class="recipe-visual">
-            <div class="recipe-header">✨ GEMINI AI · 為您生成專屬食譜</div>
-            <div class="recipe-title">高麗菜豬肉炒飯</div>
-            <div class="recipe-tags">
-              <span class="recipe-tag">消耗即期食材</span>
-              <span class="recipe-tag">20分鐘</span>
-              <span class="recipe-tag">簡單</span>
-            </div>
-            <div class="recipe-steps">
-              <div class="recipe-step"><span class="step-num">01</span>豬肉切薄片，用醬油醃製10分鐘。</div>
-              <div class="recipe-step"><span class="step-num">02</span>高麗菜切絲，雞蛋打散備用。</div>
-              <div class="recipe-step"><span class="step-num">03</span>熱鍋下油，先炒豬肉至熟透後盛起。</div>
-              <div class="recipe-step"><span class="step-num">04</span>同鍋炒蛋成形後，加入隔夜飯大火翻炒。</div>
-              <div class="recipe-step"><span class="step-num">05</span>加入高麗菜與豬肉，以鹽巴調味即可。</div>
-            </div>
-          </div>
-        </div>
+        position: absolute; bottom: 0; left: 0; right: 0;
+        padding: 1rem; background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        color: white; font-size: 0.8rem; pointer-events: none;
+      ">
+        Fridge AI Demo • 實機錄製版
       </div>
     </div>
   </div>
 
-  <div class="divider"></div>
-
-  <!-- TECH STACK -->
-  <section id="stack" class="tech-section">
-    <div class="reveal">
-      <span class="section-label">04&nbsp;&nbsp;技術架構</span>
-      <h2 class="section-title">驅動系統的<br>核心技術矩陣</h2>
-    </div>
-
-    <div id="tech-container" class="tech-container" style="margin-top: 4rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem;">
-      
-      <!-- Group 1: YOLO Core (Computer Vision AI) -->
-      <div class="tech-group">
-        <h3 style="font-size: 0.7rem; color: #555; letter-spacing: 2px; margin-bottom: 1.5rem; text-transform: uppercase;">// Computer Vision AI</h3>
-        <div class="tech-column-grid" style="display: flex; flex-direction: column; gap: 1rem;">
-          <div class="tech-card reveal" onclick="openTechModal('yolo')" style="width: 100%;">
-            <span class="tech-emoji">🧠</span>
-            <div class="tech-name">YOLOv11m</div>
-            <div class="tech-role">核心視覺推論模型</div>
-          </div>
-          <div class="tech-card reveal" onclick="openTechModal('dataset')" style="width: 100%;">
-            <span class="tech-emoji">📊</span>
-            <div class="tech-name">資料集標注</div>
-            <div class="tech-role">Roboflow · 5560樣本</div>
-          </div>
-          <div class="tech-card reveal" onclick="openTechModal('pytorch')" style="width: 100%;">
-            <span class="tech-emoji">🔥</span>
-            <div class="tech-name">PyTorch</div>
-            <div class="tech-role">模型訓練與權重優化</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Group 2: Web Infra (System & Infrastructure) -->
-      <div class="tech-group">
-        <h3 style="font-size: 0.7rem; color: #555; letter-spacing: 2px; margin-bottom: 1.5rem; text-transform: uppercase;">// System & Infrastructure</h3>
-        <div class="tech-column-grid" style="display: flex; flex-direction: column; gap: 1rem;">
-          <div class="tech-card reveal" onclick="openTechModal('arch')" style="width: 100%;">
-            <span class="tech-emoji">🏗️</span>
-            <div class="tech-name">系統全架構</div>
-            <div class="tech-role">端到端數據流轉圖</div>
-          </div>
-          <div class="tech-card reveal" onclick="openTechModal('react')" style="width: 100%;">
-            <span class="tech-emoji">⚛️</span>
-            <div class="tech-name">React 18 + Vite</div>
-            <div class="tech-role">高效能 SPA 開發環境</div>
-          </div>
-          <div class="tech-card reveal" onclick="openTechModal('db')" style="width: 100%;">
-            <span class="tech-emoji">🗃️</span>
-            <div class="tech-name">IndexedDB</div>
-            <div class="tech-role">本地 persistent 儲存</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Group 3: UI/Interaction (Interaction & Experience) -->
-      <div class="tech-group">
-        <h3 style="font-size: 0.7rem; color: #555; letter-spacing: 2px; margin-bottom: 1.5rem; text-transform: uppercase;">// Interaction & Experience</h3>
-        <div class="tech-column-grid" style="display: flex; flex-direction: column; gap: 1rem;">
-          <div class="tech-card reveal" onclick="openTechModal('gemini')" style="width: 100%;">
-            <span class="tech-emoji">✨</span>
-            <div class="tech-name">Gemini API</div>
-            <div class="tech-role">智慧食譜與交互核心</div>
-          </div>
-          <div class="tech-card reveal" onclick="openTechModal('tailwind')" style="width: 100%;">
-            <span class="tech-emoji">🎨</span>
-            <div class="tech-name">Tailwind CSS</div>
-            <div class="tech-role">現代化樣式管理系統</div>
-          </div>
-          <div class="tech-card reveal" style="width: 100%; opacity: 0.6; cursor: wait;">
-            <span class="tech-emoji">🛠️</span>
-            <div class="tech-name">UI 演進歷程</div>
-            <div class="tech-role">內容建構中 • Coming Soon</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- PERSONA -->
-  <section id="persona">
-    <div class="reveal">
-      <span class="section-label">05&nbsp;&nbsp;目標用戶</span>
-      <h2 class="section-title">為真實生活情境<br>設計的解決方案</h2>
-      <p class="section-desc">依照三種典型家庭用戶的核心痛點，設計出一套通用且易用的操作流程。</p>
-    </div>
-    <div class="persona-grid">
-      <div class="persona-card reveal">
-        <span class="persona-ava">👨‍👩‍👧</span>
-        <div class="persona-name">陳先生一家</div>
-        <div class="persona-role">雙薪忙碌家庭</div>
-        <p class="persona-pain">工作繁忙時常忘記冰箱有什麼食材，導致重複採購與食物浪費。每天下班還要花15分鐘決定晚餐煮什麼。</p>
-        <div class="persona-solve">✅ Fridge AI 掃一下，30秒內得到今晚晚餐食譜，優先消耗3天內即期食材。</div>
-      </div>
-      <div class="persona-card reveal">
-        <span class="persona-ava">🧑‍🍳</span>
-        <div class="persona-name">小林同學</div>
-        <div class="persona-role">料理初學新手</div>
-        <p class="persona-pain">常常買了食材不知道怎麼搭配，嘗試新菜後剩下大量食材不知如何利用，最後全部過期浪費。</p>
-        <div class="persona-solve">✅ AI 根據現有食材自動組合簡易食譜，附上完整步驟與替代食材，省錢省心。</div>
-      </div>
-      <div class="persona-card reveal">
-        <span class="persona-ava">👴</span>
-        <div class="persona-name">王奶奶</div>
-        <div class="persona-role">記憶力退化銀髮族</div>
-        <p class="persona-pain">年紀大了容易忘記食材已買過或即將過期。複雜的操作介面讓她感到困惑，難以管理冰箱食材。</p>
-        <div class="persona-solve">✅ 大字醒目的即期警示、語音互動建議，簡化介面讓長輩輕鬆掌握食材狀態。</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- MARKET + ROADMAP -->
-  <div class="divider"></div>
-  <section id="market" class="market-section">
-    <div class="reveal">
-      <span class="section-label">06&nbsp;&nbsp;市場潛力與未來展望</span>
-      <h2 class="section-title">從家庭到餐飲業<br>的垂直擴展路徑</h2>
-    </div>
-    <div class="market-inner">
-      <div class="market-stats reveal">
-        <div class="market-stat-item">
-          <div class="market-stat-num">$124.3B</div>
-          <div class="market-stat-lbl">2033 年智慧冰箱全球市場規模</div>
-        </div>
-        <div class="market-stat-item">
-          <div class="market-stat-num">12.37%</div>
-          <div class="market-stat-lbl">預估年複合成長率 (CAGR)</div>
-        </div>
-        <div class="market-stat-item">
-          <div class="market-stat-num">8-10%</div>
-          <div class="market-stat-lbl">預期減少全球溫室氣體排放</div>
-        </div>
-        <div class="market-stat-item">
-          <div class="market-stat-num">Impact</div>
-          <div class="market-stat-lbl">響應聯合國 SDGs 12.3 永續目標</div>
-        </div>
-      </div>
-      <div class="market-roadmap reveal">
-        <div class="roadmap-item">
-          <div class="roadmap-icon">🏠</div>
-          <div>
-            <div class="roadmap-title">Phase 1 · B2C 家庭食材管理</div>
-            <div class="roadmap-desc">智慧冰箱硬體端整合；建立 IndexedDB 本地加密存儲與管理機制。</div>
-          </div>
-        </div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon">🍴</div>
-          <div>
-            <div class="roadmap-title">Phase 2 · B2B 商業賦能引擎</div>
-            <div class="roadmap-desc">進階圖像分割技術，串接餐飲業庫存系統，提供企業級 AI 模型 API。</div>
-          </div>
-        </div>
-        <div class="roadmap-item">
-          <div class="roadmap-icon">📈</div>
-          <div>
-            <div class="roadmap-title">Phase 3 · 自動補貨與垂直擴展</div>
-            <div class="roadmap-desc">串接生鮮電商自動補貨，預測 Year 3 獲利將突破 NT$2,190 萬。</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- SECTION: PROJECT GALLERY -->
   <div class="divider"></div>
   <section id="portfolio" style="padding: 6rem 6% 8rem;">
     <div class="reveal" style="text-align: center; margin-bottom: 4rem;">
-      <span class="section-label">07&nbsp;&nbsp;技術研發作品集</span>
-      <h2 class="section-title">更多開發實證</h2>
-      <p class="section-desc">涵蓋音訊工程、3D 建模與生成式 AI 開發實錄。</p>
+      <span class="section-label">02&nbsp;&nbsp;技術研發作品集</span>
+      <h2 class="section-title">開發實證與<br>技術探索</h2>
+      <p class="section-desc">涵蓋電腦視覺 AI、音訊工程、LLM 自動化與全端系統架構的完整開發實錄。</p>
     </div>
 
     <!-- Gallery Grid -->
     <div class="problem-grid"
       style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); max-width: 1100px; margin: 0 auto;">
+
+      <!-- Card 00: FridgeAI — Featured Core Project (寬版) -->
+      <div class="problem-card reveal" onclick="openFridgeModal()" style="
+          cursor: pointer; position: relative; overflow: hidden; height: 380px;
+          border-color: rgba(194,156,109,0.5);
+          background: url('assets/images/00.jpg') center/cover no-repeat;
+          display: flex; flex-direction: column; justify-content: flex-end;
+          padding: 2.5rem 3rem;
+          grid-column: 1 / -1;
+          border-width: 2px;
+        ">
+        <!-- Gold ambient glow -->
+        <div style="position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 80%, rgba(194,156,109,0.12) 0%, transparent 60%);"></div>
+        <div style="position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 20%, rgba(194,156,109,0.06) 0%, transparent 50%);"></div>
+        <!-- Precision dot matrix overlay -->
+        <div style="position: absolute; inset: 0; background-image: radial-gradient(rgba(194,156,109,0.08) 1px, transparent 0); background-size: 20px 20px;"></div>
+        <div
+          style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 20%, rgba(0,0,0,0.1) 100%); z-index: 1;">
+        </div>
+        <!-- Featured badge -->
+        <div
+          style="position: absolute; top:0; right:0; padding: 0.6rem 1.5rem; background: var(--gold); color: #000; font-size: 0.6rem; font-weight: 800; z-index: 2; letter-spacing: 2px;">
+          ★ FEATURED · CORE PROJECT</div>
+        <span class="problem-num"
+          style="position: absolute; top: 1.5rem; left: 2rem; color: var(--gold); opacity: 0.6; font-size: 4rem; margin: 0; z-index: 2; font-family: 'Outfit', sans-serif;">00</span>
+        <div style="position: relative; z-index: 2; max-width: 700px;">
+          <h3 style="margin: 0.5rem 0; color: #fff; font-size: 1.6rem; line-height: 1.3;">FridgeAI 智慧食材管理系統</h3>
+          <p style="margin-bottom: 1.2rem; color: rgba(255,255,255,0.75); font-size: 0.9rem; line-height: 1.7;">
+            以 YOLOv11 影像辨識與 Gemini 生成式 AI 為核心的端到端應用。<br>涵蓋 12 階食材狀態辨識、智慧庫存管理、AI 食譜生成與完整的技術架構設計。</p>
+          <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            <span style="padding: 0.3rem 0.8rem; border: 1px solid rgba(194,156,109,0.4); border-radius: 2rem; font-size: 0.7rem; color: var(--gold); letter-spacing: 0.5px;">YOLOv11</span>
+            <span style="padding: 0.3rem 0.8rem; border: 1px solid rgba(194,156,109,0.4); border-radius: 2rem; font-size: 0.7rem; color: var(--gold); letter-spacing: 0.5px;">Gemini API</span>
+            <span style="padding: 0.3rem 0.8rem; border: 1px solid rgba(194,156,109,0.4); border-radius: 2rem; font-size: 0.7rem; color: var(--gold); letter-spacing: 0.5px;">React 18</span>
+            <span style="padding: 0.3rem 0.8rem; border: 1px solid rgba(194,156,109,0.4); border-radius: 2rem; font-size: 0.7rem; color: var(--gold); letter-spacing: 0.5px;">mAP 0.868</span>
+          </div>
+          <div style="color: var(--gold); font-size: 0.85rem; font-weight: 700;">探索完整專案架構 →</div>
+        </div>
+      </div>
 
       <!-- Card 01: Virtual Singer -->
       <div class="problem-card reveal" onclick="openVividModal()" style="
@@ -1909,11 +1567,349 @@
     </div>
   </div>
 
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FRIDGE AI 全螢幕彈窗 (4 頁籤：概述 / 功能 / 技術 / 展望)
+       ═══════════════════════════════════════════════════════════════ -->
+  <div id="fridgeModal" class="modal-root" data-lenis-prevent style="
+    display: none; position: fixed; inset: 0; z-index: 10001;
+    background: rgba(0,0,0,0.96); backdrop-filter: blur(25px);
+    align-items: flex-start; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
+    overflow-y: auto;
+  " onclick="closeFridgeModal()">
+    <div data-lenis-prevent style="
+      background: #0a0a0a; border: 1px solid rgba(194,156,109,0.4);
+      border-radius: 2rem; width: 95%; max-width: 1200px; padding: 3rem 2rem;
+      position: relative; margin: 3vh auto; z-index: 1;
+      transform: translateY(30px); transition: transform 0.3s ease;
+    " onclick="event.stopPropagation()">
+
+      <!-- Close -->
+      <button onclick="closeFridgeModal()"
+        style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5;">✕</button>
+
+      <!-- Header -->
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <span style="color: var(--gold); font-weight: 700; letter-spacing: 3px; font-size: 0.8rem;">★ CORE PROJECT</span>
+        <h2 style="color: #fff; font-size: 2rem; margin: 0.5rem 0;">FridgeAI 智慧食材管理系統</h2>
+        <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">YOLOv11 影像辨識 · Gemini 生成式 AI · React 18 全端架構</p>
+      </div>
+
+      <!-- 4-Tab Navigation -->
+      <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2.5rem; flex-wrap: wrap;">
+        <button class="vivid-tab" id="btn-fridge-overview" onclick="switchFridgeTab('fridge-tab-overview')"
+          style="padding: 0.6rem 1.5rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: 1px solid var(--gold); background: rgba(194,156,109,0.15); color: var(--gold); letter-spacing: 1px;">
+          概述</button>
+        <button class="vivid-tab" id="btn-fridge-features" onclick="switchFridgeTab('fridge-tab-features')"
+          style="padding: 0.6rem 1.5rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: var(--muted); letter-spacing: 1px;">
+          功能</button>
+        <button class="vivid-tab" id="btn-fridge-tech" onclick="switchFridgeTab('fridge-tab-tech')"
+          style="padding: 0.6rem 1.5rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: var(--muted); letter-spacing: 1px;">
+          技術</button>
+        <button class="vivid-tab" id="btn-fridge-roadmap" onclick="switchFridgeTab('fridge-tab-roadmap')"
+          style="padding: 0.6rem 1.5rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: var(--muted); letter-spacing: 1px;">
+          展望</button>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════
+           TAB 1: 概述 (Overview) — 數據 + Demo + 痛點
+           ══════════════════════════════════════════════════════════ -->
+      <div id="fridge-tab-overview">
+        <div style="font-family: 'Outfit', 'Inter', sans-serif; max-width: 960px; margin: 0 auto;">
+
+          <!-- Key Metrics -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.2rem; margin-bottom: 3rem;">
+            <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem;">
+              <div style="font-size: 2rem; font-weight: 800; color: var(--gold);">0.868</div>
+              <div style="font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem;">Final mAP@50 辨識率</div>
+            </div>
+            <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem;">
+              <div style="font-size: 2rem; font-weight: 800; color: var(--gold);">10.5B</div>
+              <div style="font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem;">全球年產食物浪費(噸)</div>
+            </div>
+            <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem;">
+              <div style="font-size: 2rem; font-weight: 800; color: var(--gold);">12.37%</div>
+              <div style="font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem;">智慧冰箱市場 CAGR</div>
+            </div>
+          </div>
+
+          <!-- Demo Video Launch -->
+          <div style="text-align: center; margin-bottom: 3rem;">
+            <h3 style="color: #fff; margin-bottom: 1rem; font-size: 1.2rem;">🎬 系統實機錄製</h3>
+            <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem;">點擊下方按鈕觀看系統辨識與食譜生成的完整流程。</p>
+            <button onclick="openModal()" class="btn-primary"
+              style="display: inline-flex; align-items: center; gap: 0.75rem; padding: 1rem 2.5rem;">
+              <span>播放展示影片</span> <span style="font-size: 1.2rem;">▶️</span>
+            </button>
+          </div>
+
+          <!-- 三個核心痛點 -->
+          <h3 style="color: #fff; text-align: center; margin-bottom: 1.5rem; font-size: 1.1rem;">家庭廚房面臨的三個核心痛點</h3>
+          <p style="color: var(--muted); text-align: center; font-size: 0.85rem; margin-bottom: 2rem;">全台灣每年食物浪費高達 363 萬公噸，其中大部分來自家庭端不當的食材管理習慣。</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 1.8rem;">
+              <div style="font-size: 0.7rem; color: var(--gold); font-weight: 800; margin-bottom: 0.5rem;">01</div>
+              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🙈</div>
+              <h4 style="color: #fff; margin-bottom: 0.5rem;">看不見的庫存</h4>
+              <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.6;">冰箱缺乏系統記錄。根據 UNEP (2024) 統計，全球每年產生 10.5 億噸食物浪費，每人年均浪費 74 公斤。</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 1.8rem;">
+              <div style="font-size: 0.7rem; color: var(--gold); font-weight: 800; margin-bottom: 0.5rem;">02</div>
+              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⏰</div>
+              <h4 style="color: #fff; margin-bottom: 0.5rem;">即期食材腐敗</h4>
+              <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.6;">缺乏提醒機制導致食材悄悄腐壞。全球每年因此損失高達 9,400 億美元，60% 浪費來自家庭端。</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 1.8rem;">
+              <div style="font-size: 0.7rem; color: var(--gold); font-weight: 800; margin-bottom: 0.5rem;">03</div>
+              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🤔</div>
+              <h4 style="color: #fff; margin-bottom: 0.5rem;">剩食難以利用</h4>
+              <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.6;">缺乏即時靈感。Fridge AI 透過 RAG 向量搜尋，將決策時間從 15 分鐘縮短至 30 秒，減少不必要購買。</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════
+           TAB 2: 功能 (Features) — 三大核心功能
+           ══════════════════════════════════════════════════════════ -->
+      <div id="fridge-tab-features" style="display: none;">
+        <div style="font-family: 'Outfit', 'Inter', sans-serif; max-width: 960px; margin: 0 auto;">
+
+          <!-- Feature 1: YOLO -->
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 2rem; padding: 2.5rem; margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem;">
+              <span style="font-size: 1.5rem;">🧠</span>
+              <div>
+                <div style="font-size: 0.65rem; color: var(--gold); font-weight: 700; letter-spacing: 2px;">核心功能 01</div>
+                <h3 style="color: #fff; font-size: 1.3rem; margin: 0;">高精準食材影像辨識</h3>
+              </div>
+            </div>
+            <p style="color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 1.5rem;">針對 6 類核心食材（蘋果、香蕉、橘子、菠菜、高麗菜、肉類）進行深度優化。搭載 YOLOv11m 模型，透過 5,560 組真實標注樣本訓練，不僅能辨識類別，更能精準區分「新鮮」與「腐敗」之雙向生命週期狀態。</p>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+              <span style="padding: 0.3rem 0.8rem; background: rgba(194,156,109,0.1); border-radius: 2rem; font-size: 0.7rem; color: var(--gold);">YOLOv11m</span>
+              <span style="padding: 0.3rem 0.8rem; background: rgba(194,156,109,0.1); border-radius: 2rem; font-size: 0.7rem; color: var(--gold);">5,560+ Dataset</span>
+              <span style="padding: 0.3rem 0.8rem; background: rgba(194,156,109,0.1); border-radius: 2rem; font-size: 0.7rem; color: var(--gold);">mAP@50: 0.868</span>
+              <span style="padding: 0.3rem 0.8rem; background: rgba(194,156,109,0.1); border-radius: 2rem; font-size: 0.7rem; color: var(--gold);">雙棲狀態辨識</span>
+            </div>
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+              <div><span style="font-size: 1.5rem; font-weight: 800; color: #fff;">0.854</span><span style="font-size: 0.7rem; color: var(--muted); display: block;">mAP@50</span></div>
+              <div><span style="font-size: 1.5rem; font-weight: 800; color: #fff;">12 階</span><span style="font-size: 0.7rem; color: var(--muted); display: block;">智慧狀態判定</span></div>
+              <div><span style="font-size: 1.5rem; font-weight: 800; color: #fff;">即時</span><span style="font-size: 0.7rem; color: var(--muted); display: block;">偵測速度</span></div>
+            </div>
+          </div>
+
+          <!-- Feature 2: Inventory -->
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 2rem; padding: 2.5rem; margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem;">
+              <span style="font-size: 1.5rem;">📦</span>
+              <div>
+                <div style="font-size: 0.65rem; color: var(--gold); font-weight: 700; letter-spacing: 2px;">核心功能 02</div>
+                <h3 style="color: #fff; font-size: 1.3rem; margin: 0;">智慧庫存管理系統</h3>
+              </div>
+            </div>
+            <p style="color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 1.5rem;">辨識後自動建立食材清單，追蹤入庫日期與預估保鮮期。3天內即將過期的食材會優先顯示並推播提醒，將廚房管理化繁為簡。</p>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+              <span style="padding: 0.3rem 0.8rem; background: rgba(194,156,109,0.1); border-radius: 2rem; font-size: 0.7rem; color: var(--gold);">React 18</span>
+              <span style="padding: 0.3rem 0.8rem; background: rgba(194,156,109,0.1); border-radius: 2rem; font-size: 0.7rem; color: var(--gold);">TypeScript</span>
+              <span style="padding: 0.3rem 0.8rem; background: rgba(194,156,109,0.1); border-radius: 2rem; font-size: 0.7rem; color: var(--gold);">即期提醒</span>
+              <span style="padding: 0.3rem 0.8rem; background: rgba(194,156,109,0.1); border-radius: 2rem; font-size: 0.7rem; color: var(--gold);">視覺化儀表板</span>
+            </div>
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+              <div><span style="font-size: 1.5rem; font-weight: 800; color: #fff;">3天</span><span style="font-size: 0.7rem; color: var(--muted); display: block;">預警時間</span></div>
+              <div><span style="font-size: 1.5rem; font-weight: 800; color: #fff;">自動</span><span style="font-size: 0.7rem; color: var(--muted); display: block;">記錄時間戳</span></div>
+              <div><span style="font-size: 1.5rem; font-weight: 800; color: #fff;">2區</span><span style="font-size: 0.7rem; color: var(--muted); display: block;">冷藏/冷凍</span></div>
+            </div>
+          </div>
+
+          <!-- Feature 3: Recipe AI -->
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 2rem; padding: 2.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem;">
+              <span style="font-size: 1.5rem;">✨</span>
+              <div>
+                <div style="font-size: 0.65rem; color: var(--gold); font-weight: 700; letter-spacing: 2px;">核心功能 03</div>
+                <h3 style="color: #fff; font-size: 1.3rem; margin: 0;">AI 驅動食譜生成</h3>
+              </div>
+            </div>
+            <p style="color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 1.5rem;">串接 Google Gemini 2.5 Flash 大型語言模型，根據冰箱現有食材一鍵生成個人化食譜。優先消耗即期食材，提供完整烹飪步驟與替代食材建議。</p>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+              <span style="padding: 0.3rem 0.8rem; background: rgba(194,156,109,0.1); border-radius: 2rem; font-size: 0.7rem; color: var(--gold);">Gemini 2.5 Flash</span>
+              <span style="padding: 0.3rem 0.8rem; background: rgba(194,156,109,0.1); border-radius: 2rem; font-size: 0.7rem; color: var(--gold);">LLM Prompting</span>
+              <span style="padding: 0.3rem 0.8rem; background: rgba(194,156,109,0.1); border-radius: 2rem; font-size: 0.7rem; color: var(--gold);">個人化推薦</span>
+            </div>
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+              <div><span style="font-size: 1.5rem; font-weight: 800; color: #fff;">1鍵</span><span style="font-size: 0.7rem; color: var(--muted); display: block;">生成食譜</span></div>
+              <div><span style="font-size: 1.5rem; font-weight: 800; color: #fff;">Gemini</span><span style="font-size: 0.7rem; color: var(--muted); display: block;">2.5 Flash</span></div>
+              <div><span style="font-size: 1.5rem; font-weight: 800; color: #fff;">客製</span><span style="font-size: 0.7rem; color: var(--muted); display: block;">烹飪建議</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════
+           TAB 3: 技術 (Tech Stack) — 9 宮格技術矩陣
+           ══════════════════════════════════════════════════════════ -->
+      <div id="fridge-tab-tech" style="display: none;">
+        <div style="font-family: 'Outfit', 'Inter', sans-serif; max-width: 960px; margin: 0 auto;">
+          <h3 style="color: #fff; text-align: center; margin-bottom: 0.5rem; font-size: 1.2rem;">驅動系統的核心技術矩陣</h3>
+          <p style="color: var(--muted); text-align: center; font-size: 0.85rem; margin-bottom: 2.5rem;">點擊任意技術卡片查看詳細說明</p>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+            <!-- Group 1: Computer Vision AI -->
+            <div>
+              <h4 style="font-size: 0.7rem; color: #555; letter-spacing: 2px; margin-bottom: 1.2rem; text-transform: uppercase;">// Computer Vision AI</h4>
+              <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                <div class="tech-card" onclick="openTechModal('yolo')" style="width: 100%; cursor: pointer;">
+                  <span class="tech-emoji">🧠</span>
+                  <div class="tech-name">YOLOv11m</div>
+                  <div class="tech-role">核心視覺推論模型</div>
+                </div>
+                <div class="tech-card" onclick="openTechModal('dataset')" style="width: 100%; cursor: pointer;">
+                  <span class="tech-emoji">📊</span>
+                  <div class="tech-name">資料集標注</div>
+                  <div class="tech-role">Roboflow · 5560樣本</div>
+                </div>
+                <div class="tech-card" onclick="openTechModal('pytorch')" style="width: 100%; cursor: pointer;">
+                  <span class="tech-emoji">🔥</span>
+                  <div class="tech-name">PyTorch</div>
+                  <div class="tech-role">模型訓練與權重優化</div>
+                </div>
+              </div>
+            </div>
+            <!-- Group 2: System & Infrastructure -->
+            <div>
+              <h4 style="font-size: 0.7rem; color: #555; letter-spacing: 2px; margin-bottom: 1.2rem; text-transform: uppercase;">// System & Infrastructure</h4>
+              <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                <div class="tech-card" onclick="openTechModal('arch')" style="width: 100%; cursor: pointer;">
+                  <span class="tech-emoji">🏗️</span>
+                  <div class="tech-name">系統全架構</div>
+                  <div class="tech-role">端到端數據流轉圖</div>
+                </div>
+                <div class="tech-card" onclick="openTechModal('react')" style="width: 100%; cursor: pointer;">
+                  <span class="tech-emoji">⚛️</span>
+                  <div class="tech-name">React 18 + Vite</div>
+                  <div class="tech-role">高效能 SPA 開發環境</div>
+                </div>
+                <div class="tech-card" onclick="openTechModal('db')" style="width: 100%; cursor: pointer;">
+                  <span class="tech-emoji">🗃️</span>
+                  <div class="tech-name">IndexedDB</div>
+                  <div class="tech-role">本地 persistent 儲存</div>
+                </div>
+              </div>
+            </div>
+            <!-- Group 3: Interaction & Experience -->
+            <div>
+              <h4 style="font-size: 0.7rem; color: #555; letter-spacing: 2px; margin-bottom: 1.2rem; text-transform: uppercase;">// Interaction & Experience</h4>
+              <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                <div class="tech-card" onclick="openTechModal('gemini')" style="width: 100%; cursor: pointer;">
+                  <span class="tech-emoji">✨</span>
+                  <div class="tech-name">Gemini API</div>
+                  <div class="tech-role">智慧食譜與交互核心</div>
+                </div>
+                <div class="tech-card" onclick="openTechModal('tailwind')" style="width: 100%; cursor: pointer;">
+                  <span class="tech-emoji">🎨</span>
+                  <div class="tech-name">Tailwind CSS</div>
+                  <div class="tech-role">現代化樣式管理系統</div>
+                </div>
+                <div class="tech-card" style="width: 100%; opacity: 0.6; cursor: wait;">
+                  <span class="tech-emoji">🛠️</span>
+                  <div class="tech-name">UI 演進歷程</div>
+                  <div class="tech-role">內容建構中 • Coming Soon</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════
+           TAB 4: 展望 (Roadmap) — 目標用戶 + 市場 + 路線圖
+           ══════════════════════════════════════════════════════════ -->
+      <div id="fridge-tab-roadmap" style="display: none;">
+        <div style="font-family: 'Outfit', 'Inter', sans-serif; max-width: 960px; margin: 0 auto;">
+
+          <!-- 目標用戶 -->
+          <h3 style="color: #fff; text-align: center; margin-bottom: 0.5rem; font-size: 1.2rem;">為真實生活情境設計的解決方案</h3>
+          <p style="color: var(--muted); text-align: center; font-size: 0.85rem; margin-bottom: 2rem;">依照三種典型家庭用戶的核心痛點，設計出一套通用且易用的操作流程。</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-bottom: 3rem;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 1.8rem; text-align: center;">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">👨‍👩‍👧</div>
+              <h4 style="color: #fff; margin-bottom: 0.3rem;">陳先生一家</h4>
+              <div style="font-size: 0.7rem; color: var(--gold); margin-bottom: 0.8rem;">雙薪忙碌家庭</div>
+              <p style="font-size: 0.8rem; color: var(--muted); line-height: 1.6; margin-bottom: 0.8rem;">工作繁忙時常忘記冰箱有什麼食材，導致重複採購與食物浪費。</p>
+              <div style="font-size: 0.78rem; color: #10b981;">✅ 掃一下，30秒內得到今晚晚餐食譜</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 1.8rem; text-align: center;">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧑‍🍳</div>
+              <h4 style="color: #fff; margin-bottom: 0.3rem;">小林同學</h4>
+              <div style="font-size: 0.7rem; color: var(--gold); margin-bottom: 0.8rem;">料理初學新手</div>
+              <p style="font-size: 0.8rem; color: var(--muted); line-height: 1.6; margin-bottom: 0.8rem;">常常買了食材不知道怎麼搭配，嘗試新菜後剩下大量食材不知如何利用。</p>
+              <div style="font-size: 0.78rem; color: #10b981;">✅ AI 自動組合簡易食譜，附完整步驟</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 1.8rem; text-align: center;">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">👴</div>
+              <h4 style="color: #fff; margin-bottom: 0.3rem;">王奶奶</h4>
+              <div style="font-size: 0.7rem; color: var(--gold); margin-bottom: 0.8rem;">記憶力退化銀髮族</div>
+              <p style="font-size: 0.8rem; color: var(--muted); line-height: 1.6; margin-bottom: 0.8rem;">年紀大了容易忘記食材已買過或即將過期。</p>
+              <div style="font-size: 0.78rem; color: #10b981;">✅ 大字醒目即期警示，簡化介面</div>
+            </div>
+          </div>
+
+          <!-- 市場數據 -->
+          <h3 style="color: #fff; text-align: center; margin-bottom: 2rem; font-size: 1.2rem;">市場潛力與未來展望</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.2rem; margin-bottom: 3rem;">
+            <div style="text-align: center; padding: 1.5rem; background: rgba(194,156,109,0.04); border: 1px solid rgba(194,156,109,0.15); border-radius: 1.5rem;">
+              <div style="font-size: 1.8rem; font-weight: 800; color: var(--gold);">$124.3B</div>
+              <div style="font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem;">2033 年智慧冰箱全球市場規模</div>
+            </div>
+            <div style="text-align: center; padding: 1.5rem; background: rgba(194,156,109,0.04); border: 1px solid rgba(194,156,109,0.15); border-radius: 1.5rem;">
+              <div style="font-size: 1.8rem; font-weight: 800; color: var(--gold);">12.37%</div>
+              <div style="font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem;">預估年複合成長率 (CAGR)</div>
+            </div>
+            <div style="text-align: center; padding: 1.5rem; background: rgba(194,156,109,0.04); border: 1px solid rgba(194,156,109,0.15); border-radius: 1.5rem;">
+              <div style="font-size: 1.8rem; font-weight: 800; color: var(--gold);">8-10%</div>
+              <div style="font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem;">預期減少全球溫室氣體排放</div>
+            </div>
+          </div>
+
+          <!-- Roadmap -->
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; align-items: flex-start; gap: 1.2rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 1.5rem;">
+              <div style="font-size: 1.5rem; flex-shrink: 0;">🏠</div>
+              <div>
+                <h4 style="color: var(--gold); font-size: 0.9rem; margin-bottom: 0.3rem;">Phase 1 · B2C 家庭食材管理</h4>
+                <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.5;">智慧冰箱硬體端整合；建立 IndexedDB 本地加密存儲與管理機制。</p>
+              </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 1.2rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 1.5rem;">
+              <div style="font-size: 1.5rem; flex-shrink: 0;">🍴</div>
+              <div>
+                <h4 style="color: var(--gold); font-size: 0.9rem; margin-bottom: 0.3rem;">Phase 2 · B2B 商業賦能引擎</h4>
+                <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.5;">進階圖像分割技術，串接餐飲業庫存系統，提供企業級 AI 模型 API。</p>
+              </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 1.2rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 1.5rem; padding: 1.5rem;">
+              <div style="font-size: 1.5rem; flex-shrink: 0;">📈</div>
+              <div>
+                <h4 style="color: var(--gold); font-size: 0.9rem; margin-bottom: 0.3rem;">Phase 3 · 自動補貨與垂直擴展</h4>
+                <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.5;">串接生鮮電商自動補貨，預測 Year 3 獲利將突破 NT$2,190 萬。</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- CONTACT / FOOTER -->
   <footer id="contact">
     <div class="footer-glow"></div>
     <div class="reveal">
-      <span class="section-label" style="display:block; margin-bottom:1rem;">08&nbsp;&nbsp;與我聯繫</span>
+      <span class="section-label" style="display:block; margin-bottom:1rem;">03&nbsp;&nbsp;與我聯繫</span>
       <h2>期待與您<br>共創未來</h2>
       <p class="footer-sub">如果您正在尋找具備 AI 應用整合能力與跨領域開發經驗的人才，<br>歡迎透過以下方式與我聯繫，或進一步查看我的完整經歷。</p>
 
@@ -1930,11 +1926,14 @@
     </div>
     <div class="footer-credits">
       <div class="footer-stack">
-        <span class="stack-badge">YOLOv11</span>
+        <span class="stack-badge">Python</span>
         <span class="stack-badge">Gemini API</span>
-        <span class="stack-badge">React 18</span>
-        <span class="stack-badge">Vite</span>
-        <span class="stack-badge">TypeScript</span>
+        <span class="stack-badge">FastAPI</span>
+        <span class="stack-badge">Make.com</span>
+        <span class="stack-badge">React</span>
+        <span class="stack-badge">YOLOv11</span>
+        <span class="stack-badge">LINE API</span>
+        <span class="stack-badge">Web Audio</span>
       </div>
     </div>
   </footer>
